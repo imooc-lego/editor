@@ -91,7 +91,8 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue'
 import { useStore } from 'vuex'
-import Title, { defaultProps } from '../components/Title'
+import Title, { defaultProps } from '../components/Title.vue'
+
 export default defineComponent({
   name: 'Home',
   components: {
