@@ -41,19 +41,43 @@
     </a-layout>
     <a-layout>
       <a-layout-sider width="300" style="background: #fff">
-        <h2>组件库list在这里搞起</h2>
+        <h2>点击下列组件列表添加</h2>
+        <div  @click="onItemCreated">
+          <Title text="hello world"></Title>
+        </div>
       </a-layout-sider>
       <a-layout style="padding: 0 24px 24px">
         <a-layout-content
           :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '90vh' }"
         >
           Content main editor is here baby
+          <ul>
+            <li v-for="(item, index) in components" :key="index">
+              <div @click="editProps(index)">
+                <component :is="item.name" v-bind="item.props"/>
+              </div>
+            </li>
+          </ul>
         </a-layout-content>
       </a-layout>
       <a-layout-sider width="300" style="background: #fff">
         <a-tabs type="card">
           <a-tab-pane key="1" tab="属性设置">
-            Content of Tab Pane 1
+            <div v-if="currentElement">
+              <li v-for="(value, key) in currentElement.props" :key="key">
+                {{key}}:
+                <component
+                  v-if="mapPropsToComponents[key] === 'a-input'"
+                  :is="mapPropsToComponents[key]"
+                  :value="value" @change="(e) => { updateValue(e, key)}"
+                />
+                <component
+                  v-if="mapPropsToComponents[key] === 'a-input-number'"
+                  :is="mapPropsToComponents[key]"
+                  :value="parseInt(value)" @change="(e) => { updateValueNumber(e, key)}"
+                />
+              </li>
+            </div>
           </a-tab-pane>
           <a-tab-pane key="2" tab="功能设置">
             Content of Tab Pane 2
@@ -65,20 +89,50 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
-
+import { defineComponent, ref, computed } from 'vue'
+import { useStore } from 'vuex'
+import Title, { defaultProps } from '../components/Title'
 export default defineComponent({
   name: 'Home',
+  components: {
+    Title
+  },
   setup () {
+    const store = useStore()
+    const components = computed(() => store.state.components)
+    const currentElement = computed(() => store.getters.getCurrentElement)
     const visible = ref(false)
     const showModal = ref(false)
+    const mapPropsToComponents = {
+      text: 'a-input',
+      fontSize: 'a-input-number'
+    }
     const handleOk = () => {
       showModal.value = false
+    }
+    const onItemCreated = (type: string) => {
+      store.commit('addComponentToEditor', { name: 'title', props: defaultProps })
+    }
+    const editProps = (index: number) => {
+      store.commit('editProps', index)
+    }
+    const updateValue = (e: any, key: string) => {
+      store.commit('updateValue', { key, value: e.target.value })
+    }
+    const updateValueNumber = (e: any, key: string) => {
+      store.commit('updateValue', { key, value: e })
     }
     return {
       visible,
       showModal,
-      handleOk
+      handleOk,
+      onItemCreated,
+      components,
+      editProps,
+      currentElement,
+      mapPropsToComponents,
+      updateValue,
+      updateValueNumber
     }
   }
 })
