@@ -1,9 +1,10 @@
 <template>
-  <h2 :style="styleProps">
+  <button :style="styleProps">
     {{text}}
-  </h2>
+  </button>
 </template>
 <script lang="ts">
+
 import { pick } from 'lodash'
 import { defineComponent, computed } from 'vue'
 
@@ -11,24 +12,19 @@ import { defineComponent, computed } from 'vue'
 export const TitleProps = {
   text: {
     type: String,
-    default: '大标题'
+    default: '按钮'
   },
   fontSize: {
     type: String,
     default: '30px'
-  },
-  fontWeight: {
-    type: String,
-    default: 'normal'
   }
 }
 export const defaultProps = {
-  text: '大标题',
-  fontSize: '30px',
-  fontWeight: 'normal'
+  text: 'Hello World',
+  fontSize: '30px'
 }
 // array that contains style props
-export const stylePropsArr = ['fontSize', 'fontWeight']
+export const stylePropsArr = ['fontSize']
 
 export default defineComponent({
   props: TitleProps,

@@ -43,14 +43,14 @@
       <a-layout-sider width="300" style="background: #fff">
         <h2>点击下列组件列表添加</h2>
         <div  @click="onItemCreated">
-          <Title text="hello world"></Title>
+          <Title></Title>
         </div>
       </a-layout-sider>
       <a-layout style="padding: 0 24px 24px">
         <a-layout-content
           :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '90vh' }"
         >
-          Content main editor is here baby
+          预览区域
           <ul>
             <li v-for="(item, index) in components" :key="index">
               <div @click="editProps(index)">
@@ -64,19 +64,7 @@
         <a-tabs type="card">
           <a-tab-pane key="1" tab="属性设置">
             <div v-if="currentElement">
-              <li v-for="(value, key) in currentElement.props" :key="key">
-                {{key}}:
-                <component
-                  v-if="mapPropsToComponents[key] === 'a-input'"
-                  :is="mapPropsToComponents[key]"
-                  :value="value" @change="(e) => { updateValue(e, key)}"
-                />
-                <component
-                  v-if="mapPropsToComponents[key] === 'a-input-number'"
-                  :is="mapPropsToComponents[key]"
-                  :value="parseInt(value)" @change="(e) => { updateValueNumber(e, key)}"
-                />
-              </li>
+              <prop-table :props="currentElement.props"></prop-table>
             </div>
           </a-tab-pane>
           <a-tab-pane key="2" tab="功能设置">
@@ -92,11 +80,13 @@
 import { defineComponent, ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import Title, { defaultProps } from '../components/Title.vue'
-
+import PropTable from '../components/PropsTable.vue'
+import mapPropsToComponents from '../propsMap'
 export default defineComponent({
   name: 'Home',
   components: {
-    Title
+    Title,
+    PropTable
   },
   setup () {
     const store = useStore()
@@ -104,10 +94,7 @@ export default defineComponent({
     const currentElement = computed(() => store.getters.getCurrentElement)
     const visible = ref(false)
     const showModal = ref(false)
-    const mapPropsToComponents = {
-      text: 'a-input',
-      fontSize: 'a-input-number'
-    }
+
     const handleOk = () => {
       showModal.value = false
     }
@@ -117,12 +104,6 @@ export default defineComponent({
     const editProps = (index: number) => {
       store.commit('editProps', index)
     }
-    const updateValue = (e: any, key: string) => {
-      store.commit('updateValue', { key, value: e.target.value })
-    }
-    const updateValueNumber = (e: any, key: string) => {
-      store.commit('updateValue', { key, value: e })
-    }
     return {
       visible,
       showModal,
@@ -131,9 +112,7 @@ export default defineComponent({
       components,
       editProps,
       currentElement,
-      mapPropsToComponents,
-      updateValue,
-      updateValueNumber
+      mapPropsToComponents
     }
   }
 })

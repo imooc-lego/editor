@@ -18,12 +18,9 @@ export default createStore<GlobalDataProps>({
     },
     updateValue (state, { key, value }) {
       const currentComponent = state.components.find((component, index) => index === state.currentElement)
+      console.log(key, value)
       if (currentComponent) {
-        if (typeof value === 'number') {
-          currentComponent.props[key] = value + 'px'
-        } else {
-          currentComponent.props[key] = value
-        }
+        currentComponent.props[key] = value
       }
     }
   },
