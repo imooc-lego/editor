@@ -1,7 +1,9 @@
 <template>
-  <button :style="styleProps">
+<div>
+  <a :style="styleProps" :href="href" @click="$event.preventDefault()">
     {{text}}
-  </button>
+  </a>
+</div>
 </template>
 <script lang="ts">
 
@@ -9,25 +11,25 @@ import { pick } from 'lodash'
 import { defineComponent, computed } from 'vue'
 
 // Props in component validation
-export const TitleProps = {
+export const LinkProps = {
   text: {
     type: String,
-    default: '按钮'
+    default: '百度链接'
+  },
+  href: {
+    type: String,
+    default: 'http://abc.com'
   },
   fontSize: {
     type: String,
-    default: '30px'
+    default: '15px'
   }
-}
-export const defaultProps = {
-  text: 'Hello World',
-  fontSize: '30px'
 }
 // array that contains style props
 export const stylePropsArr = ['fontSize']
 
 export default defineComponent({
-  props: TitleProps,
+  props: LinkProps,
   setup (props) {
     const styleProps = computed(() => pick(props, stylePropsArr))
     return {

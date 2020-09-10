@@ -10,11 +10,11 @@ const PropsTable = (props: any) => {
         map(props.props, (value, key) => {
           console.log(key)
           const { component, valueTransform, eventHandler, eventName } = maps[key]
-          const TagName = component || 'a-input'
           const props = {
             value: valueTransform(value),
             onChange: (e: any) => { eventHandler(e, key) }
           }
+          const TagName = component || 'a-input'
           // const myComponent = <TagName {...props} />
           return <TagName {...props} />
         })

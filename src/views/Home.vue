@@ -42,8 +42,11 @@
     <a-layout>
       <a-layout-sider width="300" style="background: #fff">
         <h2>点击下列组件列表添加</h2>
-        <div  @click="onItemCreated">
+        <div  @click="onItemCreated('title')">
           <Title></Title>
+        </div>
+        <div  @click="onItemCreated('l-link')">
+          <l-link></l-link>
         </div>
       </a-layout-sider>
       <a-layout style="padding: 0 24px 24px">
@@ -64,7 +67,7 @@
         <a-tabs type="card">
           <a-tab-pane key="1" tab="属性设置">
             <div v-if="currentElement">
-              <prop-table :props="currentElement.props"></prop-table>
+              <prop-table :props="currentElement.props" :type="currentElement.name"></prop-table>
             </div>
           </a-tab-pane>
           <a-tab-pane key="2" tab="功能设置">
@@ -79,13 +82,16 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue'
 import { useStore } from 'vuex'
-import Title, { defaultProps } from '../components/Title.vue'
+import Title from '../components/Title.vue'
+import LLink from '../components/LLink.vue'
 import PropTable from '../components/PropsTable.vue'
 import mapPropsToComponents from '../propsMap'
+import componentsDefaultProps from '../defaultProps'
 export default defineComponent({
   name: 'Home',
   components: {
     Title,
+    LLink,
     PropTable
   },
   setup () {
@@ -98,8 +104,9 @@ export default defineComponent({
     const handleOk = () => {
       showModal.value = false
     }
-    const onItemCreated = (type: string) => {
-      store.commit('addComponentToEditor', { name: 'title', props: defaultProps })
+    const onItemCreated = (name: string) => {
+      const { props } = componentsDefaultProps[name]
+      store.commit('addComponentToEditor', { name, props })
     }
     const editProps = (index: number) => {
       store.commit('editProps', index)

@@ -7,7 +7,6 @@
 import { pick } from 'lodash'
 import { defineComponent, computed } from 'vue'
 
-// Props in component validation
 export const TitleProps = {
   text: {
     type: String,
@@ -20,13 +19,13 @@ export const TitleProps = {
   fontWeight: {
     type: String,
     default: 'normal'
+  },
+  lineHeight: {
+    type: String,
+    default: '1'
   }
 }
-export const defaultProps = {
-  text: '大标题',
-  fontSize: '30px',
-  fontWeight: 'normal'
-}
+
 // array that contains style props
 export const stylePropsArr = ['fontSize', 'fontWeight']
 
