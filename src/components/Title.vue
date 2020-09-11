@@ -23,11 +23,15 @@ export const TitleProps = {
   lineHeight: {
     type: String,
     default: '1'
+  },
+  textAlign: {
+    type: String,
+    default: 'left'
   }
 }
 
 // array that contains style props
-export const stylePropsArr = ['fontSize', 'fontWeight']
+export const stylePropsArr = ['fontSize', 'fontWeight', 'textAlign']
 
 export default defineComponent({
   props: TitleProps,

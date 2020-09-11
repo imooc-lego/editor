@@ -4,11 +4,27 @@
       <span class="label">{{value.text}}:</span>
       <div :class="`prop-component component-${value.component}`">
         <component
+          v-if="!value.options"
           :is="value.component"
           v-bind="value.extraProps"
           :[value.valueProp]="value.value"
           v-on="value.events"
         />
+        <component
+          v-else
+          :is="value.component"
+          v-bind="value.extraProps"
+          :[value.valueProp]="value.value"
+          v-on="value.events"
+        >
+          <component
+            :is="value.subComponent"
+            v-for="(option, k) in value.options" :key="k"
+            :value="option.value"
+          >
+            {{option.text}}
+          </component>
+        </component>
       </div>
     </li>
   </div>
@@ -39,7 +55,10 @@ export default defineComponent({
     const extraProps = defaults[props.type].extraProps || {}
     const finalProps = computed(() => {
       return map(props.props, (value, key) => {
-        const { component, intialTransform, afterTransform, eventName, text, valueProp } = maps[key]
+        const {
+          component, intialTransform, afterTransform,
+          eventName, text, valueProp, options, subComponent
+        } = maps[key]
         return {
           component,
           text,
@@ -48,7 +67,9 @@ export default defineComponent({
           extraProps: extraProps[key],
           events: {
             [eventName]: (e: any) => { handleCommit({ value: afterTransform(e), key }) }
-          }
+          },
+          options,
+          subComponent
         }
       })
     })

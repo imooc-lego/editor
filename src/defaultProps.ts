@@ -10,7 +10,8 @@ export const componentsDefaultProps: DefaultPropsType = {
       text: '大标题',
       fontSize: '30px',
       fontWeight: 'normal',
-      lineHeight: '1'
+      lineHeight: '1',
+      textAlign: 'left'
     },
     extraProps: {
       lineHeight: { min: 0, max: 10 }
