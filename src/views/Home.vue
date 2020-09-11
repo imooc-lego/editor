@@ -41,12 +41,14 @@
     </a-layout>
     <a-layout>
       <a-layout-sider width="300" style="background: #fff">
-        <h2>点击下列组件列表添加</h2>
-        <div  @click="onItemCreated('title')">
-          <Title></Title>
-        </div>
-        <div  @click="onItemCreated('l-link')">
-          <l-link></l-link>
+        <div class="sidebar-container">
+          <h2>点击下列组件列表添加</h2>
+          <div  @click="onItemCreated('title')">
+            <Title></Title>
+          </div>
+          <div  @click="onItemCreated('l-link')">
+            <l-link></l-link>
+          </div>
         </div>
       </a-layout-sider>
       <a-layout style="padding: 0 24px 24px">
@@ -54,11 +56,11 @@
           :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '90vh' }"
         >
           预览区域
-          <ul>
+          <ul class="preview-list">
             <li v-for="(item, index) in components" :key="index">
-              <div @click="editProps(index)">
+              <EditWrapper @edit="editProps(index)" :active="currentIndex === index">
                 <component :is="item.name" v-bind="item.props"/>
-              </div>
+              </EditWrapper>
             </li>
           </ul>
         </a-layout-content>
@@ -67,7 +69,9 @@
         <a-tabs type="card">
           <a-tab-pane key="1" tab="属性设置">
             <div v-if="currentElement">
-              <prop-table :props="currentElement.props" :type="currentElement.name"></prop-table>
+              <div class="sidebar-container">
+                <prop-table :props="currentElement.props" :type="currentElement.name"></prop-table>
+              </div>
             </div>
           </a-tab-pane>
           <a-tab-pane key="2" tab="功能设置">
@@ -85,6 +89,7 @@ import { useStore } from 'vuex'
 import Title from '../components/Title.vue'
 import LLink from '../components/LLink.vue'
 import PropTable from '../components/PropsTable.vue'
+import EditWrapper from '../components/EditWrapper.vue'
 import mapPropsToComponents from '../propsMap'
 import componentsDefaultProps from '../defaultProps'
 export default defineComponent({
@@ -92,11 +97,13 @@ export default defineComponent({
   components: {
     Title,
     LLink,
-    PropTable
+    PropTable,
+    EditWrapper
   },
   setup () {
     const store = useStore()
     const components = computed(() => store.state.components)
+    const currentIndex = computed(() => store.state.currentElement)
     const currentElement = computed(() => store.getters.getCurrentElement)
     const visible = ref(false)
     const showModal = ref(false)
@@ -118,6 +125,7 @@ export default defineComponent({
       onItemCreated,
       components,
       editProps,
+      currentIndex,
       currentElement,
       mapPropsToComponents
     }
@@ -129,5 +137,13 @@ export default defineComponent({
 .header {
   display: flex;
   justify-content: space-between;
+}
+.preview-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+.sidebar-container {
+  padding: 20px;
 }
 </style>

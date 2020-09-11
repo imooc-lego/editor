@@ -5,12 +5,14 @@
 // 3 intialTransform 初始值的变换，有些初始值需要处理以后在传递给组件
 // 4 afterTransform 触发更改以后，不同类型需要不同处理，因为 e 的值是不同的，或者需要回灌的值不同
 // 5 text 属性对应的中文名称
+// 6 给组件赋值的时候 属性的名称，一般是 value，也有可能是另外的，比如 checkbox 就是 checked
 interface PropDetailType {
   component: string;
   eventName: string;
   intialTransform: (v: any) => any;
   afterTransform: (v: any) => any;
   text: string;
+  valueProp: string;
 }
 interface MapTypes {
   [key: string]: PropDetailType;
@@ -19,6 +21,7 @@ interface MapTypes {
 const defaultMap = {
   component: 'a-input',
   eventName: 'change',
+  valueProp: 'value',
   intialTransform: (v: any) => v,
   afterTransform: (e: any) => e
 }
@@ -31,21 +34,22 @@ const mapPropsToComponents: MapTypes = {
   href: {
     ...defaultMap,
     afterTransform: (e: any) => e.target.value,
-    text: '链接地址'
+    text: '链接'
   },
   fontSize: {
+    ...defaultMap,
     component: 'a-input-number',
-    eventName: 'change',
     intialTransform: (v: any) => parseInt(v),
     afterTransform: (e: any) => e + 'px',
     text: '字号'
   },
   fontWeight: {
+    ...defaultMap,
     component: 'a-switch',
-    eventName: 'change',
     intialTransform: (v: any) => v === 'bold',
     afterTransform: (e: any) => e ? 'bold' : 'normal',
-    text: '是否加粗'
+    text: '加粗',
+    valueProp: 'checked'
   },
   lineHeight: {
     ...defaultMap,
