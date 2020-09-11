@@ -1,28 +1,22 @@
 <template>
   <div class="props-table">
-    <li v-for="(value, key) in props" :key="key">
-      {{key}}:
+    <li v-for="(value, key) in finalProps" :key="key">
+      {{value.text}}:
+
       <component
-        v-if="maps[key].component === 'a-switch'"
-        v-bind="extraProps[key]"
-        :is="maps[key].component"
-        :checked="maps[key].intialTransform(value)"
-        @change="(e) => { handleCommit({ value: maps[key].afterTransform(e), key} ) }"
-      />
-      <component
-        v-else
-        :is="maps[key].component"
-        v-bind="extraProps[key]"
-        :value="maps[key].intialTransform(value)"
-        @change="(e) => { handleCommit({ value: maps[key].afterTransform(e), key} ) }"
+        :is="value.component"
+        v-bind="value.extraProps"
+        :value="value.value"
+        v-on="value.events"
       />
     </li>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
+import { map } from 'lodash'
 import maps from '../propsMap'
 import defaults from '../defaultProps'
 export default defineComponent({
@@ -42,10 +36,25 @@ export default defineComponent({
       commit('updateValue', data)
     }
     const extraProps = defaults[props.type].extraProps || {}
+    const finalProps = computed(() => {
+      return map(props.props, (value, key) => {
+        const { component, intialTransform, afterTransform, eventName, text } = maps[key]
+        return {
+          component,
+          text,
+          value: intialTransform(value),
+          extraProps: extraProps[key],
+          events: {
+            [eventName]: (e: any) => { handleCommit({ value: afterTransform(e), key }) }
+          }
+        }
+      })
+    })
     return {
       maps,
       extraProps,
-      handleCommit
+      handleCommit,
+      finalProps
     }
   }
 })

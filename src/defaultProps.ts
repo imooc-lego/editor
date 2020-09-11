@@ -1,7 +1,7 @@
 interface DefaultPropsType {
   [key: string]: {
     props: object;
-    extraProps?: object;
+    extraProps?: { [key: string]: any };
   };
 }
 export const componentsDefaultProps: DefaultPropsType = {
