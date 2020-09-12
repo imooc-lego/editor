@@ -42,20 +42,16 @@
     <a-layout>
       <a-layout-sider width="300" style="background: #fff">
         <div class="sidebar-container">
-          <h2>点击下列组件列表添加</h2>
-          <div  @click="onItemCreated('title')">
-            <Title></Title>
-          </div>
-          <div  @click="onItemCreated('l-link')">
-            <l-link></l-link>
-          </div>
+          <h2>组件面板</h2>
+          <components-list @on-item-click="onItemCreated">
+          </components-list>
         </div>
       </a-layout-sider>
       <a-layout style="padding: 0 24px 24px">
         <a-layout-content
           :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '90vh' }"
         >
-          预览区域
+          画布区域
           <ul class="preview-list">
             <li v-for="item in components" :key="item.id">
               <EditWrapper @edit="editProps(item.id)" :active="currentIndex === item.id">
@@ -86,19 +82,21 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue'
 import { useStore } from 'vuex'
-import Title from '../components/Title.vue'
+import LTitle from '../components/LTitle.vue'
 import LLink from '../components/LLink.vue'
 import PropTable from '../components/PropsTable.vue'
 import EditWrapper from '../components/EditWrapper.vue'
+import ComponentsList from '../components/ComponentsList.vue'
 import mapPropsToComponents from '../propsMap'
 import componentsDefaultProps from '../defaultProps'
 export default defineComponent({
   name: 'Home',
   components: {
-    Title,
+    LTitle,
     LLink,
     PropTable,
-    EditWrapper
+    EditWrapper,
+    ComponentsList
   },
   setup () {
     const store = useStore()

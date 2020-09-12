@@ -11,6 +11,7 @@ import { componentsDefaultProps, transformToComponentProps } from '../defaultPro
 import useStylePick from '../hooks/useStylePick'
 
 export default defineComponent({
+  name: 'l-link',
   props: transformToComponentProps(componentsDefaultProps['l-link'].props),
   setup (props) {
     const styleProps = useStylePick(props)

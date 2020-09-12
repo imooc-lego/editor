@@ -8,7 +8,7 @@ interface DefaultPropsType {
 // this contains all default props for all the components
 // useful for inserting new component into the store
 export const componentsDefaultProps: DefaultPropsType = {
-  title: {
+  'l-title': {
     props: {
       text: '大标题',
       fontSize: '30px',

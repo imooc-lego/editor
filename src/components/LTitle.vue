@@ -10,7 +10,8 @@ import { componentsDefaultProps, transformToComponentProps } from '../defaultPro
 
 // array that contains style props
 export default defineComponent({
-  props: transformToComponentProps(componentsDefaultProps.title.props),
+  name: 'l-title',
+  props: transformToComponentProps(componentsDefaultProps['l-title'].props),
   setup (props) {
     const styleProps = useStylePick(props)
     return {
