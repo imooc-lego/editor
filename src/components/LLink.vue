@@ -6,27 +6,12 @@
 </div>
 </template>
 <script lang="ts">
-import useStylePick from '../hooks/useStylePick'
 import { defineComponent } from 'vue'
-
-// Props in component validation
-export const LinkProps = {
-  text: {
-    type: String,
-    default: '百度链接'
-  },
-  href: {
-    type: String,
-    default: 'http://abc.com'
-  },
-  fontSize: {
-    type: String,
-    default: '15px'
-  }
-}
+import { componentsDefaultProps, transformToComponentProps } from '../defaultProps'
+import useStylePick from '../hooks/useStylePick'
 
 export default defineComponent({
-  props: LinkProps,
+  props: transformToComponentProps(componentsDefaultProps['l-link'].props),
   setup (props) {
     const styleProps = useStylePick(props)
     return {

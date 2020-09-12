@@ -1,9 +1,12 @@
+import { mapValues } from 'lodash'
 interface DefaultPropsType {
   [key: string]: {
     props: object;
     extraProps?: { [key: string]: any };
   };
 }
+// this contains all default props for all the components
+// useful for inserting new component into the store
 export const componentsDefaultProps: DefaultPropsType = {
   title: {
     props: {
@@ -26,4 +29,12 @@ export const componentsDefaultProps: DefaultPropsType = {
   }
 }
 
+export const transformToComponentProps = (props: { [key: string]: any }) => {
+  return mapValues(props, (item) => {
+    return {
+      type: item.constructor,
+      default: item
+    }
+  })
+}
 export default componentsDefaultProps

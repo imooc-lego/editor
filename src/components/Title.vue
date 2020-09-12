@@ -6,33 +6,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import useStylePick from '../hooks/useStylePick'
-
-export const TitleProps = {
-  text: {
-    type: String,
-    default: '大标题'
-  },
-  fontSize: {
-    type: String,
-    default: '30px'
-  },
-  fontWeight: {
-    type: String,
-    default: 'normal'
-  },
-  lineHeight: {
-    type: String,
-    default: '1'
-  },
-  textAlign: {
-    type: String,
-    default: 'left'
-  }
-}
+import { componentsDefaultProps, transformToComponentProps } from '../defaultProps'
 
 // array that contains style props
 export default defineComponent({
-  props: TitleProps,
+  props: transformToComponentProps(componentsDefaultProps.title.props),
   setup (props) {
     const styleProps = useStylePick(props)
     return {
