@@ -4,8 +4,8 @@
   </h2>
 </template>
 <script lang="ts">
-import { pick } from 'lodash'
-import { defineComponent, computed } from 'vue'
+import { defineComponent } from 'vue'
+import useStylePick from '../hooks/useStylePick'
 
 export const TitleProps = {
   text: {
@@ -31,12 +31,10 @@ export const TitleProps = {
 }
 
 // array that contains style props
-export const stylePropsArr = ['fontSize', 'fontWeight', 'textAlign']
-
 export default defineComponent({
   props: TitleProps,
   setup (props) {
-    const styleProps = computed(() => pick(props, stylePropsArr))
+    const styleProps = useStylePick(props)
     return {
       styleProps
     }

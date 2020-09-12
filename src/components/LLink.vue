@@ -6,9 +6,8 @@
 </div>
 </template>
 <script lang="ts">
-
-import { pick } from 'lodash'
-import { defineComponent, computed } from 'vue'
+import useStylePick from '../hooks/useStylePick'
+import { defineComponent } from 'vue'
 
 // Props in component validation
 export const LinkProps = {
@@ -25,13 +24,11 @@ export const LinkProps = {
     default: '15px'
   }
 }
-// array that contains style props
-export const stylePropsArr = ['fontSize']
 
 export default defineComponent({
   props: LinkProps,
   setup (props) {
-    const styleProps = computed(() => pick(props, stylePropsArr))
+    const styleProps = useStylePick(props)
     return {
       styleProps
     }
