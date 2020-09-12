@@ -57,8 +57,8 @@
         >
           预览区域
           <ul class="preview-list">
-            <li v-for="(item, index) in components" :key="index">
-              <EditWrapper @edit="editProps(index)" :active="currentIndex === index">
+            <li v-for="item in components" :key="item.id">
+              <EditWrapper @edit="editProps(item.id)" :active="currentIndex === item.id">
                 <component :is="item.name" v-bind="item.props"/>
               </EditWrapper>
             </li>
