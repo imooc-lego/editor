@@ -24,7 +24,7 @@ export default createStore<GlobalDataProps>({
     },
     updateValue (state, { key, value }) {
       const currentComponent = state.components.find((component) => component.id === state.currentElement)
-      console.log(key, value)
+      console.log(currentComponent)
       if (currentComponent) {
         currentComponent.props[key] = value
       }

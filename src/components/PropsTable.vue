@@ -55,6 +55,7 @@ export default defineComponent({
     const extraProps = defaults[props.type].extraProps || {}
     const finalProps = computed(() => {
       return map(props.props, (value, key) => {
+        console.log(key)
         const {
           component, intialTransform, afterTransform,
           eventName, text, valueProp, options, subComponent

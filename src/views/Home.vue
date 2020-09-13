@@ -111,7 +111,8 @@ export default defineComponent({
     }
     const onItemCreated = (name: string) => {
       const { props } = componentsDefaultProps[name]
-      store.commit('addComponentToEditor', { name, props })
+      // we should copy this props, not pass by ref
+      store.commit('addComponentToEditor', { name, props: { ...props } })
     }
     const editProps = (index: number) => {
       store.commit('editProps', index)
