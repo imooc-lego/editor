@@ -87,6 +87,7 @@ import LLink from '../components/LLink.vue'
 import PropTable from '../components/PropsTable.vue'
 import EditWrapper from '../components/EditWrapper.vue'
 import ComponentsList from '../components/ComponentsList.vue'
+import ColorPicker from '../components/ColorPicker.vue'
 import mapPropsToComponents from '../propsMap'
 import componentsDefaultProps from '../defaultProps'
 export default defineComponent({
@@ -96,7 +97,8 @@ export default defineComponent({
     LLink,
     PropTable,
     EditWrapper,
-    ComponentsList
+    ComponentsList,
+    ColorPicker
   },
   setup () {
     const store = useStore()

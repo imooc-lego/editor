@@ -36,6 +36,7 @@ import { useStore } from 'vuex'
 import { map } from 'lodash'
 import maps from '../propsMap'
 import defaults from '../defaultProps'
+import ColorPicker from './ColorPicker.vue'
 export default defineComponent({
   props: {
     type: {
@@ -46,6 +47,9 @@ export default defineComponent({
       type: Object,
       required: true
     }
+  },
+  components: {
+    ColorPicker
   },
   setup (props) {
     const { commit } = useStore()
@@ -90,7 +94,7 @@ export default defineComponent({
   align-items: center;
 }
 .label {
-  margin-right: 20px;
+  width: 17%;
 }
 .component-a-slider {
   width: 80%;

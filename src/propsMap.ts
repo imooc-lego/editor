@@ -69,6 +69,11 @@ const mapPropsToComponents: MapTypes = {
       { value: 'center', text: '中' },
       { value: 'right', text: '右' }
     ]
+  },
+  color: {
+    ...defaultMap,
+    component: 'color-picker',
+    text: '颜色'
   }
   // fontSize: 'a-input-number',
   // // we don't have this yet, will do it later
