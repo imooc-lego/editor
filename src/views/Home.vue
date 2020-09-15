@@ -48,13 +48,11 @@
         </div>
       </a-layout-sider>
       <a-layout style="padding: 0 24px 24px">
-        <a-layout-content
-          :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '90vh' }"
-        >
-          画布区域
+        <a-layout-content class="preview-container">
+          <p>画布区域</p>
           <ul class="preview-list">
             <li v-for="item in components" :key="item.id">
-              <EditWrapper @edit="editProps(item.id)" :active="currentIndex === item.id">
+              <EditWrapper @edit="editProps(item.id)" :active="currentIndex === item.id" :props="item.props">
                 <component :is="item.name" v-bind="item.props"/>
               </EditWrapper>
             </li>
@@ -139,10 +137,24 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
 }
+.preview-container {
+  padding: 24px;
+  margin: 0;
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .preview-list {
   list-style-type: none;
   padding: 0;
   margin: 0;
+  position: relative;
+  height: 600px;
+  width: 320px;
+  padding: 5px;
+  border: 1px solid #efefef;
+  background: #fff;
 }
 .sidebar-container {
   padding: 20px;
