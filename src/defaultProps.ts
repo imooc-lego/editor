@@ -33,8 +33,8 @@ export const commonDefaultProps = {
   opacity: 1,
   // position and x,y
   position: '',
-  top: '0',
-  left: '0'
+  left: '0',
+  top: '0'
 }
 // this contains all default props for all the components
 // useful for inserting new component into the store

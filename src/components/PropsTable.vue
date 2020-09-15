@@ -36,6 +36,7 @@ import { useStore } from 'vuex'
 import { map } from 'lodash'
 import maps from '../propsMap'
 import ColorPicker from './ColorPicker.vue'
+
 export default defineComponent({
   props: {
     type: {

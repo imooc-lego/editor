@@ -63,8 +63,8 @@
         <a-tabs type="card">
           <a-tab-pane key="1" tab="属性设置">
             <div v-if="currentElement">
-              <div class="sidebar-container">
-                <prop-table :props="currentElement.props" :type="currentElement.name"></prop-table>
+              <div>
+                <edit-group :props="currentElement.props"></edit-group>
               </div>
             </div>
           </a-tab-pane>
@@ -82,10 +82,10 @@ import { defineComponent, ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import LTitle from '../components/LTitle.vue'
 import LLink from '../components/LLink.vue'
-import PropTable from '../components/PropsTable.vue'
 import EditWrapper from '../components/EditWrapper.vue'
 import ComponentsList from '../components/ComponentsList.vue'
 import ColorPicker from '../components/ColorPicker.vue'
+import EditGroup from '../components/EditGroup.vue'
 import mapPropsToComponents from '../propsMap'
 import componentsDefaultProps from '../defaultProps'
 export default defineComponent({
@@ -93,10 +93,10 @@ export default defineComponent({
   components: {
     LTitle,
     LLink,
-    PropTable,
     EditWrapper,
     ComponentsList,
-    ColorPicker
+    ColorPicker,
+    EditGroup
   },
   setup () {
     const store = useStore()
