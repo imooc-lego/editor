@@ -1,7 +1,8 @@
-import { pick } from 'lodash'
+import { pick, without } from 'lodash'
 import { computed } from 'vue'
-const defaultStyles = ['fontSize', 'fontWeight', 'textAlign', 'lineHeight', 'color']
+import { commonDefaultProps } from '../defaultProps'
 
+const defaultStyles = without(Object.keys(commonDefaultProps), 'actionType', 'url', 'text')
 const useStylePick = (props: Readonly<any>, pickStyles = defaultStyles) => {
   return computed(() => pick(props, pickStyles))
 }

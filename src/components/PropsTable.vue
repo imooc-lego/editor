@@ -35,7 +35,6 @@ import { defineComponent, computed } from 'vue'
 import { useStore } from 'vuex'
 import { map } from 'lodash'
 import maps from '../propsMap'
-import defaults from '../defaultProps'
 import ColorPicker from './ColorPicker.vue'
 export default defineComponent({
   props: {
@@ -56,20 +55,18 @@ export default defineComponent({
     const handleCommit = (data: any) => {
       commit('updateValue', data)
     }
-    const extraProps = defaults[props.type].extraProps || {}
     const finalProps = computed(() => {
       return map(props.props, (value, key) => {
-        console.log(key)
         const {
           component, intialTransform, afterTransform,
-          eventName, text, valueProp, options, subComponent
+          eventName, text, valueProp, options, subComponent, extraProps = {}
         } = maps[key]
         return {
           component,
           text,
           valueProp,
           value: intialTransform(value),
-          extraProps: extraProps[key],
+          extraProps,
           events: {
             [eventName]: (e: any) => { handleCommit({ value: afterTransform(e), key }) }
           },
@@ -80,7 +77,6 @@ export default defineComponent({
     })
     return {
       maps,
-      extraProps,
       handleCommit,
       finalProps
     }
@@ -94,9 +90,15 @@ export default defineComponent({
   align-items: center;
 }
 .label {
-  width: 17%;
+  width: 28%;
+}
+.prop-component {
+  width: 70%;
 }
 .component-a-slider {
   width: 80%;
+}
+.component-a-select .ant-select {
+  width: 90px;
 }
 </style>

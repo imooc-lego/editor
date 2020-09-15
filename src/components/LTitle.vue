@@ -1,5 +1,5 @@
 <template>
-  <h2 :style="styleProps">
+  <h2 :style="styleProps" @click.prevent="handleClick">
     {{text}}
   </h2>
 </template>
@@ -14,8 +14,15 @@ export default defineComponent({
   props: transformToComponentProps(componentsDefaultProps['l-title'].props),
   setup (props) {
     const styleProps = useStylePick(props)
+    const handleClick = () => {
+      if (props.actionType && props.url) {
+        window.location.href = props.url
+      }
+    }
+
     return {
-      styleProps
+      styleProps,
+      handleClick
     }
   }
 })

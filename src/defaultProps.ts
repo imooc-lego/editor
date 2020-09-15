@@ -5,17 +5,45 @@ interface DefaultPropsType {
     extraProps?: { [key: string]: any };
   };
 }
+
+// the common default props, all the components should have these props
+export const commonDefaultProps = {
+  // basic props - font styles
+  fontSize: '14px',
+  fontWeight: 'normal',
+  lineHeight: '1',
+  textAlign: 'left',
+  color: '#000000',
+  backgroundColor: '#ffffff',
+  // actions
+  actionType: '',
+  url: '',
+  // size
+  height: '',
+  marginLeft: '0px',
+  marginRight: '0px',
+  marginTop: '0px',
+  // border type
+  borderStyle: 'none',
+  borderColor: '#000',
+  borderWidth: '0',
+  borderRadius: '0',
+  // shadow and opacity
+  // boxShadow: '',
+  opacity: 1,
+  // position and x,y
+  position: '',
+  top: '0',
+  left: '0'
+}
 // this contains all default props for all the components
 // useful for inserting new component into the store
 export const componentsDefaultProps: DefaultPropsType = {
   'l-title': {
     props: {
       text: '大标题',
-      fontSize: '30px',
-      fontWeight: 'normal',
-      lineHeight: '1',
-      textAlign: 'left',
-      color: '#000000'
+      ...commonDefaultProps,
+      fontSize: '30px'
     },
     extraProps: {
       lineHeight: { min: 0, max: 10 }
