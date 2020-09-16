@@ -41,6 +41,7 @@ import { map } from 'lodash'
 import maps from '../propsMap'
 import ColorPicker from './ColorPicker.vue'
 import IconSwitch from './IconSwitch.vue'
+import ShadowPicker from './ShadowPicker.vue'
 export default defineComponent({
   props: {
     type: {
@@ -54,7 +55,8 @@ export default defineComponent({
   },
   components: {
     ColorPicker,
-    IconSwitch
+    IconSwitch,
+    ShadowPicker
   },
   setup (props) {
     const { commit } = useStore()
@@ -108,10 +110,13 @@ export default defineComponent({
 .prop-component {
   width: 70%;
 }
-.component-a-slider {
+/* .component-a-slider {
   width: 80%;
-}
+} */
 .component-a-select .ant-select {
   width: 90px;
+}
+.prop-component.component-shadow-picker {
+  width: 100%;
 }
 </style>

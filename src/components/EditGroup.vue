@@ -29,7 +29,7 @@ const defaultEditGroups: GroupProps[] = [
   },
   {
     text: '阴影与透明度',
-    items: ['opacity']
+    items: ['opacity', 'boxShadow']
   },
   {
     text: '尺寸与位置',

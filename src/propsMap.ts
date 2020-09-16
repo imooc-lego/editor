@@ -180,6 +180,10 @@ const mapPropsToComponents: MapTypes = {
     afterTransform: (e: number) => (e / 100),
     extraProps: { min: 0, max: 100, reverse: true }
   },
+  boxShadow: {
+    ...defaultMap,
+    component: 'shadow-picker'
+  },
   position: {
     ...defaultMap,
     component: 'a-select',
