@@ -1,7 +1,11 @@
 <template>
   <div class="props-table">
-    <li v-for="(value, key) in finalProps" :key="key" class="prop-item">
-      <span class="label">{{value.text}}:</span>
+    <li v-for="(value, key) in finalProps"
+      :key="key" class="prop-item"
+      :class="{'no-text': !value.text}"
+      :id="`item-${value.component}-${key}`"
+    >
+      <span class="label" v-if="value.text">{{value.text}}:</span>
       <div :class="`prop-component component-${value.component}`">
         <component
           v-if="!value.options"
@@ -36,7 +40,7 @@ import { useStore } from 'vuex'
 import { map } from 'lodash'
 import maps from '../propsMap'
 import ColorPicker from './ColorPicker.vue'
-
+import IconSwitch from './IconSwitch.vue'
 export default defineComponent({
   props: {
     type: {
@@ -49,7 +53,8 @@ export default defineComponent({
     }
   },
   components: {
-    ColorPicker
+    ColorPicker,
+    IconSwitch
   },
   setup (props) {
     const { commit } = useStore()
@@ -92,6 +97,13 @@ export default defineComponent({
 }
 .label {
   width: 28%;
+}
+.prop-item.no-text {
+  display: inline-block;
+  margin: 0 10px 0 0;
+}
+#item-icon-switch-2 {
+  margin-left: 28%;
 }
 .prop-component {
   width: 70%;

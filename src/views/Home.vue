@@ -84,7 +84,6 @@ import LTitle from '../components/LTitle.vue'
 import LLink from '../components/LLink.vue'
 import EditWrapper from '../components/EditWrapper.vue'
 import ComponentsList from '../components/ComponentsList.vue'
-import ColorPicker from '../components/ColorPicker.vue'
 import EditGroup from '../components/EditGroup.vue'
 import mapPropsToComponents from '../propsMap'
 import componentsDefaultProps from '../defaultProps'
@@ -95,7 +94,6 @@ export default defineComponent({
     LLink,
     EditWrapper,
     ComponentsList,
-    ColorPicker,
     EditGroup
   },
   setup () {

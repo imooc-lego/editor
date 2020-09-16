@@ -11,7 +11,7 @@ interface PropDetailType {
   eventName: string;
   intialTransform: (v: any) => any;
   afterTransform: (v: any) => any;
-  text: string;
+  text?: string;
   valueProp: string;
   subComponent?: string;
   options?: { text: string; value: any }[];
@@ -31,8 +31,8 @@ const defaultMap = {
 const numberToPxHandle = {
   ...defaultMap,
   component: 'a-input-number',
-  intialTransform: (v: any) => parseInt(v),
-  afterTransform: (e: any) => e + 'px'
+  intialTransform: (v: string) => parseInt(v),
+  afterTransform: (e: number) => e + 'px'
 }
 const mapPropsToComponents: MapTypes = {
   text: {
@@ -51,11 +51,27 @@ const mapPropsToComponents: MapTypes = {
   },
   fontWeight: {
     ...defaultMap,
-    component: 'a-switch',
-    intialTransform: (v: any) => v === 'bold',
-    afterTransform: (e: any) => e ? 'bold' : 'normal',
-    text: '加粗',
-    valueProp: 'checked'
+    component: 'icon-switch',
+    intialTransform: (v: string) => v === 'bold',
+    afterTransform: (e: boolean) => e ? 'bold' : 'normal',
+    valueProp: 'checked',
+    extraProps: { iconName: 'BoldOutlined', tip: '加粗' }
+  },
+  fontStyle: {
+    ...defaultMap,
+    component: 'icon-switch',
+    intialTransform: (v: string) => v === 'italic',
+    afterTransform: (e: boolean) => e ? 'italic' : 'normal',
+    valueProp: 'checked',
+    extraProps: { iconName: 'ItalicOutlined', tip: '斜体' }
+  },
+  textDecoration: {
+    ...defaultMap,
+    component: 'icon-switch',
+    intialTransform: (v: string) => v === 'underline',
+    afterTransform: (e: boolean) => e ? 'underline' : 'none',
+    valueProp: 'checked',
+    extraProps: { iconName: 'UnderlineOutlined', tip: '下划线' }
   },
   lineHeight: {
     ...defaultMap,
@@ -105,8 +121,8 @@ const mapPropsToComponents: MapTypes = {
   height: {
     ...defaultMap,
     component: 'a-input-number',
-    intialTransform: (v: any) => v ? parseInt(v) : '',
-    afterTransform: (e: any) => e ? `${e}px` : '',
+    intialTransform: (v: string) => v ? parseInt(v) : '',
+    afterTransform: (e: number) => e ? `${e}px` : '',
     text: '高度'
   },
   marginLeft: {
@@ -142,16 +158,16 @@ const mapPropsToComponents: MapTypes = {
   borderWidth: {
     ...defaultMap,
     component: 'a-slider',
-    intialTransform: (v: any) => parseInt(v),
-    afterTransform: (e: any) => e + 'px',
+    intialTransform: (v: string) => parseInt(v),
+    afterTransform: (e: number) => e + 'px',
     text: '边框宽度',
     extraProps: { min: 0, max: 20 }
   },
   borderRadius: {
     ...defaultMap,
     component: 'a-slider',
-    intialTransform: (v: any) => parseInt(v),
-    afterTransform: (e: any) => e + 'px',
+    intialTransform: (v: string) => parseInt(v),
+    afterTransform: (e: number) => e + 'px',
     text: '边框圆角',
     extraProps: { min: 0, max: 20 }
   },
@@ -160,8 +176,8 @@ const mapPropsToComponents: MapTypes = {
     ...defaultMap,
     component: 'a-slider',
     text: '透明度',
-    intialTransform: (v: any) => v ? v * 100 : 100,
-    afterTransform: (e: any) => (e / 100),
+    intialTransform: (v: number) => v ? v * 100 : 100,
+    afterTransform: (e: number) => (e / 100),
     extraProps: { min: 0, max: 100, reverse: true }
   },
   position: {
