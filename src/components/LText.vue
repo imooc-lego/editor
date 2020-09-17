@@ -1,17 +1,25 @@
 <template>
-  <h2 :style="styleProps" @click.prevent="handleClick">
-    {{text}}
-  </h2>
+  <div class="l-text-component">
+    <component :is="tag" :style="styleProps" @click.prevent="handleClick">
+      {{text}}
+    </component>
+  </div>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue'
 import useStylePick from '../hooks/useStylePick'
 import { componentsDefaultProps, transformToComponentProps } from '../defaultProps'
-
+const defaultProps = transformToComponentProps(componentsDefaultProps['l-text'].props)
+defaultProps.tag = {
+  type: String,
+  default: 'p'
+}
 // array that contains style props
 export default defineComponent({
-  name: 'l-title',
-  props: transformToComponentProps(componentsDefaultProps['l-title'].props),
+  name: 'l-text',
+  props: {
+    ...defaultProps
+  },
   setup (props) {
     const styleProps = useStylePick(props)
     const handleClick = () => {
@@ -29,7 +37,11 @@ export default defineComponent({
 </script>
 
 <style scoped>
-h2 {
+.l-text-component h2, .l-text-component p {
   margin-bottom: 0;
+}
+.l-text-component button {
+  padding: 5px 10px;
+  cursor: pointer;
 }
 </style>

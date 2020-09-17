@@ -41,21 +41,11 @@ export const commonDefaultProps = {
 // this contains all default props for all the components
 // useful for inserting new component into the store
 export const componentsDefaultProps: DefaultPropsType = {
-  'l-title': {
+  'l-text': {
     props: {
-      text: '大标题',
+      text: '正文内容',
       ...commonDefaultProps,
-      fontSize: '30px'
-    },
-    extraProps: {
-      lineHeight: { min: 0, max: 10 }
-    }
-  },
-  'l-link': {
-    props: {
-      text: '百度链接',
-      href: 'javascript:void()',
-      fontSize: '15px'
+      fontSize: '14px'
     }
   }
 }
@@ -66,6 +56,6 @@ export const transformToComponentProps = (props: { [key: string]: any }) => {
       type: item.constructor,
       default: item
     }
-  })
+  }) as { [key: string]: any }
 }
 export default componentsDefaultProps

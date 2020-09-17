@@ -80,18 +80,15 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue'
 import { useStore } from 'vuex'
-import LTitle from '../components/LTitle.vue'
-import LLink from '../components/LLink.vue'
+import LText from '../components/LText.vue'
 import EditWrapper from '../components/EditWrapper.vue'
 import ComponentsList from '../components/ComponentsList.vue'
 import EditGroup from '../components/EditGroup.vue'
 import mapPropsToComponents from '../propsMap'
-import componentsDefaultProps from '../defaultProps'
 export default defineComponent({
   name: 'Home',
   components: {
-    LTitle,
-    LLink,
+    LText,
     EditWrapper,
     ComponentsList,
     EditGroup
@@ -107,10 +104,9 @@ export default defineComponent({
     const handleOk = () => {
       showModal.value = false
     }
-    const onItemCreated = (name: string) => {
-      const { props } = componentsDefaultProps[name]
+    const onItemCreated = (component: any) => {
       // we should copy this props, not pass by ref
-      store.commit('addComponentToEditor', { name, props: { ...props } })
+      store.commit('addComponentToEditor', { name: component.name, props: { ...component.props } })
     }
     const editProps = (index: number) => {
       store.commit('editProps', index)
