@@ -22,8 +22,8 @@ const componentsList = [
   {
     name: 'l-text',
     props: {
-      text: '大标题',
       ...textDefaultProps,
+      text: '大标题',
       fontSize: '30px',
       fontWeight: 'bold',
       tag: 'h2'
@@ -32,16 +32,16 @@ const componentsList = [
   {
     name: 'l-text',
     props: {
-      text: '正文内容',
       ...textDefaultProps,
+      text: '正文内容',
       tag: 'p'
     }
   },
   {
     name: 'l-text',
     props: {
-      text: '链接内容',
       ...textDefaultProps,
+      text: '链接内容',
       color: '#1890ff',
       textDecoration: 'underline',
       tag: 'p'
@@ -50,8 +50,8 @@ const componentsList = [
   {
     name: 'l-text',
     props: {
-      text: '按钮内容',
       ...textDefaultProps,
+      text: '按钮内容',
       color: '#ffffff',
       backgroundColor: '#1890ff',
       borderWidth: '1px',

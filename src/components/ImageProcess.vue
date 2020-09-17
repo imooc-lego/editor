@@ -12,8 +12,7 @@
         <img :src="baseImageUrl" id="processed-image" />
       </div>
     </a-modal>
-    <div class="image-preview">
-      <img :src="value" />
+    <div class="image-preview" :style="{ backgroundImage: backgrondUrl }">
     </div>
     <div class="image-process">
       <a-button @click="showModal = true">
@@ -66,6 +65,7 @@ export default defineComponent({
       }
     })
     const baseImageUrl = computed(() => props.value.split('?')[0])
+    const backgrondUrl = computed(() => `url(${props.value})`)
     const handleOk = () => {
       const { x, y, width, height } = cropperData
       const cropperedUrl = baseImageUrl.value + `?x-oss-process=image/crop,x_${x},y_${y},w_${width},h_${height}`
@@ -75,7 +75,8 @@ export default defineComponent({
     return {
       showModal,
       handleOk,
-      baseImageUrl
+      baseImageUrl,
+      backgrondUrl
     }
   }
 })
@@ -86,8 +87,11 @@ export default defineComponent({
     display: flex;
     justify-content: space-between;
   }
-  .image-preview img {
+  .image-preview {
     width: 150px;
+    height: 84px;
+    border: 1px dashed #e6ebed;
+    background: no-repeat 50%/contain;
   }
   .image-cropper img {
     display: block;
