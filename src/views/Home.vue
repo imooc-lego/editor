@@ -81,6 +81,7 @@
 import { defineComponent, ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import LText from '../components/LText.vue'
+import LImage from '../components/LImage.vue'
 import EditWrapper from '../components/EditWrapper.vue'
 import ComponentsList from '../components/ComponentsList.vue'
 import EditGroup from '../components/EditGroup.vue'
@@ -89,6 +90,7 @@ export default defineComponent({
   name: 'Home',
   components: {
     LText,
+    LImage,
     EditWrapper,
     ComponentsList,
     EditGroup

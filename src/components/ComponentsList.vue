@@ -12,14 +12,18 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import LText from './LText.vue'
-import { commonDefaultProps } from '../defaultProps'
+import LImage from './LImage.vue'
+import { componentsDefaultProps } from '../defaultProps'
+const textDefaultProps = componentsDefaultProps['l-text'].props
+const imageDefaultProps = componentsDefaultProps['l-image'].props
+
 // the component name list
 const componentsList = [
   {
     name: 'l-text',
     props: {
       text: '大标题',
-      ...commonDefaultProps,
+      ...textDefaultProps,
       fontSize: '30px',
       fontWeight: 'bold',
       tag: 'h2'
@@ -29,7 +33,7 @@ const componentsList = [
     name: 'l-text',
     props: {
       text: '正文内容',
-      ...commonDefaultProps,
+      ...textDefaultProps,
       tag: 'p'
     }
   },
@@ -37,7 +41,7 @@ const componentsList = [
     name: 'l-text',
     props: {
       text: '链接内容',
-      ...commonDefaultProps,
+      ...textDefaultProps,
       color: '#1890ff',
       textDecoration: 'underline',
       tag: 'p'
@@ -47,7 +51,7 @@ const componentsList = [
     name: 'l-text',
     props: {
       text: '按钮内容',
-      ...commonDefaultProps,
+      ...textDefaultProps,
       color: '#ffffff',
       backgroundColor: '#1890ff',
       borderWidth: '1px',
@@ -55,11 +59,19 @@ const componentsList = [
       borderRadius: '2px',
       tag: 'button'
     }
+  },
+  {
+    name: 'l-image',
+    props: {
+      ...imageDefaultProps,
+      height: '60px'
+    }
   }
 ]
 export default defineComponent({
   components: {
-    LText
+    LText,
+    LImage
   },
   name: 'components-list',
   emits: ['on-item-click'],

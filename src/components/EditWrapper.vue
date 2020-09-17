@@ -1,5 +1,9 @@
 <template>
-<div class="edit-wrapper" @click="itemClick" :class="{active: active}" :style="styleProps">
+<div class="edit-wrapper" @click="itemClick"
+    :class="{active: active}" :style="styleProps"
+    :draggable="true"
+    @dragstart="handleDragStart"
+>
   <slot></slot>
 </div>
 </template>
@@ -29,9 +33,16 @@ export default defineComponent({
     const itemClick = () => {
       context.emit('edit', props.key)
     }
+    const handleDragStart = (e: DragEvent) => {
+      const currentElement = e.currentTarget as HTMLElement
+      currentElement.style.backgroundColor = 'yellow'
+      console.log(e.clientX)
+      console.log(e.clientY)
+    }
     return {
       itemClick,
-      styleProps
+      styleProps,
+      handleDragStart
     }
   }
 })

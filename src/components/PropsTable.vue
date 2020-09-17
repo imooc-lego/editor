@@ -42,6 +42,7 @@ import maps from '../propsMap'
 import ColorPicker from './ColorPicker.vue'
 import IconSwitch from './IconSwitch.vue'
 import ShadowPicker from './ShadowPicker.vue'
+import ImageProcesser from './ImageProcess.vue'
 export default defineComponent({
   props: {
     type: {
@@ -56,7 +57,8 @@ export default defineComponent({
   components: {
     ColorPicker,
     IconSwitch,
-    ShadowPicker
+    ShadowPicker,
+    ImageProcesser
   },
   setup (props) {
     const { commit } = useStore()
@@ -117,6 +119,9 @@ export default defineComponent({
   width: 90px;
 }
 .prop-component.component-shadow-picker {
+  width: 100%;
+}
+.prop-component.component-image-processer {
   width: 100%;
 }
 </style>
