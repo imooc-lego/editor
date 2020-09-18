@@ -52,7 +52,7 @@
           <p>画布区域</p>
           <ul class="preview-list">
             <li v-for="item in components" :key="item.id">
-              <EditWrapper @edit="editProps(item.id)" :active="currentIndex === item.id" :props="item.props">
+              <EditWrapper @edit="editProps(item.id)" :active="currentId === item.id" :props="item.props">
                 <component :is="item.name" v-bind="item.props"/>
               </EditWrapper>
             </li>
@@ -68,8 +68,12 @@
               </div>
             </div>
           </a-tab-pane>
-          <a-tab-pane key="2" tab="功能设置">
-            Content of Tab Pane 2
+          <a-tab-pane key="2" tab="图层设置">
+            <layer-list
+              :list="components" :selectedId="currentId"
+              @select="(id) => { editProps(id) }"
+            >
+            </layer-list>
           </a-tab-pane>
         </a-tabs>
       </a-layout-sider>
@@ -85,7 +89,9 @@ import LImage from '../components/LImage.vue'
 import EditWrapper from '../components/EditWrapper.vue'
 import ComponentsList from '../components/ComponentsList.vue'
 import EditGroup from '../components/EditGroup.vue'
+import LayerList from '../components/LayerList.vue'
 import mapPropsToComponents from '../propsMap'
+import { ComponentData } from '../store/index'
 export default defineComponent({
   name: 'Home',
   components: {
@@ -93,12 +99,13 @@ export default defineComponent({
     LImage,
     EditWrapper,
     ComponentsList,
-    EditGroup
+    EditGroup,
+    LayerList
   },
   setup () {
     const store = useStore()
     const components = computed(() => store.state.components)
-    const currentIndex = computed(() => store.state.currentElement)
+    const currentId = computed(() => store.state.currentElement)
     const currentElement = computed(() => store.getters.getCurrentElement)
     const visible = ref(false)
     const showModal = ref(false)
@@ -106,12 +113,12 @@ export default defineComponent({
     const handleOk = () => {
       showModal.value = false
     }
-    const onItemCreated = (component: any) => {
+    const onItemCreated = (component: ComponentData) => {
       // we should copy this props, not pass by ref
       store.commit('addComponentToEditor', { name: component.name, props: { ...component.props } })
     }
-    const editProps = (index: number) => {
-      store.commit('editProps', index)
+    const editProps = (id: string) => {
+      store.commit('editProps', id)
     }
     return {
       visible,
@@ -120,7 +127,7 @@ export default defineComponent({
       onItemCreated,
       components,
       editProps,
-      currentIndex,
+      currentId,
       currentElement,
       mapPropsToComponents
     }

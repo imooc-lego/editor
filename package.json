@@ -17,11 +17,13 @@
     "uuid": "^8.3.0",
     "vue": "^3.0.0-0",
     "vue-router": "^4.0.0-0",
+    "vuedraggable": "^2.24.1",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.161",
     "@types/uuid": "^8.3.0",
+    "@types/vuedraggable": "^2.23.1",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "@vue/babel-plugin-jsx": "^1.0.0-rc.2",
