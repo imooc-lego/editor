@@ -41,13 +41,14 @@ export default defineComponent({
   emits: ['file-uploaded', 'file-uploaded-error'],
   setup (props, context) {
     const fileInput = ref<null | HTMLInputElement>(null)
-    console.log(props.uploaded)
     const fileStatus = ref<UploadStatus>(props.uploaded ? 'success' : 'ready')
     const uploadedData = ref(props.uploaded)
     watch(() => props.uploaded, (newValue) => {
       if (newValue) {
         fileStatus.value = 'success'
         uploadedData.value = newValue
+      } else {
+        fileStatus.value = 'ready'
       }
     })
     const triggerUpload = () => {
@@ -96,3 +97,8 @@ export default defineComponent({
   }
 })
 </script>
+<style scoped>
+.file-input {
+  display: none;
+}
+</style>

@@ -2,23 +2,55 @@
   <div class="create-component-list">
     <div
       v-for="(item, index) in list" :key="index"
-      @click.prevent="onItemClick(item)" class="component-item"
+      @click="onItemClick(item)" class="component-item"
     >
-      <component :is="item.name" v-bind="item.props"/>
+      <component :is="item.name" v-bind="item.props" v-if="item.type !== 'upload'"/>
+      <uploader
+        v-else
+        action="http://localhost:7001/api/upload"
+        @file-uploaded="(uploaded) => { handleFileUploaded(uploaded, item) }"
+        :beforeUpload="commonUploadCheck"
+      >
+        <div class="uploader-container">
+          <FileImageOutlined :style="{fontSize: '30px'}"/>
+          <h4>上传图片</h4>
+        </div>
+        <template #loading>
+          <div class="uploader-container">
+            <LoadingOutlined :style="{fontSize: '30px'}" spin/>
+            <h4>上传中</h4>
+          </div>
+        </template>
+        <template #uploaded>
+          <div class="uploader-container">
+            <FileImageOutlined :style="{fontSize: '30px'}"/>
+            <h4>上传图片</h4>
+          </div>
+        </template>
+      </uploader>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { FileImageOutlined, LoadingOutlined } from '@ant-design/icons-vue'
+import { message } from 'ant-design-vue'
 import LText from './LText.vue'
 import LImage from './LImage.vue'
+import Uploader from './Uploader.vue'
 import { componentsDefaultProps } from '../defaultProps'
+import { commonUploadCheck } from '../helper'
 const textDefaultProps = componentsDefaultProps['l-text'].props
 const imageDefaultProps = componentsDefaultProps['l-image'].props
 
+interface CreateComponentType {
+  name: string;
+  type?: string;
+  props: { [key: string]: string };
+}
 // the component name list
-const componentsList = [
+const componentsList: CreateComponentType[] = [
   {
     name: 'l-text',
     props: {
@@ -62,26 +94,39 @@ const componentsList = [
   },
   {
     name: 'l-image',
+    type: 'upload',
     props: {
-      ...imageDefaultProps,
-      height: '60px'
+      ...imageDefaultProps
     }
   }
 ]
 export default defineComponent({
   components: {
     LText,
-    LImage
+    LImage,
+    Uploader,
+    FileImageOutlined,
+    LoadingOutlined
   },
   name: 'components-list',
   emits: ['on-item-click'],
   setup (props, context) {
-    const onItemClick = (type: any) => {
-      context.emit('on-item-click', type)
+    const onItemClick = (data: CreateComponentType) => {
+      if (data.type !== 'upload') {
+        context.emit('on-item-click', data)
+      }
+    }
+    const handleFileUploaded = (uploadedData: any, data: CreateComponentType) => {
+      message.success('上传成功')
+      data.props.imageSrc = uploadedData.data.url
+      console.log(uploadedData)
+      context.emit('on-item-click', data)
     }
     return {
       list: componentsList,
-      onItemClick
+      onItemClick,
+      commonUploadCheck,
+      handleFileUploaded
     }
   }
 })
@@ -91,5 +136,16 @@ export default defineComponent({
 .component-item {
   margin-bottom: 10px;
   cursor: pointer;
+}
+.uploader-container {
+  text-align: center;
+  padding: 10px;
+  width: 100px;
+  color: #ffffff;
+  background: #1890ff;
+}
+.uploader-container h4 {
+  color: #ffffff;
+  margin-bottom: 0;
 }
 </style>

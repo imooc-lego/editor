@@ -43,7 +43,7 @@ export const textDefaultProps = {
 }
 
 export const imageDefaultProps = {
-  imageSrc: 'http://vue-maker.oss-cn-hangzhou.aliyuncs.com/vue-marker/5f46615702ee9063063b4f00.png',
+  imageSrc: '',
   ...commonDefaultProps
 }
 // this contains all default props for all the components

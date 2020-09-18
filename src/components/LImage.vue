@@ -29,11 +29,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.l-text-component h2, .l-text-component p {
-  margin-bottom: 0;
-}
-.l-text-component button {
-  padding: 5px 10px;
-  cursor: pointer;
+.l-image-component img {
+  max-width: 100%;
 }
 </style>
