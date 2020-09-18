@@ -15,9 +15,29 @@
     <div class="image-preview" :style="{ backgroundImage: backgrondUrl }">
     </div>
     <div class="image-process">
-      <a-button @click="showModal = true">
-        <template v-slot:icon><UploadOutlined /></template>更换图片
-      </a-button>
+      <uploader
+        action="http://localhost:7001/api/upload"
+        @file-uploaded="handleFileUploaded"
+        :beforeUpload="commonUploadCheck"
+      >
+        <div class="uploader-container">
+          <a-button>
+            <template v-slot:icon><UploadOutlined /></template>更换图片
+          </a-button>
+        </div>
+        <template #loading>
+          <div class="uploader-container">
+          <a-button>
+            <template v-slot:icon><LoadingOutlined /></template>上传中
+          </a-button>
+          </div>
+        </template>
+        <template #uploaded>
+          <a-button>
+            <template v-slot:icon><UploadOutlined /></template>更换图片
+          </a-button>
+        </template>
+      </uploader>
       <a-button  @click="showModal = true">
         <template v-slot:icon><ScissorOutlined /></template>裁剪图片
       </a-button>
@@ -28,7 +48,10 @@
 <script lang="ts">
 import { defineComponent, ref, computed, watch, nextTick } from 'vue'
 import Cropper from 'cropperjs'
-import { UploadOutlined, ScissorOutlined } from '@ant-design/icons-vue'
+import { message } from 'ant-design-vue'
+import { UploadOutlined, ScissorOutlined, LoadingOutlined } from '@ant-design/icons-vue'
+import Uploader from './Uploader.vue'
+import { commonUploadCheck } from '../helper'
 export default defineComponent({
   props: {
     value: {
@@ -38,7 +61,9 @@ export default defineComponent({
   },
   components: {
     UploadOutlined,
-    ScissorOutlined
+    ScissorOutlined,
+    LoadingOutlined,
+    Uploader
   },
   emits: ['change'],
   setup (props, context) {
@@ -72,11 +97,17 @@ export default defineComponent({
       context.emit('change', cropperedUrl)
       showModal.value = false
     }
+    const handleFileUploaded = (uploadedData: any) => {
+      message.success('上传成功')
+      context.emit('change', uploadedData.data.url)
+    }
     return {
       showModal,
       handleOk,
       baseImageUrl,
-      backgrondUrl
+      backgrondUrl,
+      commonUploadCheck,
+      handleFileUploaded
     }
   }
 })
