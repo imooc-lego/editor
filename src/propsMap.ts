@@ -31,8 +31,8 @@ const defaultMap = {
 const numberToPxHandle = {
   ...defaultMap,
   component: 'a-input-number',
-  intialTransform: (v: string) => parseInt(v),
-  afterTransform: (e: number) => e + 'px'
+  intialTransform: (v: string) => v ? parseInt(v) : 0,
+  afterTransform: (e: number) => e ? `${e}px` : '0'
 }
 const mapPropsToComponents: MapTypes = {
   text: {

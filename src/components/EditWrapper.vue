@@ -50,14 +50,17 @@ export default defineComponent({
 
 <style>
 .edit-wrapper {
-  padding: 5px;
-  border: 1px dotted #efefef;
+  padding: 0px;
   cursor: pointer;
+  border: 1px solid #fff;
+}
+.edit-wrapper:hover {
+  border: 1px dashed #ccc;
 }
 .edit-wrapper.active {
   border: 1px solid #1890ff;
 }
-.edit-wrapper h2 {
+.edit-wrapper .l-text-component, .edit-wrapper .l-image-component {
   position: static !important;
 }
 </style>

@@ -148,7 +148,6 @@ export default defineComponent({
   position: relative;
   height: 600px;
   width: 320px;
-  padding: 5px;
   border: 1px solid #efefef;
   background: #fff;
 }

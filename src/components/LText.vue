@@ -1,9 +1,7 @@
 <template>
-  <div class="l-text-component">
-    <component :is="tag" :style="styleProps" @click.prevent="handleClick">
-      {{text}}
-    </component>
-  </div>
+  <component :is="tag" @click.prevent="handleClick" :style="styleProps" class="l-text-component">
+    {{text}}
+  </component>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue'
@@ -37,10 +35,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.l-text-component h2, .l-text-component p {
+h2.l-text-component, p.l-text-component {
   margin-bottom: 0;
 }
-.l-text-component button {
+button.l-text-component {
   padding: 5px 10px;
   cursor: pointer;
 }
