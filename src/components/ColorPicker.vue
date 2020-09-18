@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-const defaultColors = ['#fff', '#f5222d', '#fa541c', '#fadb14', '#52c41a', '#13c2c2', '#1890ff', '#722ed1', '#8c8c8c', '#000000']
+const defaultColors = ['#ffffff', '#f5222d', '#fa541c', '#fadb14', '#52c41a', '#13c2c2', '#1890ff', '#722ed1', '#8c8c8c', '#000000']
 export default defineComponent({
   props: {
     value: {

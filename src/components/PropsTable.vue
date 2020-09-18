@@ -63,7 +63,7 @@ export default defineComponent({
   setup (props) {
     const { commit } = useStore()
     const handleCommit = (data: any) => {
-      commit('updateValue', data)
+      commit('updateCurrentProp', data)
     }
     const finalProps = computed(() => {
       return map(props.props, (value, key) => {

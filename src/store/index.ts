@@ -5,6 +5,9 @@ export interface ComponentData {
   props: { [key: string]: any };
   id: string;
   name: string;
+  layerName?: string;
+  isHidden?: boolean;
+  isLocked?: boolean;
 }
 export interface GlobalDataProps {
   components: ComponentData[];
@@ -18,16 +21,22 @@ export default createStore<GlobalDataProps>({
   mutations: {
     addComponentToEditor (state, component) {
       component.id = uuidv4()
+      component.layerName = '图层' + (state.components.length + 1)
       state.components.push(component)
     },
     editProps (state, index) {
       state.currentElement = index
     },
-    updateValue (state, { key, value }) {
+    updateCurrentProp (state, { key, value }) {
       const currentComponent = state.components.find((component) => component.id === state.currentElement)
-      console.log(currentComponent)
       if (currentComponent) {
         currentComponent.props[key] = value
+      }
+    },
+    updateComponent (state, { id, key, value }) {
+      const updatedComponent = state.components.find((component) => component.id === id) as any
+      if (updatedComponent) {
+        updatedComponent[key] = value
       }
     }
   },

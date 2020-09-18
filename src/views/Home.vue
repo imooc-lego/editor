@@ -52,7 +52,10 @@
           <p>画布区域</p>
           <ul class="preview-list">
             <li v-for="item in components" :key="item.id">
-              <EditWrapper @edit="editProps(item.id)" :active="currentId === item.id" :props="item.props">
+              <EditWrapper v-if="!item.isHidden"
+                @edit="editProps(item.id)"
+                :active="currentId === item.id" :props="item.props"
+              >
                 <component :is="item.name" v-bind="item.props"/>
               </EditWrapper>
             </li>
@@ -63,15 +66,30 @@
         <a-tabs type="card">
           <a-tab-pane key="1" tab="属性设置">
             <div v-if="currentElement">
-              <div>
+              <div v-if="!currentElement.isLocked">
                 <edit-group :props="currentElement.props"></edit-group>
               </div>
+              <div v-else>
+                <a-empty>
+                  <template #description>
+                    <p>该元素被锁定，无法编辑</p>
+                  </template>
+                </a-empty>
+              </div>
+            </div>
+            <div v-else>
+              <a-empty>
+                <template #description>
+                  <p>在画布中选择元素并开始编辑</p>
+                </template>
+              </a-empty>
             </div>
           </a-tab-pane>
           <a-tab-pane key="2" tab="图层设置">
             <layer-list
               :list="components" :selectedId="currentId"
               @select="(id) => { editProps(id) }"
+              @change="handleChange"
             >
             </layer-list>
           </a-tab-pane>
@@ -91,7 +109,7 @@ import ComponentsList from '../components/ComponentsList.vue'
 import EditGroup from '../components/EditGroup.vue'
 import LayerList from '../components/LayerList.vue'
 import mapPropsToComponents from '../propsMap'
-import { ComponentData } from '../store/index'
+import { ComponentData, GlobalDataProps } from '../store/index'
 export default defineComponent({
   name: 'Home',
   components: {
@@ -103,10 +121,10 @@ export default defineComponent({
     LayerList
   },
   setup () {
-    const store = useStore()
+    const store = useStore<GlobalDataProps>()
     const components = computed(() => store.state.components)
     const currentId = computed(() => store.state.currentElement)
-    const currentElement = computed(() => store.getters.getCurrentElement)
+    const currentElement = computed<ComponentData>(() => store.getters.getCurrentElement)
     const visible = ref(false)
     const showModal = ref(false)
 
@@ -120,11 +138,15 @@ export default defineComponent({
     const editProps = (id: string) => {
       store.commit('editProps', id)
     }
+    const handleChange = (data: any) => {
+      store.commit('updateComponent', data)
+    }
     return {
       visible,
       showModal,
       handleOk,
       onItemCreated,
+      handleChange,
       components,
       editProps,
       currentId,
