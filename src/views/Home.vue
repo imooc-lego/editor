@@ -18,6 +18,22 @@
     >
       <p>发布成功</p>
     </a-modal>
+    <div class="menu-container" ref="menuRef">
+    <a-menu mode="vertical" style="width: 200px; border: 1px solid #ccc;">
+      <a-menu-item key="1">
+        <MailOutlined />
+        Navigation One
+      </a-menu-item>
+      <a-menu-item key="2">
+        <MailOutlined />
+        Navigation One
+      </a-menu-item>
+      <a-menu-item key="3">
+        <MailOutlined />
+        Navigation One
+      </a-menu-item>
+    </a-menu>
+    </div>
     <a-layout>
       <a-layout-header class="header">
         <div class="logo" />
@@ -100,7 +116,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue'
+import { defineComponent, ref, computed, Ref } from 'vue'
 import { useStore } from 'vuex'
 import LText from '../components/LText.vue'
 import LImage from '../components/LImage.vue'
@@ -111,6 +127,7 @@ import LayerList from '../components/LayerList.vue'
 import mapPropsToComponents from '../propsMap'
 import { ComponentData, GlobalDataProps } from '../store/index'
 import { initHotKeys } from '../plugins/hotKeys'
+import useContextMenu from '../hooks/useContextMenu'
 export default defineComponent({
   name: 'Home',
   components: {
@@ -128,7 +145,9 @@ export default defineComponent({
     const currentElement = computed<ComponentData>(() => store.getters.getCurrentElement)
     const visible = ref(false)
     const showModal = ref(false)
+    const menuRef = ref<null | HTMLElement>(null)
     initHotKeys()
+    useContextMenu(menuRef)
     const handleOk = () => {
       showModal.value = false
     }
@@ -152,7 +171,8 @@ export default defineComponent({
       editProps,
       currentId,
       currentElement,
-      mapPropsToComponents
+      mapPropsToComponents,
+      menuRef
     }
   }
 })
@@ -183,5 +203,10 @@ export default defineComponent({
 }
 .sidebar-container {
   padding: 20px;
+}
+.menu-container {
+  display: none;
+  position: absolute;
+  z-index: 1000;
 }
 </style>

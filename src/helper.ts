@@ -31,3 +31,19 @@ export const commonUploadCheck = (file: File) => {
   }
   return passed
 }
+
+function clickInsideElement (e: Event, className: string) {
+  let el = e.target as HTMLElement
+  if (el.classList.contains(className)) {
+    return el
+  } else {
+    while (el) {
+      if (el.classList && el.classList.contains(className)) {
+        return el
+      } else {
+        el = el.parentNode as HTMLElement
+      }
+    }
+  }
+  return false
+}
