@@ -48,7 +48,7 @@
         </div>
       </a-layout-sider>
       <a-layout style="padding: 0 24px 24px">
-        <a-layout-content class="preview-container">
+        <a-layout-content class="preview-container" id="canvas-area">
           <p>画布区域</p>
           <ul class="preview-list">
             <li v-for="item in components" :key="item.id">
@@ -110,6 +110,7 @@ import EditGroup from '../components/EditGroup.vue'
 import LayerList from '../components/LayerList.vue'
 import mapPropsToComponents from '../propsMap'
 import { ComponentData, GlobalDataProps } from '../store/index'
+import { initHotKeys } from '../plugins/hotKeys'
 export default defineComponent({
   name: 'Home',
   components: {
@@ -127,7 +128,7 @@ export default defineComponent({
     const currentElement = computed<ComponentData>(() => store.getters.getCurrentElement)
     const visible = ref(false)
     const showModal = ref(false)
-
+    initHotKeys()
     const handleOk = () => {
       showModal.value = false
     }

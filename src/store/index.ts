@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import { v4 as uuidv4 } from 'uuid'
+import { cloneDeep } from 'lodash'
 
 export interface ComponentData {
   props: { [key: string]: any };
@@ -12,6 +13,7 @@ export interface ComponentData {
 export interface GlobalDataProps {
   components: ComponentData[];
   currentElement: string;
+  copiedComponent?: ComponentData;
 }
 export default createStore<GlobalDataProps>({
   state: {
@@ -38,6 +40,23 @@ export default createStore<GlobalDataProps>({
       if (updatedComponent) {
         updatedComponent[key] = value
       }
+    },
+    copyComponent (state, index) {
+      const currentComponent = state.components.find((component) => component.id === index)
+      if (currentComponent) {
+        state.copiedComponent = currentComponent
+      }
+    },
+    pasteCopiedComponent (state) {
+      if (state.copiedComponent) {
+        const clone = cloneDeep(state.copiedComponent)
+        clone.id = uuidv4()
+        clone.layerName = clone.layerName + '副本'
+        state.components.push(clone)
+      }
+    },
+    deleteComponent (state, index) {
+      state.components = state.components.filter(component => component.id !== index)
     }
   },
   actions: {
