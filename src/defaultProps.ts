@@ -40,7 +40,7 @@ export const textDefaultProps = {
   lineHeight: '1',
   textAlign: 'left',
   color: '#000000',
-  backgroundColor: '#ffffff',
+  backgroundColor: '',
   ...commonDefaultProps
 }
 

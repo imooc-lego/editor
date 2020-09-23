@@ -8,7 +8,8 @@
         :key="key"
         @click.prevent="onChange(item)"
       >
-        <div :style="{ backgroundColor: item }" class="color-item"></div>
+        <div :style="{ backgroundColor: item }" class="color-item" v-if="item.startsWith('#')"></div>
+        <div v-else class="color-item transparnet-back"></div>
       </li>
     </ul>
   </div>
@@ -16,7 +17,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-const defaultColors = ['#ffffff', '#f5222d', '#fa541c', '#fadb14', '#52c41a', '#13c2c2', '#1890ff', '#722ed1', '#8c8c8c', '#000000']
+const defaultColors = ['#ffffff', '#f5222d', '#fa541c', '#fadb14', '#52c41a', '#1890ff', '#722ed1', '#8c8c8c', '#000000', 'transparent']
 export default defineComponent({
   props: {
     value: {
@@ -77,5 +78,8 @@ export default defineComponent({
   margin-right: 5px;
   cursor: pointer;
   border: 1px solid #ccc;
+}
+.transparnet-back {
+  background: url('~@/assets/transparent.png') no-repeat;
 }
 </style>

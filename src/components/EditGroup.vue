@@ -58,6 +58,7 @@ export default defineComponent({
       }, [] as string[])
       // tag 不能编辑，把它过滤掉
       allNormalProps.push('tag')
+      allNormalProps.push('right')
       // 计算每一个组件的独特属性，也就是把通用属性都去掉以后的属性
       const speicalProps = difference(Object.keys(props.props), allNormalProps)
       currentKey.value = '基本属性'
