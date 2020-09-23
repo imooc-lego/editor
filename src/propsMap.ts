@@ -125,6 +125,13 @@ const mapPropsToComponents: MapTypes = {
     afterTransform: (e: number) => e ? `${e}px` : '',
     text: '高度'
   },
+  width: {
+    ...defaultMap,
+    component: 'a-input-number',
+    intialTransform: (v: string) => v ? parseInt(v) : '',
+    afterTransform: (e: number) => e ? `${e}px` : '',
+    text: '宽度'
+  },
   marginLeft: {
     ...numberToPxHandle,
     text: '左边距'

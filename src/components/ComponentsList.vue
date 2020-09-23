@@ -4,7 +4,7 @@
       v-for="(item, index) in list" :key="index"
       @click="onItemClick(item)" class="component-item"
     >
-      <component :is="item.name" v-bind="item.props" v-if="item.type !== 'upload'"/>
+      <component :is="item.name" v-bind="item.props" v-if="item.type !== 'upload'" :style="createResetCss"/>
       <uploader
         v-else
         action="http://localhost:7001/api/upload"
@@ -48,6 +48,10 @@ interface CreateComponentType {
   name: string;
   type?: string;
   props: { [key: string]: string };
+}
+const createResetCss = {
+  width: '',
+  position: 'static'
 }
 // the component name list
 const componentsList: CreateComponentType[] = [
@@ -119,14 +123,14 @@ export default defineComponent({
     const handleFileUploaded = (uploadedData: any, data: CreateComponentType) => {
       message.success('上传成功')
       data.props.imageSrc = uploadedData.data.url
-      console.log(uploadedData)
       context.emit('on-item-click', data)
     }
     return {
       list: componentsList,
       onItemClick,
       commonUploadCheck,
-      handleFileUploaded
+      handleFileUploaded,
+      createResetCss
     }
   }
 })

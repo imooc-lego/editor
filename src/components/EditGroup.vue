@@ -21,7 +21,7 @@ const defaultEditGroups: GroupProps[] = [
   },
   {
     text: '尺寸',
-    items: ['height', 'marginLeft', 'marginRight', 'marginTop']
+    items: ['height', 'width', 'marginLeft', 'marginRight', 'marginTop']
   },
   {
     text: '边框',

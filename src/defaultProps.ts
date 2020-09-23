@@ -13,6 +13,7 @@ export const commonDefaultProps = {
   url: '',
   // size
   height: '',
+  width: '318px',
   marginLeft: '0px',
   marginRight: '0px',
   marginTop: '0px',
@@ -25,9 +26,10 @@ export const commonDefaultProps = {
   boxShadow: '0 0 0 #000000',
   opacity: 1,
   // position and x,y
-  position: '',
+  position: 'absolute',
   left: '0',
-  top: '0'
+  top: '0',
+  right: '0'
 }
 export const textDefaultProps = {
   // basic props - font styles

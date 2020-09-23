@@ -29,8 +29,8 @@ export default createStore<GlobalDataProps>({
     editProps (state, index) {
       state.currentElement = index
     },
-    updateCurrentProp (state, { key, value }) {
-      const currentComponent = state.components.find((component) => component.id === state.currentElement)
+    updateProp (state, { key, value, id }) {
+      const currentComponent = state.components.find((component) => component.id === (id || state.currentElement))
       if (currentComponent) {
         currentComponent.props[key] = value
       }

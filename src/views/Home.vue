@@ -64,12 +64,14 @@
         </div>
       </a-layout-sider>
       <a-layout style="padding: 0 24px 24px">
-        <a-layout-content class="preview-container" id="canvas-area">
+        <a-layout-content class="preview-container">
           <p>画布区域</p>
-          <ul class="preview-list">
+          <ul class="preview-list" id="canvas-area">
             <li v-for="item in components" :key="item.id">
               <EditWrapper v-if="!item.isHidden"
-                @edit="editProps(item.id)"
+                :id="item.id"
+                @edit="editProps"
+                @update-position="updatePosition"
                 :active="currentId === item.id" :props="item.props"
               >
                 <component :is="item.name" v-bind="item.props"/>
@@ -161,6 +163,11 @@ export default defineComponent({
     const handleChange = (data: any) => {
       store.commit('updateComponent', data)
     }
+    const updatePosition = (data: { x: number; y: number; id: string}) => {
+      const { x, y, id } = data
+      store.commit('updateProp', { key: 'left', value: x, id })
+      store.commit('updateProp', { key: 'top', value: y, id })
+    }
     return {
       visible,
       showModal,
@@ -172,7 +179,8 @@ export default defineComponent({
       currentId,
       currentElement,
       mapPropsToComponents,
-      menuRef
+      menuRef,
+      updatePosition
     }
   }
 })
