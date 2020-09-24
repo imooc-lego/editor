@@ -10,15 +10,27 @@ export interface ComponentData {
   isHidden?: boolean;
   isLocked?: boolean;
 }
+export interface PageData {
+  props?: { [key: string]: any };
+  id?: string;
+  name?: string;
+}
 export interface GlobalDataProps {
+  // 页面所有组件
   components: ComponentData[];
+  // 当前被编辑的组件 id
   currentElement: string;
+  // 当前被复制的组件
   copiedComponent?: ComponentData;
+  // 页面设置
+  page: PageData;
+
 }
 export default createStore<GlobalDataProps>({
   state: {
     components: [],
-    currentElement: ''
+    currentElement: '',
+    page: { id: uuidv4(), name: '新工程', props: { backgroundColor: '#ffffff', backgroundImage: '' } }
   },
   mutations: {
     addComponentToEditor (state, component) {
@@ -33,6 +45,11 @@ export default createStore<GlobalDataProps>({
       const currentComponent = state.components.find((component) => component.id === (id || state.currentElement))
       if (currentComponent) {
         currentComponent.props[key] = value
+      }
+    },
+    updatePage (state, { key, value }) {
+      if (state.page.props) {
+        state.page.props[key] = value
       }
     },
     updateComponent (state, { id, key, value }) {

@@ -43,27 +43,29 @@ import ColorPicker from './ColorPicker.vue'
 import IconSwitch from './IconSwitch.vue'
 import ShadowPicker from './ShadowPicker.vue'
 import ImageProcesser from './ImageProcess.vue'
+import BackgroundProcesser from './BackgroundProcesser.vue'
 export default defineComponent({
   props: {
-    type: {
-      type: String,
-      required: true
-    },
     props: {
       type: Object,
       required: true
+    },
+    mutationName: {
+      type: String,
+      default: 'updateProp'
     }
   },
   components: {
     ColorPicker,
     IconSwitch,
     ShadowPicker,
-    ImageProcesser
+    ImageProcesser,
+    BackgroundProcesser
   },
   setup (props) {
     const { commit } = useStore()
     const handleCommit = (data: any) => {
-      commit('updateProp', data)
+      commit(props.mutationName, data)
     }
     const finalProps = computed(() => {
       return map(props.props, (value, key) => {
@@ -118,10 +120,11 @@ export default defineComponent({
 .component-a-select .ant-select {
   width: 90px;
 }
-.prop-component.component-shadow-picker {
+.prop-component.component-shadow-picker, .prop-component.component-image-processer, .prop-component.component-background-processer {
   width: 100%;
 }
-.prop-component.component-image-processer {
+#item-background-processer-1 {
   width: 100%;
+  cursor: pointer;
 }
 </style>

@@ -1,7 +1,9 @@
 <template>
-  <div class="l-image-component">
-    <img :src="imageSrc" :style="styleProps" @click.prevent="handleClick" />
-  </div>
+  <img
+    :src="imageSrc" :style="styleProps"
+    @click.prevent="handleClick" class="l-image-component"
+    :draggable="false"
+  />
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue'
@@ -29,7 +31,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.l-image-component img {
+.l-image-component {
   max-width: 100%;
 }
 </style>

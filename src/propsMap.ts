@@ -212,17 +212,25 @@ const mapPropsToComponents: MapTypes = {
   imageSrc: {
     ...defaultMap,
     component: 'image-processer'
+  },
+  backgroundImage: {
+    ...defaultMap,
+    component: 'background-processer',
+    intialTransform: (v: string) => {
+      if (v) {
+        const matches = v.match(/\((.*?)\)/)
+        if (matches && matches.length > 1) {
+          return matches[1].replace(/('|")/g, '')
+        } else {
+          return ''
+        }
+      } else {
+        return ''
+      }
+    },
+    afterTransform: (e: string) => e ? `url('${e}')` : '',
+    extraProps: { ratio: 8 / 15 }
   }
-  // position and xy
-  // fontSize: 'a-input-number',
-  // // we don't have this yet, will do it later
-  // color: 'color-picker',
-  // backgroundColor: 'color-picker',
-  // fontWeight: 'a-switch',
-  // fontStyle: 'a-switch',
-  // textDecoration: 'a-switch',
-  // lineHeight: 'a-slider',
-  // letterSpacing: 'a-slider'
 }
 
 export default mapPropsToComponents

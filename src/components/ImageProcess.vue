@@ -57,6 +57,9 @@ export default defineComponent({
     value: {
       type: String,
       required: true
+    },
+    ratio: {
+      type: Number
     }
   },
   components: {
@@ -69,12 +72,12 @@ export default defineComponent({
   setup (props, context) {
     const showModal = ref(false)
     let cropperData: any
+    let cropper: Cropper
     watch(showModal, (newValue) => {
       if (newValue) {
         nextTick(() => {
           const image = document.getElementById('processed-image') as HTMLImageElement
-          const cropper = new Cropper(image, {
-            aspectRatio: 16 / 9,
+          cropper = new Cropper(image, {
             checkCrossOrigin: false,
             crop (event) {
               const { x, y, width, height } = event.detail
@@ -84,9 +87,14 @@ export default defineComponent({
                 width: Math.floor(width),
                 height: Math.floor(height)
               }
-            }
+            },
+            ...(props.ratio && { aspectRatio: props.ratio })
           })
         })
+      } else {
+        if (cropper) {
+          cropper.destroy()
+        }
       }
     })
     const baseImageUrl = computed(() => props.value.split('?')[0])

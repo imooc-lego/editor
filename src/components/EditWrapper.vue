@@ -1,8 +1,8 @@
 <template>
 <div class="edit-wrapper" @click="itemClick"
     :draggable="true"
-    @dragstart.stop="handleDragStart"
-    @dragend.stop="handleDragEnd"
+    @dragstart="handleDragStart"
+    @dragend="handleDragEnd"
     :class="{active: active}" :style="styleProps"
 >
   <slot></slot>
@@ -69,7 +69,7 @@ export default defineComponent({
 .edit-wrapper {
   padding: 0px;
   cursor: pointer;
-  border: 1px solid #fff;
+  border: 1px solid transparent;
 }
 .edit-wrapper:hover {
   border: 1px dashed #ccc;

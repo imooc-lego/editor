@@ -66,23 +66,25 @@
       <a-layout style="padding: 0 24px 24px">
         <a-layout-content class="preview-container">
           <p>画布区域</p>
-          <ul class="preview-list" id="canvas-area">
-            <li v-for="item in components" :key="item.id">
-              <EditWrapper v-if="!item.isHidden"
-                :id="item.id"
-                @edit="editProps"
-                @update-position="updatePosition"
-                :active="currentId === item.id" :props="item.props"
-              >
-                <component :is="item.name" v-bind="item.props"/>
-              </EditWrapper>
-            </li>
-          </ul>
+          <div class="preview-list" id="canvas-area" @click="setPageSetting" :class="{active: activePanel === 'page'}">
+            <div class="body-container" :style="pageState.props">
+              <div v-for="item in components" :key="item.id">
+                <EditWrapper v-if="!item.isHidden"
+                  :id="item.id"
+                  @edit="editProps"
+                  @update-position="updatePosition"
+                  :active="currentId === item.id" :props="item.props"
+                >
+                  <component :is="item.name" v-bind="item.props"/>
+                </EditWrapper>
+              </div>
+            </div>
+          </div>
         </a-layout-content>
       </a-layout>
       <a-layout-sider width="300" style="background: #fff">
-        <a-tabs type="card">
-          <a-tab-pane key="1" tab="属性设置">
+        <a-tabs type="card" v-model:activeKey="activePanel">
+          <a-tab-pane key="component" tab="属性设置">
             <div v-if="currentElement">
               <div v-if="!currentElement.isLocked">
                 <edit-group :props="currentElement.props"></edit-group>
@@ -103,13 +105,18 @@
               </a-empty>
             </div>
           </a-tab-pane>
-          <a-tab-pane key="2" tab="图层设置">
+          <a-tab-pane key="layer" tab="图层设置">
             <layer-list
               :list="components" :selectedId="currentId"
               @select="(id) => { editProps(id) }"
               @change="handleChange"
             >
             </layer-list>
+          </a-tab-pane>
+          <a-tab-pane key="page" tab="页面设置">
+            <div class="page-settings">
+              <props-table :props="pageState.props" mutationName="updatePage"></props-table>
+            </div>
           </a-tab-pane>
         </a-tabs>
       </a-layout-sider>
@@ -118,18 +125,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, Ref } from 'vue'
+import { defineComponent, ref, computed, Ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import LText from '../components/LText.vue'
 import LImage from '../components/LImage.vue'
 import EditWrapper from '../components/EditWrapper.vue'
 import ComponentsList from '../components/ComponentsList.vue'
 import EditGroup from '../components/EditGroup.vue'
+import PropsTable from '../components/PropsTable.vue'
 import LayerList from '../components/LayerList.vue'
 import mapPropsToComponents from '../propsMap'
 import { ComponentData, GlobalDataProps } from '../store/index'
 import { initHotKeys } from '../plugins/hotKeys'
 import useContextMenu from '../hooks/useContextMenu'
+export type TabType = 'component' | 'layer' | 'page'
 export default defineComponent({
   name: 'Home',
   components: {
@@ -138,30 +147,46 @@ export default defineComponent({
     EditWrapper,
     ComponentsList,
     EditGroup,
-    LayerList
+    LayerList,
+    PropsTable
   },
   setup () {
     const store = useStore<GlobalDataProps>()
     const components = computed(() => store.state.components)
     const currentId = computed(() => store.state.currentElement)
     const currentElement = computed<ComponentData>(() => store.getters.getCurrentElement)
+    const pageState = computed(() => store.state.page)
     const visible = ref(false)
     const showModal = ref(false)
+    const activePanel = ref<TabType>('component')
     const menuRef = ref<null | HTMLElement>(null)
     initHotKeys()
     useContextMenu(menuRef)
     const handleOk = () => {
       showModal.value = false
     }
+    watch(activePanel, (newValue) => {
+      if (newValue !== 'component') {
+        store.commit('editProps', '')
+      }
+    })
     const onItemCreated = (component: ComponentData) => {
       // we should copy this props, not pass by ref
       store.commit('addComponentToEditor', { name: component.name, props: { ...component.props } })
     }
     const editProps = (id: string) => {
       store.commit('editProps', id)
+      activePanel.value = 'component'
     }
     const handleChange = (data: any) => {
       store.commit('updateComponent', data)
+    }
+    const setPageSetting = (e: Event) => {
+      const currentTarget = e.target as HTMLElement
+      if (currentTarget.classList.contains('body-container')) {
+        store.commit('editProps', '')
+        activePanel.value = 'page'
+      }
     }
     const updatePosition = (data: { x: number; y: number; id: string}) => {
       const { x, y, id } = data
@@ -180,7 +205,10 @@ export default defineComponent({
       currentElement,
       mapPropsToComponents,
       menuRef,
-      updatePosition
+      updatePosition,
+      setPageSetting,
+      activePanel,
+      pageState
     }
   }
 })
@@ -200,14 +228,17 @@ export default defineComponent({
   align-items: center;
 }
 .preview-list {
-  list-style-type: none;
   padding: 0;
   margin: 0;
   position: relative;
   height: 600px;
-  width: 320px;
+  min-width: 320px;
   border: 1px solid #efefef;
   background: #fff;
+  overflow: hidden;
+}
+.preview-list.active {
+  border: 1px solid #1890ff;
 }
 .sidebar-container {
   padding: 20px;
@@ -216,5 +247,12 @@ export default defineComponent({
   display: none;
   position: absolute;
   z-index: 1000;
+}
+.body-container {
+  width: 100%;
+  height: 100%;
+}
+.page-settings {
+  padding: 16px;
 }
 </style>
