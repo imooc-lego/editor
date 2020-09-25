@@ -11,9 +11,9 @@ export interface ComponentData {
   isLocked?: boolean;
 }
 export interface PageData {
-  props?: { [key: string]: any };
-  id?: string;
-  name?: string;
+  props: { [key: string]: any };
+  id: string;
+  name: string;
 }
 export interface GlobalDataProps {
   // 页面所有组件

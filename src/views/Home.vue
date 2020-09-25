@@ -11,6 +11,11 @@
       <p>Some contents...</p>
       <p>Some contents...</p>
     </a-drawer>
+    <div class="final-preview" v-if="visible">
+      <div class="final-preview-inner">
+        <final-page :page="pageState" :components="components"></final-page>
+      </div>
+    </div>
     <a-modal
       title="Title"
       v-model:visible="showModal"
@@ -134,6 +139,7 @@ import ComponentsList from '../components/ComponentsList.vue'
 import EditGroup from '../components/EditGroup.vue'
 import PropsTable from '../components/PropsTable.vue'
 import LayerList from '../components/LayerList.vue'
+import FinalPage from '../components/FinalPage.vue'
 import mapPropsToComponents from '../propsMap'
 import { ComponentData, GlobalDataProps } from '../store/index'
 import { initHotKeys } from '../plugins/hotKeys'
@@ -148,7 +154,8 @@ export default defineComponent({
     ComponentsList,
     EditGroup,
     LayerList,
-    PropsTable
+    PropsTable,
+    FinalPage
   },
   setup () {
     const store = useStore<GlobalDataProps>()
@@ -255,5 +262,24 @@ export default defineComponent({
 }
 .page-settings {
   padding: 16px;
+}
+.final-preview {
+  position: absolute;
+  width: calc(100% - 400px);
+  height: 100%;
+  background: transparent;
+  top: 0;
+  left: 0;
+  z-index: 1500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.final-preview-inner {
+  width: 322px;
+  height: 600px;
+  background: #fff;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+  position: relative;
 }
 </style>

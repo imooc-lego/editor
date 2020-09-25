@@ -93,6 +93,10 @@ const componentsList: CreateComponentType[] = [
       borderWidth: '1px',
       borderColor: '#1890ff',
       borderRadius: '2px',
+      paddingLeft: '10px',
+      paddingRight: '10px',
+      paddingTop: '5px',
+      paddingBottom: '5px',
       tag: 'button'
     }
   },
