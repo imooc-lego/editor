@@ -132,17 +132,21 @@ const mapPropsToComponents: MapTypes = {
     afterTransform: (e: number) => e ? `${e}px` : '',
     text: '宽度'
   },
-  marginLeft: {
+  paddingLeft: {
     ...numberToPxHandle,
     text: '左边距'
   },
-  marginRight: {
+  paddingRight: {
     ...numberToPxHandle,
     text: '右边距'
   },
-  marginTop: {
+  paddingTop: {
     ...numberToPxHandle,
     text: '上边距'
+  },
+  paddingBottom: {
+    ...numberToPxHandle,
+    text: '下边距'
   },
   // border types
   borderStyle: {

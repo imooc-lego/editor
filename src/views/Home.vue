@@ -232,7 +232,7 @@ export default defineComponent({
   margin: 0;
   position: relative;
   height: 600px;
-  min-width: 320px;
+  min-width: 322px;
   border: 1px solid #efefef;
   background: #fff;
   overflow: hidden;

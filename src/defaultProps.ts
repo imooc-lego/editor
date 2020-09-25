@@ -14,9 +14,10 @@ export const commonDefaultProps = {
   // size
   height: '',
   width: '318px',
-  marginLeft: '0px',
-  marginRight: '0px',
-  marginTop: '0px',
+  paddingLeft: '0px',
+  paddingRight: '0px',
+  paddingTop: '0px',
+  paddingBottom: '0px',
   // border type
   borderStyle: 'none',
   borderColor: '#000',

@@ -16,12 +16,8 @@ interface GroupProps {
 }
 const defaultEditGroups: GroupProps[] = [
   {
-    text: '事件功能',
-    items: ['actionType', 'url']
-  },
-  {
     text: '尺寸',
-    items: ['height', 'width', 'marginLeft', 'marginRight', 'marginTop']
+    items: ['height', 'width', 'paddingLeft', 'paddingRight', 'paddingTop', 'paddingBottom']
   },
   {
     text: '边框',
@@ -34,6 +30,10 @@ const defaultEditGroups: GroupProps[] = [
   {
     text: '尺寸与位置',
     items: ['position', 'left', 'top']
+  },
+  {
+    text: '事件功能',
+    items: ['actionType', 'url']
   }
 ]
 export default defineComponent({
