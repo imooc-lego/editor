@@ -229,7 +229,7 @@ const mapPropsToComponents: MapTypes = {
       }
     },
     afterTransform: (e: string) => e ? `url('${e}')` : '',
-    extraProps: { ratio: 8 / 15 }
+    extraProps: { ratio: 8 / 15, showDelete: true }
   }
 }
 

@@ -12,7 +12,7 @@
         <img :src="baseImageUrl" id="processed-image" />
       </div>
     </a-modal>
-    <div class="image-preview" :style="{ backgroundImage: backgrondUrl }">
+    <div class="image-preview" :style="{ backgroundImage: backgrondUrl }" :class="{ 'extraHeight': showDelete }">
     </div>
     <div class="image-process">
       <uploader
@@ -41,6 +41,9 @@
       <a-button  @click="showModal = true">
         <template v-slot:icon><ScissorOutlined /></template>裁剪图片
       </a-button>
+      <a-button v-if="showDelete" type="danger" @click="handleDelete">
+        <template v-slot:icon><DeleteOutlined /></template>删除图片
+      </a-button>
     </div>
   </div>
 </template>
@@ -49,7 +52,7 @@
 import { defineComponent, ref, computed, watch, nextTick } from 'vue'
 import Cropper from 'cropperjs'
 import { message } from 'ant-design-vue'
-import { UploadOutlined, ScissorOutlined, LoadingOutlined } from '@ant-design/icons-vue'
+import { UploadOutlined, ScissorOutlined, LoadingOutlined, DeleteOutlined } from '@ant-design/icons-vue'
 import Uploader from './Uploader.vue'
 import { commonUploadCheck } from '../helper'
 export default defineComponent({
@@ -60,12 +63,17 @@ export default defineComponent({
     },
     ratio: {
       type: Number
+    },
+    showDelete: {
+      type: Boolean,
+      default: false
     }
   },
   components: {
     UploadOutlined,
     ScissorOutlined,
     LoadingOutlined,
+    DeleteOutlined,
     Uploader
   },
   emits: ['change'],
@@ -109,13 +117,17 @@ export default defineComponent({
       message.success('上传成功')
       context.emit('change', uploadedData.data.url)
     }
+    const handleDelete = () => {
+      context.emit('change', '')
+    }
     return {
       showModal,
       handleOk,
       baseImageUrl,
       backgrondUrl,
       commonUploadCheck,
-      handleFileUploaded
+      handleFileUploaded,
+      handleDelete
     }
   }
 })
@@ -131,6 +143,9 @@ export default defineComponent({
     height: 84px;
     border: 1px dashed #e6ebed;
     background: no-repeat 50%/contain;
+  }
+  .image-preview.extraHeight {
+    height: 110px;
   }
   .image-cropper img {
     display: block;

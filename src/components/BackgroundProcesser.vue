@@ -22,7 +22,7 @@
         </div>
       </template>
     </uploader>
-    <image-processer :value="value" @change="updateUrl" v-else :ratio="ratio"></image-processer>
+    <image-processer :value="value" @change="updateUrl" v-else :ratio="ratio" :showDelete="true"></image-processer>
   </div>
 </template>
 
@@ -93,5 +93,9 @@ export default defineComponent({
 }
 .uploader-container:hover h4 {
   color: #1890ff;
+}
+.delete-uploaded {
+  margin-top:10px;
+  display: block;
 }
 </style>
