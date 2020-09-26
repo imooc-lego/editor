@@ -7,9 +7,7 @@
       :closable="true"
       v-model:visible="visible"
     >
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
+      <publish-form></publish-form>
     </a-drawer>
     <div class="final-preview" v-if="visible">
       <div class="final-preview-inner">
@@ -132,6 +130,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed, Ref, watch } from 'vue'
 import { useStore } from 'vuex'
+import PublishForm from './PublishForm.vue'
 import LText from '../components/LText.vue'
 import LImage from '../components/LImage.vue'
 import EditWrapper from '../components/EditWrapper.vue'
@@ -155,7 +154,8 @@ export default defineComponent({
     EditGroup,
     LayerList,
     PropsTable,
-    FinalPage
+    FinalPage,
+    PublishForm
   },
   setup () {
     const store = useStore<GlobalDataProps>()
