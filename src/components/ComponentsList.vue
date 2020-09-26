@@ -97,7 +97,9 @@ const componentsList: CreateComponentType[] = [
       paddingRight: '10px',
       paddingTop: '5px',
       paddingBottom: '5px',
-      tag: 'button'
+      width: '100px',
+      tag: 'button',
+      textAlign: 'center'
     }
   },
   {

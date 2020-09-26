@@ -45,9 +45,12 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style>
 .delete-uploaded {
   margin-top:10px;
   display: block;
+}
+.background-processer .uploader-container {
+  height: 150px;
 }
 </style>
