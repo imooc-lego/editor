@@ -34,10 +34,10 @@
           </a-input>
         </a-form-item>
         <a-form-item>
-          <a-button type="primary" @click="publish" size="large">
+          <a-button type="primary" @click="login" size="large">
             登录
           </a-button>
-          <a-button @click="publish" size="large" :style="{ marginLeft: '20px' }">
+          <a-button @click="getCode" size="large" :style="{ marginLeft: '20px' }" :disabled="form.username.trim() === ''">
             获取验证码
           </a-button>
         </a-form-item>
@@ -48,7 +48,11 @@
 </template>
 <script lang="ts">
 import { defineComponent, reactive, ref, Ref } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 import { UserOutlined, LockOutlined } from '@ant-design/icons-vue'
+import axios from 'axios'
+import { message } from 'ant-design-vue'
 
 interface RuleFormInstance {
   validate: () => Promise<any>;
@@ -59,6 +63,8 @@ export default defineComponent({
     LockOutlined
   },
   setup () {
+    const store = useStore()
+    const router = useRouter()
     const form = reactive({
       username: '',
       password: ''
@@ -72,15 +78,35 @@ export default defineComponent({
         { required: true, message: '密码不能为空', trigger: 'blur' }
       ]
     }
-    const publish = () => {
-      publishForm.value.validate().then(() => { console.log('passed') })
+    const login = () => {
+      publishForm.value.validate().then(() => {
+        const payload = {
+          phoneNumber: form.username,
+          veriCode: form.password
+        }
+        store.dispatch('loginAndFetch', payload).then(data => {
+          message.success('登录成功 2秒后跳转首页')
+          setTimeout(() => {
+            router.push('/')
+          }, 2000)
+        }).catch(e => {
+          console.log(e)
+        })
+      })
     }
-
+    const getCode = () => {
+      axios.post('/users/genVeriCode', { phoneNumber: form.username }).then(resp => {
+        console.log(resp.data)
+        const { data } = resp.data
+        message.success(`手机登录校验码为 ${data.code}`, 5)
+      })
+    }
     return {
       form,
       rules,
       publishForm,
-      publish
+      login,
+      getCode
     }
   }
 })

@@ -23,6 +23,7 @@
 import { defineComponent, ref, PropType, watch } from 'vue'
 import axios from 'axios'
 type UploadStatus = 'ready' | 'loading' | 'success' | 'error'
+
 type CheckFunction = (file: File) => boolean;
 export default defineComponent({
   props: {
@@ -76,6 +77,7 @@ export default defineComponent({
         }).then(resp => {
           fileStatus.value = 'success'
           uploadedData.value = resp.data
+          resp.data.file = files[0]
           context.emit('file-uploaded', resp.data)
         }).catch((error) => {
           fileStatus.value = 'error'

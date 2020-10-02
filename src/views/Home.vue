@@ -24,15 +24,12 @@
     <div class="menu-container" ref="menuRef">
     <a-menu mode="vertical" style="width: 200px; border: 1px solid #ccc;">
       <a-menu-item key="1">
-        <MailOutlined />
         Navigation One
       </a-menu-item>
       <a-menu-item key="2">
-        <MailOutlined />
         Navigation One
       </a-menu-item>
       <a-menu-item key="3">
-        <MailOutlined />
         Navigation One
       </a-menu-item>
     </a-menu>
@@ -54,6 +51,17 @@
           </a-menu-item>
           <a-menu-item key="3">
             <a-button type="primary" @click="showModal = true">发布</a-button>
+          </a-menu-item>
+          <a-menu-item key="4" v-if="userInfo.isLogin">
+            <a-dropdown-button>
+              {{userInfo.nickName}}
+              <template v-slot:overlay>
+                <a-menu>
+                  <a-menu-item key="1">详细资料</a-menu-item>
+                  <a-menu-item key="2">登出</a-menu-item>
+                </a-menu>
+              </template>
+            </a-dropdown-button>
           </a-menu-item>
         </a-menu>
       </a-layout-header>
@@ -128,7 +136,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, Ref, watch } from 'vue'
+import { defineComponent, ref, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import PublishForm from './PublishForm.vue'
 import LText from '../components/LText.vue'
@@ -162,6 +170,7 @@ export default defineComponent({
     const components = computed(() => store.state.components)
     const currentId = computed(() => store.state.currentElement)
     const currentElement = computed<ComponentData>(() => store.getters.getCurrentElement)
+    const userInfo = computed(() => store.state.user)
     const pageState = computed(() => store.state.page)
     const visible = ref(false)
     const showModal = ref(false)
@@ -215,7 +224,8 @@ export default defineComponent({
       updatePosition,
       setPageSetting,
       activePanel,
-      pageState
+      pageState,
+      userInfo
     }
   }
 })

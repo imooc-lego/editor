@@ -1,4 +1,5 @@
-import { createStore } from 'vuex'
+import { createStore, Commit } from 'vuex'
+import axios, { AxiosRequestConfig } from 'axios'
 import { v4 as uuidv4 } from 'uuid'
 import { cloneDeep } from 'lodash'
 
@@ -15,7 +16,23 @@ export interface PageData {
   id: string;
   name: string;
 }
+export interface UserProps {
+  isLogin: boolean;
+  username?: string;
+  id?: string;
+  phoneNumber?: string;
+  nickName?: string;
+  description?: string;
+  updatedAt?: string;
+  createdAt?: string;
+  iat?: number;
+  exp?: number;
+}
 export interface GlobalDataProps {
+  // token
+  token?: string;
+  // user info
+  user: UserProps;
   // 页面所有组件
   components: ComponentData[];
   // 当前被编辑的组件 id
@@ -26,8 +43,22 @@ export interface GlobalDataProps {
   page: PageData;
 
 }
+const asyncAndCommit = async (url: string, mutationName: string,
+  commit: Commit,
+  config: AxiosRequestConfig = { method: 'get' },
+  extraData?: any) => {
+  const { data } = await axios(url, config)
+  if (extraData) {
+    commit(mutationName, { data, extraData })
+  } else {
+    commit(mutationName, data)
+  }
+  return data
+}
 export default createStore<GlobalDataProps>({
   state: {
+    token: localStorage.getItem('token') || '',
+    user: { isLogin: false },
     components: [],
     currentElement: '',
     page: { id: uuidv4(), name: '新工程', props: { backgroundColor: '#ffffff', backgroundImage: '' } }
@@ -74,9 +105,37 @@ export default createStore<GlobalDataProps>({
     },
     deleteComponent (state, index) {
       state.components = state.components.filter(component => component.id !== index)
+    },
+    fetchCurrentUser (state, rawData) {
+      console.log(rawData.data)
+      state.user = { isLogin: true, ...rawData.data }
+    },
+    login (state, rawData) {
+      const { token } = rawData.data
+      console.log(token)
+      state.token = token
+      localStorage.setItem('token', token)
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`
+    },
+    logout (state) {
+      state.token = ''
+      state.user = { isLogin: false }
+      localStorage.removeItem('token')
+      delete axios.defaults.headers.common.Authorization
     }
   },
   actions: {
+    fetchCurrentUser ({ commit }) {
+      return asyncAndCommit('/users/getUserInfo', 'fetchCurrentUser', commit)
+    },
+    login ({ commit }, payload) {
+      return asyncAndCommit('/users/loginByPhoneNumber', 'login', commit, { method: 'post', data: payload })
+    },
+    loginAndFetch ({ dispatch }, loginData) {
+      return dispatch('login', loginData).then(() => {
+        return dispatch('fetchCurrentUser')
+      })
+    }
   },
   getters: {
     getCurrentElement: (state) => {

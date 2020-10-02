@@ -32,7 +32,7 @@ export const commonUploadCheck = (file: File) => {
   return passed
 }
 
-function clickInsideElement (e: Event, className: string) {
+export function clickInsideElement (e: Event, className: string) {
   let el = e.target as HTMLElement
   if (el.classList.contains(className)) {
     return el
@@ -46,4 +46,20 @@ function clickInsideElement (e: Event, className: string) {
     }
   }
   return false
+}
+
+export const imageDimensions = (file: File) => {
+  return new Promise<{ width: number; height: number }>((resolve, reject) => {
+    const img = new Image()
+    img.src = URL.createObjectURL(file)
+    // the following handler will fire after the successful loading of the image
+    img.onload = () => {
+      const { naturalWidth: width, naturalHeight: height } = img
+      resolve({ width, height })
+    }
+    // and this handler will fire if there was an error with the image (like if it's not really an image or a corrupted one)
+    img.onerror = () => {
+      reject(new Error('There was some problem with the image.'))
+    }
+  })
 }

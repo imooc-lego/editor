@@ -40,7 +40,7 @@ import LText from './LText.vue'
 import LImage from './LImage.vue'
 import Uploader from './Uploader.vue'
 import { componentsDefaultProps } from '../defaultProps'
-import { commonUploadCheck } from '../helper'
+import { commonUploadCheck, imageDimensions } from '../helper'
 const textDefaultProps = componentsDefaultProps['l-text'].props
 const imageDefaultProps = componentsDefaultProps['l-image'].props
 
@@ -129,7 +129,12 @@ export default defineComponent({
     const handleFileUploaded = (uploadedData: any, data: CreateComponentType) => {
       message.success('上传成功')
       data.props.imageSrc = uploadedData.data.url
-      context.emit('on-item-click', data)
+      imageDimensions(uploadedData.file).then(dimension => {
+        console.log(dimension)
+        const maxWidth = 300
+        data.props.width = ((dimension.width > maxWidth) ? maxWidth : dimension.width) + 'px'
+        context.emit('on-item-click', data)
+      })
     }
     return {
       list: componentsList,

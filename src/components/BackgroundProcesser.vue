@@ -28,7 +28,6 @@ export default defineComponent({
   },
   emits: ['change'],
   setup (props, context) {
-    console.log(props.value)
     const handleFileUploaded = (uploadedData: any) => {
       message.success('上传成功')
       context.emit('change', uploadedData.data.url)
@@ -50,7 +49,7 @@ export default defineComponent({
   margin-top:10px;
   display: block;
 }
-.background-processer .uploader-container {
+/* .background-processer .uploader-container {
   height: 150px;
-}
+} */
 </style>
