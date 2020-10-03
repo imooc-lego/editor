@@ -64,6 +64,12 @@ export const componentsDefaultProps: DefaultPropsType = {
     props: {
       ...imageDefaultProps
     }
+  },
+  'l-shape': {
+    props: {
+      backgroundColor: '',
+      ...commonDefaultProps
+    }
   }
 }
 

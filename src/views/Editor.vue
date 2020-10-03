@@ -140,6 +140,7 @@ import { useRouter, useRoute } from 'vue-router'
 import PublishForm from './PublishForm.vue'
 import LText from '../components/LText.vue'
 import LImage from '../components/LImage.vue'
+import LShape from '../components/LShape.vue'
 import EditWrapper from '../components/EditWrapper.vue'
 import ComponentsList from '../components/ComponentsList.vue'
 import EditGroup from '../components/EditGroup.vue'
@@ -158,6 +159,7 @@ export default defineComponent({
   components: {
     LText,
     LImage,
+    LShape,
     EditWrapper,
     ComponentsList,
     EditGroup,

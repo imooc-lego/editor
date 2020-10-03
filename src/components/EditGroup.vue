@@ -28,7 +28,7 @@ const defaultEditGroups: GroupProps[] = [
     items: ['opacity', 'boxShadow']
   },
   {
-    text: '尺寸与位置',
+    text: '位置',
     items: ['position', 'left', 'top']
   },
   {

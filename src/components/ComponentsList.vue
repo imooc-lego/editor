@@ -4,7 +4,10 @@
       v-for="(item, index) in list" :key="index"
       @click="onItemClick(item)" class="component-item"
     >
-      <component :is="item.name" v-bind="item.props" v-if="item.type !== 'upload'" :style="createResetCss"/>
+      <div class="component-wrapper" v-if="item.type !== 'upload'">
+        <component :is="item.name" v-bind="item.props"  :style="createResetCss" class="inside-component"/>
+        <span v-if="item.text" class="tip-text">{{item.text}}</span>
+      </div>
       <uploader
         v-else
         action="http://localhost:7001/api/upload"
@@ -38,19 +41,21 @@ import { FileImageOutlined, LoadingOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import LText from './LText.vue'
 import LImage from './LImage.vue'
+import LShape from './LShape.vue'
 import Uploader from './Uploader.vue'
 import { componentsDefaultProps } from '../defaultProps'
 import { commonUploadCheck, imageDimensions } from '../helper'
 const textDefaultProps = componentsDefaultProps['l-text'].props
 const imageDefaultProps = componentsDefaultProps['l-image'].props
-
+const shapeDefaultProps = componentsDefaultProps['l-shape'].props
 interface CreateComponentType {
   name: string;
+  text?: string;
   type?: string;
   props: { [key: string]: string };
 }
 const createResetCss = {
-  width: '',
+  // width: '',
   position: 'static'
 }
 // the component name list
@@ -92,6 +97,7 @@ const componentsList: CreateComponentType[] = [
       backgroundColor: '#1890ff',
       borderWidth: '1px',
       borderColor: '#1890ff',
+      borderStyle: 'solid',
       borderRadius: '2px',
       paddingLeft: '10px',
       paddingRight: '10px',
@@ -100,6 +106,33 @@ const componentsList: CreateComponentType[] = [
       width: '100px',
       tag: 'button',
       textAlign: 'center'
+    }
+  },
+  {
+    name: 'l-shape',
+    text: '长方形',
+    props: {
+      ...shapeDefaultProps,
+      backgroundColor: '#efefef',
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderColor: '#ccc',
+      width: '100px',
+      height: '50px'
+    }
+  },
+  {
+    name: 'l-shape',
+    text: '圆形',
+    props: {
+      ...shapeDefaultProps,
+      backgroundColor: '#efefef',
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderColor: '#ccc',
+      borderRadius: '100px',
+      width: '100px',
+      height: '100px'
     }
   },
   {
@@ -114,6 +147,7 @@ export default defineComponent({
   components: {
     LText,
     LImage,
+    LShape,
     Uploader,
     FileImageOutlined,
     LoadingOutlined
@@ -147,9 +181,25 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.component-wrapper {
+  width: 100px;
+  position: relative;
+}
+.tip-text {
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  width: 100%;
+  margin-top: -10px;
+}
+.inside-component {
+  width: 100px !important;
+}
 .component-item {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
 }
 .uploader-container {
   text-align: center;

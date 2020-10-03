@@ -182,7 +182,7 @@ const mapPropsToComponents: MapTypes = {
     intialTransform: (v: string) => parseInt(v),
     afterTransform: (e: number) => e + 'px',
     text: '边框圆角',
-    extraProps: { min: 0, max: 20 }
+    extraProps: { min: 0, max: 200 }
   },
   // shadow and opactiy
   opacity: {

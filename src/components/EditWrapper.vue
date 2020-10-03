@@ -77,7 +77,7 @@ export default defineComponent({
 .edit-wrapper.active {
   border: 1px solid #1890ff;
 }
-.edit-wrapper .l-text-component, .edit-wrapper .l-image-component {
+.edit-wrapper .l-text-component, .edit-wrapper .l-image-component, .edit-wrapper .l-shape-component {
   position: static !important;
 }
 </style>
