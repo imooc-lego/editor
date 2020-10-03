@@ -1,5 +1,5 @@
 <template>
-  <div class="home" id="components-layout-demo-basic">
+  <div class="editor" id="editor-layout-main">
     <a-drawer
       title="设置面板"
       placement="right"
@@ -36,7 +36,9 @@
     </div>
     <a-layout>
       <a-layout-header class="header">
-        <div class="logo" />
+        <div class="page-title">
+          <h4>{{pageState.title}}</h4>
+        </div>
         <a-menu
           :selectable="false"
           theme="dark"
@@ -58,7 +60,7 @@
               <template v-slot:overlay>
                 <a-menu>
                   <a-menu-item key="1">详细资料</a-menu-item>
-                  <a-menu-item key="2">登出</a-menu-item>
+                  <a-menu-item key="2" @click="logout">登出</a-menu-item>
                 </a-menu>
               </template>
             </a-dropdown-button>
@@ -136,8 +138,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from 'vue'
+import { defineComponent, ref, computed, watch, onMounted } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter, useRoute } from 'vue-router'
 import PublishForm from './PublishForm.vue'
 import LText from '../components/LText.vue'
 import LImage from '../components/LImage.vue'
@@ -151,6 +154,8 @@ import mapPropsToComponents from '../propsMap'
 import { ComponentData, GlobalDataProps } from '../store/index'
 import { initHotKeys } from '../plugins/hotKeys'
 import useContextMenu from '../hooks/useContextMenu'
+import { message } from 'ant-design-vue'
+
 export type TabType = 'component' | 'layer' | 'page'
 export default defineComponent({
   name: 'Home',
@@ -167,6 +172,8 @@ export default defineComponent({
   },
   setup () {
     const store = useStore<GlobalDataProps>()
+    const router = useRouter()
+    const route = useRoute()
     const components = computed(() => store.state.components)
     const currentId = computed(() => store.state.currentElement)
     const currentElement = computed<ComponentData>(() => store.getters.getCurrentElement)
@@ -178,6 +185,12 @@ export default defineComponent({
     const menuRef = ref<null | HTMLElement>(null)
     initHotKeys()
     useContextMenu(menuRef)
+    onMounted(() => {
+      const currentId = route.params.id
+      if (currentId) {
+        store.dispatch('getWork', currentId)
+      }
+    })
     const handleOk = () => {
       showModal.value = false
     }
@@ -209,6 +222,13 @@ export default defineComponent({
       store.commit('updateProp', { key: 'left', value: x, id })
       store.commit('updateProp', { key: 'top', value: y, id })
     }
+    const logout = () => {
+      store.commit('logout')
+      message.success('退出登录成功，2秒后跳转到首页', 2)
+      setTimeout(() => {
+        router.push('/login')
+      }, 2000)
+    }
     return {
       visible,
       showModal,
@@ -225,7 +245,8 @@ export default defineComponent({
       setPageSetting,
       activePanel,
       pageState,
-      userInfo
+      userInfo,
+      logout
     }
   }
 })
@@ -235,6 +256,9 @@ export default defineComponent({
 .header {
   display: flex;
   justify-content: space-between;
+}
+.header h4 {
+  color: #ffffff;
 }
 .preview-container {
   padding: 24px;

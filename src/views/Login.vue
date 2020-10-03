@@ -84,10 +84,10 @@ export default defineComponent({
           phoneNumber: form.username,
           veriCode: form.password
         }
-        store.dispatch('loginAndFetch', payload).then(data => {
+        store.dispatch('loginAndFetch', payload).then(rawData => {
           message.success('登录成功 2秒后跳转首页')
           setTimeout(() => {
-            router.push('/')
+            router.push(`/editor/${rawData.data.id}`)
           }, 2000)
         }).catch(e => {
           console.log(e)

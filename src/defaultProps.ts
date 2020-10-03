@@ -39,10 +39,11 @@ export const textDefaultProps = {
   fontStyle: 'normal',
   textDecoration: 'none',
   lineHeight: '1',
-  textAlign: 'left',
+  textAlign: 'center',
   color: '#000000',
   backgroundColor: '',
-  ...commonDefaultProps
+  ...commonDefaultProps,
+  width: '318px'
 }
 
 export const imageDefaultProps = {

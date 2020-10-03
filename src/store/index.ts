@@ -13,8 +13,9 @@ export interface ComponentData {
 }
 export interface PageData {
   props: { [key: string]: any };
-  id: string;
-  name: string;
+  id?: number;
+  title?: string;
+  desc?: string;
 }
 export interface UserProps {
   isLogin: boolean;
@@ -61,7 +62,7 @@ export default createStore<GlobalDataProps>({
     user: { isLogin: false },
     components: [],
     currentElement: '',
-    page: { id: uuidv4(), name: '新工程', props: { backgroundColor: '#ffffff', backgroundImage: '' } }
+    page: { props: { backgroundColor: '#ffffff', backgroundImage: '' } }
   },
   mutations: {
     addComponentToEditor (state, component) {
@@ -122,6 +123,17 @@ export default createStore<GlobalDataProps>({
       state.user = { isLogin: false }
       localStorage.removeItem('token')
       delete axios.defaults.headers.common.Authorization
+    },
+    createWork (state, rawData) {
+      console.log(rawData)
+      state.page = { ...state.page, ...rawData.data }
+    },
+    getWork (state, { data }) {
+      console.log(data)
+      const { content, title, desc } = data
+      const pageData = { title, desc }
+      state.page = { ...state.page, ...pageData }
+      state.components = content.components
     }
   },
   actions: {
@@ -131,9 +143,17 @@ export default createStore<GlobalDataProps>({
     login ({ commit }, payload) {
       return asyncAndCommit('/users/loginByPhoneNumber', 'login', commit, { method: 'post', data: payload })
     },
+    createWork ({ commit }, payload) {
+      return asyncAndCommit('/works', 'createWork', commit, { method: 'post', data: payload })
+    },
+    getWork ({ commit }, id) {
+      return asyncAndCommit(`/works/${id}`, 'getWork', commit)
+    },
     loginAndFetch ({ dispatch }, loginData) {
       return dispatch('login', loginData).then(() => {
         return dispatch('fetchCurrentUser')
+      }).then(() => {
+        return dispatch('createWork', { title: '未命名作品', desc: '未命名作品' })
       })
     }
   },

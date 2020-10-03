@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import Home from '../views/Home.vue'
+import Editor from '../views/Editor.vue'
 import axios from 'axios'
 import store from '../store'
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home,
+    path: '/editor/:id',
+    name: 'Editor',
+    component: Editor,
     meta: { requiredLogin: true }
   },
   {

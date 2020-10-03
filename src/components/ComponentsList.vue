@@ -130,7 +130,6 @@ export default defineComponent({
       message.success('上传成功')
       data.props.imageSrc = uploadedData.data.url
       imageDimensions(uploadedData.file).then(dimension => {
-        console.log(dimension)
         const maxWidth = 300
         data.props.width = ((dimension.width > maxWidth) ? maxWidth : dimension.width) + 'px'
         context.emit('on-item-click', data)
