@@ -29,6 +29,12 @@ export interface UserProps {
   iat?: number;
   exp?: number;
 }
+
+export interface GlobalStatus {
+  loading: boolean;
+  error: any;
+  opName?: string;
+}
 export interface GlobalDataProps {
   // token
   token?: string;
@@ -42,13 +48,19 @@ export interface GlobalDataProps {
   copiedComponent?: ComponentData;
   // 页面设置
   page: PageData;
+  // 全局状态，loading，error 等等
+  status: GlobalStatus;
 
+}
+export type ICustomAxiosConfig = AxiosRequestConfig & {
+  mutationName: string;
 }
 const asyncAndCommit = async (url: string, mutationName: string,
   commit: Commit,
   config: AxiosRequestConfig = { method: 'get' },
   extraData?: any) => {
-  const { data } = await axios(url, config)
+  const newConfig: ICustomAxiosConfig = { ...config, mutationName }
+  const { data } = await axios(url, newConfig)
   if (extraData) {
     commit(mutationName, { data, extraData })
   } else {
@@ -62,7 +74,8 @@ export default createStore<GlobalDataProps>({
     user: { isLogin: false },
     components: [],
     currentElement: '',
-    page: { props: { backgroundColor: '#ffffff', backgroundImage: '' } }
+    page: { props: { backgroundColor: '#ffffff', backgroundImage: '' } },
+    status: { loading: false, error: null, opName: '' }
   },
   mutations: {
     addComponentToEditor (state, component) {
@@ -134,6 +147,15 @@ export default createStore<GlobalDataProps>({
       const pageData = { title, desc }
       state.page = { ...state.page, ...pageData }
       state.components = content.components
+    },
+    setLoading (state, { status, opName }) {
+      state.status.loading = status
+      if (opName) {
+        state.status.opName = opName
+      }
+    },
+    setError (state, e) {
+      state.status.error = e
     }
   },
   actions: {

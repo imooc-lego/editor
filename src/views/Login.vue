@@ -23,22 +23,27 @@
       >
         <h2>欢迎回来👋</h2>
         <p>使用用户名和密码登录到慕课乐高</p>
-        <a-form-item label="用户名" required name="username">
-          <a-input v-model:value="form.username" placeholder="用户名">
+        <a-form-item label="手机号码" required name="username">
+          <a-input v-model:value="form.username" placeholder="手机号码">
             <template v-slot:prefix><UserOutlined style="color:rgba(0,0,0,.25)"/></template>
           </a-input>
         </a-form-item>
-        <a-form-item label="密码" required name="password">
-          <a-input v-model:value="form.password" type="password" placeholder="密码">
+        <a-form-item label="验证码" required name="password">
+          <a-input v-model:value="form.password" type="password" placeholder="六位验证码">
             <template v-slot:prefix><LockOutlined style="color:rgba(0,0,0,.25)"/></template>
           </a-input>
         </a-form-item>
         <a-form-item>
-          <a-button type="primary" @click="login" size="large">
-            登录
+          <a-button type="primary" @click="login" size="large"
+            :loading="status.loading && status.opName === 'login'"
+          >
+            {{ status.loading ? '加载中' : '登录'}}
           </a-button>
-          <a-button @click="getCode" size="large" :style="{ marginLeft: '20px' }" :disabled="form.username.trim() === ''">
-            获取验证码
+          <a-button @click="getCode" size="large"
+            :style="{ marginLeft: '20px' }" :disabled="codeButtonDisable"
+            :loading="status.loading && status.opName === 'getCode'"
+          >
+            {{ counter === 60 ? '获取验证码' : `${counter}秒后重发` }}
           </a-button>
         </a-form-item>
       </a-form>
@@ -47,12 +52,14 @@
 </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, ref, Ref } from 'vue'
+import { defineComponent, reactive, ref, Ref, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { UserOutlined, LockOutlined } from '@ant-design/icons-vue'
-import axios from 'axios'
+import axios, { AxiosRequestConfig } from 'axios'
 import { message } from 'ant-design-vue'
+import { GlobalDataProps } from '../store/index'
+import { isMobile } from '../helper'
 
 interface RuleFormInstance {
   validate: () => Promise<any>;
@@ -63,16 +70,40 @@ export default defineComponent({
     LockOutlined
   },
   setup () {
-    const store = useStore()
+    const store = useStore<GlobalDataProps>()
     const router = useRouter()
+    const counter = ref(60)
+    let timer: any
     const form = reactive({
       username: '',
       password: ''
     })
     const publishForm = ref() as Ref<RuleFormInstance>
+    const status = computed(() => store.state.status)
+    const cellnumberValidator = (rule: any, value: string) => {
+      const passed = isMobile(value.trim())
+      // eslint-disable-next-line prefer-promise-reject-errors
+      return passed ? Promise.resolve() : Promise.reject('手机号码格式不正确')
+    }
+    const startCounter = () => {
+      counter.value--
+      timer = setInterval(() => {
+        counter.value--
+      }, 1000)
+    }
+    watch(counter, (newValue) => {
+      if (newValue === 0) {
+        clearInterval(timer)
+        counter.value = 60
+      }
+    })
+    const codeButtonDisable = computed(() => {
+      return !isMobile(form.username.trim()) || (counter.value < 60)
+    })
     const rules = {
       username: [
-        { required: true, message: '用户名不能为空', trigger: 'blur' }
+        { required: true, message: '手机号码不能为空', trigger: 'blur' },
+        { validator: cellnumberValidator, trigger: 'blur' }
       ],
       password: [
         { required: true, message: '密码不能为空', trigger: 'blur' }
@@ -95,10 +126,10 @@ export default defineComponent({
       })
     }
     const getCode = () => {
-      axios.post('/users/genVeriCode', { phoneNumber: form.username }).then(resp => {
-        console.log(resp.data)
+      axios.post('/users/genVeriCode', { phoneNumber: form.username }, { mutationName: 'getCode' } as AxiosRequestConfig).then(resp => {
         const { data } = resp.data
         message.success(`手机登录校验码为 ${data.code}`, 5)
+        startCounter()
       })
     }
     return {
@@ -106,7 +137,11 @@ export default defineComponent({
       rules,
       publishForm,
       login,
-      getCode
+      getCode,
+      status,
+      isMobile,
+      counter,
+      codeButtonDisable
     }
   }
 })
