@@ -146,7 +146,13 @@ export default createStore<GlobalDataProps>({
       const { content, title, desc } = data
       const pageData = { title, desc }
       state.page = { ...state.page, ...pageData }
+      if (content.props) {
+        state.page.props = content.props
+      }
       state.components = content.components
+    },
+    saveWork (state, rawData) {
+      console.log(rawData)
     },
     setLoading (state, { status, opName }) {
       state.status.loading = status
@@ -170,6 +176,21 @@ export default createStore<GlobalDataProps>({
     },
     getWork ({ commit }, id) {
       return asyncAndCommit(`/works/${id}`, 'getWork', commit)
+    },
+    saveWork ({ commit, state }, payload) {
+      const { id, data } = payload
+      if (data) {
+
+      } else {
+        // save current work
+        const postData = {
+          content: {
+            components: state.components,
+            props: state.page.props
+          }
+        }
+        return asyncAndCommit(`/works/${id}`, 'saveWork', commit, { method: 'patch', data: postData })
+      }
     },
     loginAndFetch ({ dispatch }, loginData) {
       return dispatch('login', loginData).then(() => {

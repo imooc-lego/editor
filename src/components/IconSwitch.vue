@@ -1,6 +1,6 @@
 <template>
   <div class="icon-template" @click.prevent="handleClick">
-    <a-tooltip :title="title">
+    <a-tooltip>
       <template v-slot:title>
         {{tip}}
       </template>

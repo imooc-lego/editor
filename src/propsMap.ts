@@ -77,6 +77,8 @@ const mapPropsToComponents: MapTypes = {
     ...defaultMap,
     component: 'a-slider',
     text: '行高',
+    intialTransform: (v: string) => v ? parseInt(v) : 0,
+    afterTransform: (e: number) => e.toString(),
     extraProps: { min: 0, max: 10 }
   },
   textAlign: {

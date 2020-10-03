@@ -12,7 +12,7 @@
       @click="handleClick(item.id)"
     >
       <a-tooltip :title="item.isHidden ? '显示': '隐藏'">
-        <a-button shape="circle" size="sm" @click="handleChange(item.id, 'isHidden', !item.isHidden)">
+        <a-button shape="circle" @click="handleChange(item.id, 'isHidden', !item.isHidden)">
           <template v-slot:icon v-if="item.isHidden"><EyeOutlined /> </template>
           <template v-slot:icon v-else><EyeInvisibleOutlined /> </template>
         </a-button>
