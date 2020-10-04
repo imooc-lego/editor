@@ -118,7 +118,7 @@ export default defineComponent({
   width: 80%;
 } */
 .component-a-select .ant-select {
-  width: 90px;
+  width: 150px;
 }
 .prop-component.component-shadow-picker, .prop-component.component-image-processer, .prop-component.component-background-processer {
   width: 100%;

@@ -75,7 +75,7 @@ export default createStore<GlobalDataProps>({
     user: { isLogin: false },
     components: [],
     currentElement: '',
-    page: { props: { backgroundColor: '#ffffff', backgroundImage: '' } },
+    page: { props: { backgroundColor: '#ffffff', backgroundImage: '', backgroundRepeat: 'no-repeat', backgroundSize: 'contain' } },
     status: { loading: false, error: null, opName: '' }
   },
   mutations: {
@@ -151,7 +151,7 @@ export default createStore<GlobalDataProps>({
       const pageData = { title, desc, coverImg }
       state.page = { ...state.page, ...pageData }
       if (content.props) {
-        state.page.props = content.props
+        state.page.props = { ...state.page.props, ...content.props }
       }
       state.components = content.components
     },

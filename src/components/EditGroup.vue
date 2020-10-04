@@ -29,7 +29,7 @@ const defaultEditGroups: GroupProps[] = [
   },
   {
     text: '位置',
-    items: ['position', 'left', 'top']
+    items: ['left', 'top']
   },
   {
     text: '事件功能',

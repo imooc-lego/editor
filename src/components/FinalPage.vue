@@ -33,6 +33,5 @@ export default defineComponent({
 .final-page {
   width: 100%;
   height: 100%;
-  background-size: cover;
 }
 </style>

@@ -32,7 +32,11 @@ router.beforeEach((to, from, next) => {
     if (token) {
       axios.defaults.headers.common.Authorization = `Bearer ${token}`
       store.dispatch('fetchCurrentUser').then(() => {
-        next()
+        if (redirectAlreadyLogin) {
+          next('/')
+        } else {
+          next()
+        }
       }).catch(e => {
         console.error(e)
         store.commit('logout')
