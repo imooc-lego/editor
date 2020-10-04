@@ -9,7 +9,11 @@
       :closable="true"
       v-model:visible="visible"
     >
-      <publish-form></publish-form>
+      <publish-form
+        @panel-close="visible = false"
+        @publish-success="visible = false; showModal = true"
+      >
+      </publish-form>
     </a-drawer>
     <div class="final-preview" v-if="visible">
       <div class="final-preview-inner">
@@ -48,7 +52,7 @@
             <a-button type="primary" @click="saveWork">保存</a-button>
           </a-menu-item>
           <a-menu-item key="3">
-            <a-button type="primary" @click="showModal = true">发布</a-button>
+            <a-button type="primary" @click="publishWork">发布</a-button>
           </a-menu-item>
           <a-menu-item key="4" v-if="userInfo.isLogin">
             <a-dropdown-button>
@@ -124,7 +128,7 @@
           </a-tab-pane>
           <a-tab-pane key="page" tab="页面设置">
             <div class="page-settings">
-              <props-table :props="pageState.props" mutationName="updatePage"></props-table>
+              <props-table :props="pageState.props" mutationName="updatePageProps"></props-table>
             </div>
           </a-tab-pane>
         </a-tabs>
@@ -189,6 +193,11 @@ export default defineComponent({
     const saveWork = () => {
       store.dispatch('saveWork', { id: currentWorkId }).then(() => {
         message.success('保存成功', 2)
+      })
+    }
+    const publishWork = () => {
+      store.dispatch('saveAndPublishWork', { id: currentWorkId }).then(() => {
+        showModal.value = true
       })
     }
     onMounted(() => {
@@ -259,7 +268,8 @@ export default defineComponent({
       userInfo,
       globalStatus,
       logout,
-      saveWork
+      saveWork,
+      publishWork
     }
   }
 })

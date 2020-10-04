@@ -3,6 +3,7 @@
   <uploader
     action="http://localhost:7001/api/upload"
     :beforeUpload="commonUploadCheck"
+    :uploaded="uploaded"
     @file-uploaded="handleFileUploaded"
   >
     <div class="uploader-container">
@@ -15,10 +16,9 @@
         <h4>上传中</h4>
       </div>
     </template>
-    <template #uploaded>
+    <template #uploaded="dataProps">
       <div class="uploader-container">
-        <FileImageOutlined :style="{fontSize: '30px'}"/>
-        <h4>{{text}}</h4>
+        <img :src="dataProps.uploadedData.data.url">
       </div>
     </template>
   </uploader>
@@ -41,11 +41,15 @@ export default defineComponent({
     text: {
       type: String,
       default: '上传背景图片'
+    },
+    uploaded: {
+      type: Object
     }
   },
   emits: ['file-uploaded'],
   setup (props, context) {
     const handleFileUploaded = (data: any) => {
+      console.log(data)
       context.emit('file-uploaded', data)
     }
     return {
@@ -81,5 +85,10 @@ export default defineComponent({
 }
 .uploader-container:hover h4 {
   color: #1890ff;
+}
+.uploader-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 </style>

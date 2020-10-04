@@ -16,6 +16,7 @@ export interface PageData {
   id?: number;
   title?: string;
   desc?: string;
+  coverImg?: string;
 }
 export interface UserProps {
   isLogin: boolean;
@@ -93,6 +94,9 @@ export default createStore<GlobalDataProps>({
       }
     },
     updatePage (state, { key, value }) {
+      (state.page as { [key: string]: any })[key] = value
+    },
+    updatePageProps (state, { key, value }) {
       if (state.page.props) {
         state.page.props[key] = value
       }
@@ -143,8 +147,8 @@ export default createStore<GlobalDataProps>({
     },
     getWork (state, { data }) {
       console.log(data)
-      const { content, title, desc } = data
-      const pageData = { title, desc }
+      const { content, title, desc, coverImg } = data
+      const pageData = { title, desc, coverImg }
       state.page = { ...state.page, ...pageData }
       if (content.props) {
         state.page.props = content.props
@@ -152,6 +156,9 @@ export default createStore<GlobalDataProps>({
       state.components = content.components
     },
     saveWork (state, rawData) {
+      console.log(rawData)
+    },
+    publishWork (state, rawData) {
       console.log(rawData)
     },
     setLoading (state, { status, opName }) {
@@ -183,20 +190,32 @@ export default createStore<GlobalDataProps>({
 
       } else {
         // save current work
+        const { title, desc, props, coverImg } = state.page
         const postData = {
+          title,
+          desc,
+          coverImg,
           content: {
             components: state.components,
-            props: state.page.props
+            props
           }
         }
         return asyncAndCommit(`/works/${id}`, 'saveWork', commit, { method: 'patch', data: postData })
       }
     },
+    publishWork ({ commit }, id) {
+      return asyncAndCommit(`/works/publish/${id}`, 'publishWork', commit, { method: 'post' })
+    },
     loginAndFetch ({ dispatch }, loginData) {
       return dispatch('login', loginData).then(() => {
         return dispatch('fetchCurrentUser')
       }).then(() => {
-        return dispatch('createWork', { title: '未命名作品', desc: '未命名作品' })
+        return dispatch('createWork', { title: '未命名作品', desc: '未命名作品', coverImg: 'http://vue-maker.oss-cn-hangzhou.aliyuncs.com/vue-marker/5f79389d4737571e2e1dc7cb.png' })
+      })
+    },
+    saveAndPublishWork ({ dispatch }, payload) {
+      return dispatch('saveWork', payload).then(() => {
+        return dispatch('publishWork', payload.id)
       })
     }
   },
