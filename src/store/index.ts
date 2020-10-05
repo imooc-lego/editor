@@ -17,6 +17,9 @@ export interface PageData {
   title?: string;
   desc?: string;
   coverImg?: string;
+  uuid?: string;
+  latestPublishAt?: string;
+  updatedAt?: string;
 }
 export interface UserProps {
   isLogin: boolean;
@@ -36,6 +39,12 @@ export interface GlobalStatus {
   error: any;
   opName?: string;
 }
+
+export interface ChannelProps {
+  id: number;
+  name: string;
+  workId: number;
+}
 export interface GlobalDataProps {
   // token
   token?: string;
@@ -47,10 +56,12 @@ export interface GlobalDataProps {
   currentElement: string;
   // 当前被复制的组件
   copiedComponent?: ComponentData;
-  // 页面设置
+  // 当前 work 的数据
   page: PageData;
   // 全局状态，loading，error 等等
   status: GlobalStatus;
+  // 当前 work 的 channels
+  channels: ChannelProps[];
 
 }
 export type ICustomAxiosConfig = AxiosRequestConfig & {
@@ -76,7 +87,8 @@ export default createStore<GlobalDataProps>({
     components: [],
     currentElement: '',
     page: { props: { backgroundColor: '#ffffff', backgroundImage: '', backgroundRepeat: 'no-repeat', backgroundSize: 'contain' } },
-    status: { loading: false, error: null, opName: '' }
+    status: { loading: false, error: null, opName: '' },
+    channels: []
   },
   mutations: {
     addComponentToEditor (state, component) {
@@ -142,24 +154,25 @@ export default createStore<GlobalDataProps>({
       delete axios.defaults.headers.common.Authorization
     },
     createWork (state, rawData) {
-      console.log(rawData)
       state.page = { ...state.page, ...rawData.data }
     },
     getWork (state, { data }) {
-      console.log(data)
-      const { content, title, desc, coverImg } = data
-      const pageData = { title, desc, coverImg }
-      state.page = { ...state.page, ...pageData }
+      const { content, ...rest } = data
+      state.page = { ...state.page, ...rest }
       if (content.props) {
         state.page.props = { ...state.page.props, ...content.props }
       }
       state.components = content.components
     },
-    saveWork (state, rawData) {
-      console.log(rawData)
+    getChannels (state, { data }) {
+      console.log(data)
+      state.channels = data.list
     },
-    publishWork (state, rawData) {
-      console.log(rawData)
+    saveWork (state) {
+      state.page.updatedAt = new Date().toISOString()
+    },
+    publishWork (state) {
+      state.page.latestPublishAt = new Date().toISOString()
     },
     setLoading (state, { status, opName }) {
       state.status.loading = status
@@ -183,6 +196,9 @@ export default createStore<GlobalDataProps>({
     },
     getWork ({ commit }, id) {
       return asyncAndCommit(`/works/${id}`, 'getWork', commit)
+    },
+    getChannels ({ commit }, id) {
+      return asyncAndCommit(`channel/getWorkChannels/${id}`, 'getChannels', commit)
     },
     saveWork ({ commit, state }, payload) {
       const { id, data } = payload

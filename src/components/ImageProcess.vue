@@ -16,7 +16,7 @@
     </div>
     <div class="image-process">
       <uploader
-        action="http://localhost:7001/api/upload"
+        action="http://182.92.193.142:8081/api/upload"
         @file-uploaded="handleFileUploaded"
         :beforeUpload="commonUploadCheck"
       >

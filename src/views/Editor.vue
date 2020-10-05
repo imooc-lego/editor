@@ -21,11 +21,13 @@
       </div>
     </div>
     <a-modal
-      title="Title"
+      title="发布成功"
       v-model:visible="showModal"
       @ok="handleOk"
+      width="700px"
+      :footer="null"
     >
-      <p>发布成功</p>
+      <channel-form/>
     </a-modal>
     <div class="menu-container" ref="menuRef">
     <a-menu mode="vertical" style="width: 200px; border: 1px solid #ccc;">
@@ -142,6 +144,7 @@ import { defineComponent, ref, computed, watch, onMounted, onUnmounted } from 'v
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 import PublishForm from './PublishForm.vue'
+import ChannelForm from './ChannelForm.vue'
 import LText from '../components/LText.vue'
 import LImage from '../components/LImage.vue'
 import LShape from '../components/LShape.vue'
@@ -170,7 +173,8 @@ export default defineComponent({
     LayerList,
     PropsTable,
     FinalPage,
-    PublishForm
+    PublishForm,
+    ChannelForm
   },
   setup () {
     const store = useStore<GlobalDataProps>()

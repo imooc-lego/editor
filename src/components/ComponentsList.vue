@@ -10,7 +10,7 @@
       </div>
       <uploader
         v-else
-        action="http://localhost:7001/api/upload"
+        action="http://182.92.193.142:8081/api/upload"
         @file-uploaded="(uploaded) => { handleFileUploaded(uploaded, item) }"
         :beforeUpload="commonUploadCheck"
       >

@@ -6,7 +6,9 @@ import 'cropperjs/dist/cropper.css'
 import App from './App.vue'
 import router from './router'
 import store, { ICustomAxiosConfig } from './store'
-axios.defaults.baseURL = 'http://182.92.168.192:8081/api/'
+export const baseBackendURL = 'http://182.92.168.192:8081'
+export const baseH5URL = 'http://182.92.168.192:8082'
+axios.defaults.baseURL = `${baseBackendURL}/api/`
 const app = createApp(App)
 axios.interceptors.request.use(config => {
   const newConfig = config as ICustomAxiosConfig
