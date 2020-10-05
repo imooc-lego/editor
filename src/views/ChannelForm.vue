@@ -18,7 +18,7 @@
           <a-tab-pane key="1" tab="发布为作品">
             <a-row v-for="channel in channels" :key="channel.id" class="channel-item">
               <a-col :span="6">
-                <img :src="page.coverImg" :alt="page.title" />
+                <div :id="`channel-barcode-${channel.id}`" class="barcode-container"></div>
               </a-col>
               <a-col :span="18" class="left-gap">
                 <h4>{{channel.name}}</h4>
@@ -59,9 +59,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, Ref, computed, onMounted } from 'vue'
+import { defineComponent, reactive, ref, Ref, computed, onMounted, nextTick } from 'vue'
 import axios from 'axios'
 import ClipboardJS from 'clipboard'
+import QRCode from 'qrcodejs2'
 import { message } from 'ant-design-vue'
 import { commonUploadCheck } from '../helper'
 import { useStore } from 'vuex'
@@ -80,6 +81,7 @@ export default defineComponent({
     const currentWorkId = route.params.id as string
     const page = computed(() => store.state.page)
     const channels = computed(() => store.state.channels)
+    const generateChannelURL = (id: number) => `${baseH5URL}/p/${page.value.id}-${page.value.uuid}?channel=${id}`
     onMounted(() => {
       store.dispatch('getChannels', currentWorkId)
       const clipboard = new ClipboardJS('.copy-button')
@@ -87,6 +89,16 @@ export default defineComponent({
         message.success('复制成功', 1)
         e.clearSelection()
       })
+      setTimeout(() => {
+        channels.value.forEach(channel => {
+          // eslint-disable-next-line no-new
+          new QRCode(document.getElementById(`channel-barcode-${channel.id}`), {
+            text: generateChannelURL(channel.id),
+            width: 80,
+            height: 80
+          })
+        })
+      }, 200)
     })
     const form = reactive({
       channelName: ''
@@ -100,7 +112,6 @@ export default defineComponent({
     const updatePage = (key: string, value: string) => {
       store.commit('updatePage', { key, value })
     }
-    const generateChannelURL = (id: number) => `${baseH5URL}/p/${page.value.id}-${page.value.uuid}?channel=${id}`
 
     const createChannel = () => {
       axios.post('/channel', { name: form.channelName, workId: parseInt(currentWorkId) }).then(data => {
@@ -145,5 +156,9 @@ export default defineComponent({
 .channel-item {
   padding: 10px 0;
   border-bottom: 1px solid #efefef;
+}
+.barcode-container {
+  height: 80px;
+  width: 80px;
 }
 </style>

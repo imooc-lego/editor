@@ -16,6 +16,7 @@
     "cropperjs": "^1.5.9",
     "hotkeys-js": "^3.8.1",
     "lodash": "^4.17.20",
+    "qrcodejs2": "0.0.2",
     "uuid": "^8.3.0",
     "vue": "^3.0.0-0",
     "vue-draggable-next": "^1.0.5",
