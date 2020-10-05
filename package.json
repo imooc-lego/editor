@@ -11,6 +11,7 @@
     "@ant-design/icons-vue": "^5.1.5",
     "ant-design-vue": "^2.0.0-beta.9",
     "axios": "^0.20.0",
+    "clipboard": "^2.0.6",
     "core-js": "^3.6.5",
     "cropperjs": "^1.5.9",
     "hotkeys-js": "^3.8.1",
@@ -22,6 +23,7 @@
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
+    "@types/clipboard": "^2.0.1",
     "@types/lodash": "^4.14.161",
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^2.33.0",

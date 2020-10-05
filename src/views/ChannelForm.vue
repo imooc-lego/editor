@@ -24,10 +24,10 @@
                 <h4>{{channel.name}}</h4>
                 <a-row>
                   <a-col :span="18">
-                    <a-input :value="generateChannelURL(channel.id)" :disabled="true" />
+                    <a-input :value="generateChannelURL(channel.id)" :readonly="true" :id="`channel-url-${channel.id}`"/>
                   </a-col>
                   <a-col :span="6">
-                    <a-button>复制</a-button>
+                    <a-button class="copy-button" :data-clipboard-target="`#channel-url-${channel.id}`">复制</a-button>
                   </a-col>
                 </a-row>
               </a-col>
@@ -61,6 +61,8 @@
 <script lang="ts">
 import { defineComponent, reactive, ref, Ref, computed, onMounted } from 'vue'
 import axios from 'axios'
+import ClipboardJS from 'clipboard'
+import { message } from 'ant-design-vue'
 import { commonUploadCheck } from '../helper'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
@@ -70,9 +72,7 @@ interface RuleFormInstance {
   validate: () => Promise<any>;
 }
 export default defineComponent({
-  // components: {
-  //   StyledUploader
-  // },
+
   emits: ['panel-close', 'publish-success'],
   setup (props, context) {
     const store = useStore<GlobalDataProps>()
@@ -82,6 +82,11 @@ export default defineComponent({
     const channels = computed(() => store.state.channels)
     onMounted(() => {
       store.dispatch('getChannels', currentWorkId)
+      const clipboard = new ClipboardJS('.copy-button')
+      clipboard.on('success', (e) => {
+        message.success('复制成功', 1)
+        e.clearSelection()
+      })
     })
     const form = reactive({
       channelName: ''
@@ -95,7 +100,7 @@ export default defineComponent({
     const updatePage = (key: string, value: string) => {
       store.commit('updatePage', { key, value })
     }
-    const generateChannelURL = (id: number) => `${baseH5URL}/p/${id}-${page.value.uuid}`
+    const generateChannelURL = (id: number) => `${baseH5URL}/p/${page.value.id}-${page.value.uuid}?channel=${id}`
 
     const createChannel = () => {
       axios.post('/channel', { name: form.channelName, workId: parseInt(currentWorkId) }).then(data => {
@@ -134,7 +139,7 @@ export default defineComponent({
 }
 .delete-area {
   position: absolute;
-  top: 0;
+  top: 10px;
   right: 20px;
 }
 .channel-item {
