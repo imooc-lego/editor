@@ -165,8 +165,13 @@ export default createStore<GlobalDataProps>({
       state.components = content.components
     },
     getChannels (state, { data }) {
-      console.log(data)
       state.channels = data.list
+    },
+    createChannel (state, { data }) {
+      state.channels = [...state.channels, data]
+    },
+    deleteChannel (state, { extraData }) {
+      state.channels = state.channels.filter(channel => channel.id !== extraData.id)
     },
     saveWork (state) {
       state.page.updatedAt = new Date().toISOString()
@@ -198,7 +203,13 @@ export default createStore<GlobalDataProps>({
       return asyncAndCommit(`/works/${id}`, 'getWork', commit)
     },
     getChannels ({ commit }, id) {
-      return asyncAndCommit(`channel/getWorkChannels/${id}`, 'getChannels', commit)
+      return asyncAndCommit(`/channel/getWorkChannels/${id}`, 'getChannels', commit)
+    },
+    createChannel ({ commit }, payload) {
+      return asyncAndCommit('/channel', 'createChannel', commit, { method: 'post', data: payload })
+    },
+    deleteChannel ({ commit }, id) {
+      return asyncAndCommit(`channel/${id}`, 'deleteChannel', commit, { method: 'delete' }, { id })
     },
     saveWork ({ commit, state }, payload) {
       const { id, data } = payload

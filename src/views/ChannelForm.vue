@@ -31,9 +31,11 @@
                   </a-col>
                 </a-row>
               </a-col>
-              <div class="delete-area"><a-button type="danger" size="small">删除渠道</a-button></div>
+              <div class="delete-area">
+                <a-button type="danger" size="small" @click="deleteChannel(channel.id)" :disabled="deleteDisabled">删除渠道</a-button>
+              </div>
             </a-row>
-            <a-form layout="inline" :model="form" :rules="rules" ref="publishForm">
+            <a-form layout="inline" :model="form" :rules="rules" ref="publishForm" :style="{ marginTop: '20px' }">
               <a-form-item required name="channelName">
                 <a-input v-model:value="form.channelName" placeholder="渠道名称"></a-input>
               </a-form-item>
@@ -59,8 +61,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, Ref, computed, onMounted, nextTick } from 'vue'
-import axios from 'axios'
+import { defineComponent, reactive, ref, Ref, computed, onMounted, watch } from 'vue'
+import { last } from 'lodash'
 import ClipboardJS from 'clipboard'
 import QRCode from 'qrcodejs2'
 import { message } from 'ant-design-vue'
@@ -82,6 +84,17 @@ export default defineComponent({
     const page = computed(() => store.state.page)
     const channels = computed(() => store.state.channels)
     const generateChannelURL = (id: number) => `${baseH5URL}/p/${page.value.id}-${page.value.uuid}?channel=${id}`
+    const generateQRCode = (id: number) => {
+      const ele = document.getElementById(`channel-barcode-${id}`)
+      if (ele) {
+        // eslint-disable-next-line no-new
+        new QRCode(document.getElementById(`channel-barcode-${id}`), {
+          text: generateChannelURL(id),
+          width: 80,
+          height: 80
+        })
+      }
+    }
     onMounted(() => {
       store.dispatch('getChannels', currentWorkId)
       const clipboard = new ClipboardJS('.copy-button')
@@ -91,15 +104,21 @@ export default defineComponent({
       })
       setTimeout(() => {
         channels.value.forEach(channel => {
-          // eslint-disable-next-line no-new
-          new QRCode(document.getElementById(`channel-barcode-${channel.id}`), {
-            text: generateChannelURL(channel.id),
-            width: 80,
-            height: 80
-          })
+          generateQRCode(channel.id)
         })
       }, 200)
     })
+    watch(channels, (newChannels, oldChannels) => {
+      // creating new channel
+      if ((newChannels.length > oldChannels.length) && (oldChannels.length !== 0)) {
+        // grab the last item for new channel
+        const createdChannel = last(newChannels)
+        if (createdChannel) {
+          generateQRCode(createdChannel.id)
+        }
+      }
+    })
+
     const form = reactive({
       channelName: ''
     })
@@ -112,11 +131,18 @@ export default defineComponent({
     const updatePage = (key: string, value: string) => {
       store.commit('updatePage', { key, value })
     }
-
+    const deleteDisabled = computed(() => channels.value.length === 1)
     const createChannel = () => {
-      axios.post('/channel', { name: form.channelName, workId: parseInt(currentWorkId) }).then(data => {
-        console.log(data)
+      const payload = {
+        name: form.channelName,
+        workId: parseInt(currentWorkId)
+      }
+      store.dispatch('createChannel', payload).then(() => {
+        form.channelName = ''
       })
+    }
+    const deleteChannel = (id: number) => {
+      store.dispatch('deleteChannel', id)
     }
     const cancelEdit = () => {
       context.emit('panel-close', true)
@@ -131,7 +157,9 @@ export default defineComponent({
       page,
       createChannel,
       channels,
-      generateChannelURL
+      generateChannelURL,
+      deleteChannel,
+      deleteDisabled
     }
   }
 })
