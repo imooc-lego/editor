@@ -14,8 +14,8 @@
             <p>{{page.desc}}</p>
           </a-col>
         </a-row>
-        <a-tabs type="card" :style="{ marginTop: '20px' }">
-          <a-tab-pane key="1" tab="发布为作品">
+        <a-tabs type="card" :style="{ marginTop: '20px' }" @change="tabChange">
+          <a-tab-pane key="channels" tab="发布为作品">
             <a-row v-for="channel in channels" :key="channel.id" class="channel-item">
               <a-col :span="6">
                 <div :id="`channel-barcode-${channel.id}`" class="barcode-container"></div>
@@ -51,8 +51,32 @@
             </a-form>
 
           </a-tab-pane>
-          <a-tab-pane key="2" tab="发布为模版">
-            Content of Tab Pane 2
+          <a-tab-pane key="template" tab="发布为模版">
+            <a-row class="channel-item">
+              <a-col :span="6">
+                <div id="channel-barcode-template" class="barcode-container"></div>
+              </a-col>
+              <a-col :span="18" class="left-gap">
+                <h4>模版信息</h4>
+                <a-row>
+                  <a-col :span="18">
+                    <a-input :value="generateChannelURL()" :readonly="true" id="channel-url-template"/>
+                  </a-col>
+                  <a-col :span="6">
+                    <a-button class="copy-button" data-clipboard-target="#channel-url-template">复制</a-button>
+                  </a-col>
+                </a-row>
+              </a-col>
+            </a-row>
+            <div class="template-submit">
+              <a-button
+                  type="primary"
+                  size="large"
+                  @click="publishTemplate"
+              >
+                  发布模版
+              </a-button>
+            </div>
           </a-tab-pane>
         </a-tabs>
       </a-col>
@@ -61,7 +85,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, Ref, computed, onMounted, watch } from 'vue'
+import { defineComponent, reactive, ref, Ref, computed, onMounted, watch, nextTick } from 'vue'
 import { last } from 'lodash'
 import ClipboardJS from 'clipboard'
 import QRCode from 'qrcodejs2'
@@ -83,12 +107,14 @@ export default defineComponent({
     const currentWorkId = route.params.id as string
     const page = computed(() => store.state.page)
     const channels = computed(() => store.state.channels)
-    const generateChannelURL = (id: number) => `${baseH5URL}/p/${page.value.id}-${page.value.uuid}?channel=${id}`
-    const generateQRCode = (id: number) => {
-      const ele = document.getElementById(`channel-barcode-${id}`)
+    const qrCodeGenerated = ref(false)
+    const generateChannelURL = (id?: number) =>
+      id ? `${baseH5URL}/p/${page.value.id}-${page.value.uuid}?channel=${id}` : `${baseH5URL}/p/${page.value.id}-${page.value.uuid}`
+    const generateQRCode = (id?: number) => {
+      const ele = document.getElementById(id ? `channel-barcode-${id}` : 'channel-barcode-template')
       if (ele) {
         // eslint-disable-next-line no-new
-        new QRCode(document.getElementById(`channel-barcode-${id}`), {
+        new QRCode(ele, {
           text: generateChannelURL(id),
           width: 80,
           height: 80
@@ -106,7 +132,7 @@ export default defineComponent({
         channels.value.forEach(channel => {
           generateQRCode(channel.id)
         })
-      }, 200)
+      }, 500)
     })
     watch(channels, (newChannels, oldChannels) => {
       // creating new channel
@@ -118,7 +144,14 @@ export default defineComponent({
         }
       }
     })
-
+    const tabChange = (activeKey: string) => {
+      if (activeKey === 'template' && !qrCodeGenerated.value) {
+        nextTick(() => {
+          generateQRCode()
+          qrCodeGenerated.value = true
+        })
+      }
+    }
     const form = reactive({
       channelName: ''
     })
@@ -144,6 +177,11 @@ export default defineComponent({
     const deleteChannel = (id: number) => {
       store.dispatch('deleteChannel', id)
     }
+    const publishTemplate = () => {
+      store.dispatch('publishTemplate', currentWorkId).then(() => {
+        message.success('模版发布成功', 1)
+      })
+    }
     const cancelEdit = () => {
       context.emit('panel-close', true)
     }
@@ -159,7 +197,9 @@ export default defineComponent({
       channels,
       generateChannelURL,
       deleteChannel,
-      deleteDisabled
+      deleteDisabled,
+      tabChange,
+      publishTemplate
     }
   }
 })
@@ -188,5 +228,10 @@ export default defineComponent({
 .barcode-container {
   height: 80px;
   width: 80px;
+}
+.template-submit {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
 }
 </style>

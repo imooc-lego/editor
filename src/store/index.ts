@@ -20,6 +20,7 @@ export interface PageData {
   uuid?: string;
   latestPublishAt?: string;
   updatedAt?: string;
+  isTemplate?: boolean;
 }
 export interface UserProps {
   isLogin: boolean;
@@ -179,6 +180,9 @@ export default createStore<GlobalDataProps>({
     publishWork (state) {
       state.page.latestPublishAt = new Date().toISOString()
     },
+    publishTemplate (state) {
+      state.page.isTemplate = true
+    },
     setLoading (state, { status, opName }) {
       state.status.loading = status
       if (opName) {
@@ -233,6 +237,9 @@ export default createStore<GlobalDataProps>({
     publishWork ({ commit }, id) {
       return asyncAndCommit(`/works/publish/${id}`, 'publishWork', commit, { method: 'post' })
     },
+    publishTemplate ({ commit }, id) {
+      return asyncAndCommit(`/works/publish-template/${id}`, 'publishTemplate', commit, { method: 'post' })
+    },
     loginAndFetch ({ dispatch }, loginData) {
       return dispatch('login', loginData).then(() => {
         return dispatch('fetchCurrentUser')
@@ -240,10 +247,18 @@ export default createStore<GlobalDataProps>({
         return dispatch('createWork', { title: '未命名作品', desc: '未命名作品', coverImg: 'http://vue-maker.oss-cn-hangzhou.aliyuncs.com/vue-marker/5f79389d4737571e2e1dc7cb.png' })
       })
     },
-    saveAndPublishWork ({ dispatch }, payload) {
-      return dispatch('saveWork', payload).then(() => {
-        return dispatch('publishWork', payload.id)
-      })
+    saveAndPublishWork ({ dispatch, state }, payload) {
+      const { id } = state.page
+      return dispatch('saveWork', payload)
+        .then(() => dispatch('publishWork', id))
+        .then(() => dispatch('getChannels', id))
+        .then(() => {
+          if (state.channels.length === 0) {
+            return dispatch('createChannel', { name: '默认', workId: id })
+          } else {
+            return Promise.resolve({})
+          }
+        })
     }
   },
   getters: {

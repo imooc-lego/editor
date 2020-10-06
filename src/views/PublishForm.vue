@@ -81,7 +81,6 @@ export default defineComponent({
       return publishForm.value.validate()
     }
     const publishWork = () => {
-      console.log(store.state.page)
       validate()
         .then(() => store.dispatch('saveAndPublishWork', { id: currentWorkId }))
         .then(() => { context.emit('publish-success', true) })
