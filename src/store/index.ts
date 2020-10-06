@@ -13,6 +13,7 @@ export interface ComponentData {
 }
 export interface PageData {
   props: { [key: string]: any };
+  setting: { [key: string]: any };
   id?: number;
   title?: string;
   desc?: string;
@@ -87,7 +88,7 @@ export default createStore<GlobalDataProps>({
     user: { isLogin: false },
     components: [],
     currentElement: '',
-    page: { props: { backgroundColor: '#ffffff', backgroundImage: '', backgroundRepeat: 'no-repeat', backgroundSize: 'contain' } },
+    page: { props: { backgroundColor: '#ffffff', backgroundImage: '', backgroundRepeat: 'no-repeat', backgroundSize: 'contain' }, setting: {} },
     status: { loading: false, error: null, opName: '' },
     channels: []
   },
@@ -112,6 +113,11 @@ export default createStore<GlobalDataProps>({
     updatePageProps (state, { key, value }) {
       if (state.page.props) {
         state.page.props[key] = value
+      }
+    },
+    updatePageSetting (state, { key, value }) {
+      if (state.page.setting) {
+        state.page.setting[key] = value
       }
     },
     updateComponent (state, { id, key, value }) {
@@ -162,6 +168,9 @@ export default createStore<GlobalDataProps>({
       state.page = { ...state.page, ...rest }
       if (content.props) {
         state.page.props = { ...state.page.props, ...content.props }
+      }
+      if (content.setting) {
+        state.page.setting = { ...state.page.setting, ...content.setting }
       }
       state.components = content.components
     },

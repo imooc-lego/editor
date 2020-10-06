@@ -7,7 +7,7 @@
       <a-col :span="10">
         <styled-uploader
           text="上传封面图"
-          @file-uploaded="(rawData) => { updatePage('coverImg', rawData.data.url) }"
+          @file-uploaded="(rawData) => { updatePage('shareImg', rawData.data.url, true) }"
           :uploaded="form.uploaded"
         >
         </styled-uploader>
@@ -58,12 +58,12 @@ export default defineComponent({
     const store = useStore<GlobalDataProps>()
     const route = useRoute()
     const currentWorkId = route.params.id
-    const { title, desc, coverImg } = store.state.page
-    console.log(store.state.page)
+    const { title, desc, setting } = store.state.page
+    const { shareImg } = setting
     const form = reactive({
       title: title || '',
       subTitle: desc || '',
-      uploaded: coverImg ? { data: { url: coverImg } } : null
+      uploaded: { data: { url: shareImg || 'http://vue-maker.oss-cn-hangzhou.aliyuncs.com/vue-marker/5f79389d4737571e2e1dc7cb.png' } }
     })
     const publishForm = ref() as Ref<RuleFormInstance>
     const rules = {
@@ -74,8 +74,12 @@ export default defineComponent({
         { required: true, message: '副标题不能为空', trigger: 'blur' }
       ]
     }
-    const updatePage = (key: string, value: string) => {
-      store.commit('updatePage', { key, value })
+    const updatePage = (key: string, value: string, settings = false) => {
+      if (settings) {
+        store.commit('updatePageSetting', { key, value })
+      } else {
+        store.commit('updatePage', { key, value })
+      }
     }
     const validate = () => {
       return publishForm.value.validate()

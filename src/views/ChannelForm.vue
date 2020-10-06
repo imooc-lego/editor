@@ -1,13 +1,14 @@
 <template>
   <div class="publish-channel-container">
     <a-row :style="{ marginBottom: '20px' }">
-      <a-col :span="8">
+      <a-col :span="8" class="left-col">
         封面图
+        <img :src="page.coverImg" :alt="page.title" />
       </a-col>
       <a-col :span="16" class="right-col">
         <a-row>
           <a-col :span="6">
-            <img :src="page.coverImg" :alt="page.title" />
+            <img :src="page.setting.shareImg" :alt="page.title" />
           </a-col>
           <a-col :span="18" class="left-gap">
             <h4>{{page.title}}</h4>
@@ -206,6 +207,9 @@ export default defineComponent({
 </script>
 
 <style>
+.left-col img {
+  width: 80%;
+}
 .right-col img {
   width: 80px;
 }

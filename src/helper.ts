@@ -1,4 +1,6 @@
 import { message } from 'ant-design-vue'
+import axios from 'axios'
+import html2canvas from 'html2canvas'
 interface CheckCondition {
   format?: string[];
   size?: number;
@@ -66,4 +68,27 @@ export const imageDimensions = (file: File) => {
 
 export function isMobile (mobile: string) {
   return /^1[3-9]\d{9}$/.test(mobile)
+}
+
+export const takeScreenshotAndUpload = (id: string) => {
+  return html2canvas(document.getElementById(id) as HTMLElement, { allowTaint: false, useCORS: true }).then(canvas => {
+    return new Promise<any>((resolve, reject) => {
+      canvas.toBlob((data) => {
+        if (data) {
+          const newFile = new File([data], 'screenshot.png')
+          const formData = new FormData()
+          formData.append('file', newFile)
+          axios.post('http://182.92.193.142:8081/api/upload', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }).then(data => {
+            resolve(data.data)
+          })
+        } else {
+          reject(new Error('blob data error'))
+        }
+      })
+    })
+  })
 }

@@ -143,6 +143,7 @@
 import { defineComponent, ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
+import { message } from 'ant-design-vue'
 import PublishForm from './PublishForm.vue'
 import ChannelForm from './ChannelForm.vue'
 import LText from '../components/LText.vue'
@@ -158,7 +159,7 @@ import mapPropsToComponents from '../propsMap'
 import { ComponentData, GlobalDataProps } from '../store/index'
 import { initHotKeys } from '../plugins/hotKeys'
 import useContextMenu from '../hooks/useContextMenu'
-import { message } from 'ant-design-vue'
+import { takeScreenshotAndUpload } from '../helper'
 
 export type TabType = 'component' | 'layer' | 'page'
 export default defineComponent({
@@ -199,10 +200,11 @@ export default defineComponent({
         message.success('保存成功', 2)
       })
     }
-    const publishWork = () => {
-      store.dispatch('saveAndPublishWork', { id: currentWorkId }).then(() => {
-        showModal.value = true
-      })
+    const publishWork = async () => {
+      const { data } = await takeScreenshotAndUpload('canvas-area')
+      store.commit('updatePage', { key: 'coverImg', value: data.url })
+      await store.dispatch('saveAndPublishWork', { id: currentWorkId })
+      showModal.value = true
     }
     onMounted(() => {
       // fetch work
@@ -253,6 +255,7 @@ export default defineComponent({
         router.push('/login')
       }, 2000)
     }
+
     return {
       visible,
       showModal,
