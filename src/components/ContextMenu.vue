@@ -1,8 +1,9 @@
 <template>
   <div class="context-menu-component menu-container" ref="menuRef">
-    <a-menu mode="vertical" style="width: 200px; border: 1px solid #ccc;" :selectable="false">
+    <a-menu mode="vertical" style="width: 220px; border: 1px solid #ccc;" :selectable="false">
       <a-menu-item v-for="action in actions" :key="action.key" @click="action.action()">
-        {{action.key}}
+        <span class="item-text">{{operationText[action.key].text}}</span>
+        <span class="item-shortcut">{{operationText[action.key].shortcut}}</span>
       </a-menu-item>
     </a-menu>
   </div>
@@ -12,7 +13,7 @@
 import { defineComponent, onMounted, ref } from 'vue'
 import { map } from 'lodash'
 import { clickInsideElement } from '../helper'
-import dataOperation from '../plugins/dataOperations'
+import dataOperation, { operationText } from '../plugins/dataOperations'
 export default defineComponent({
   emits: ['on-select'],
   setup (props, context) {
@@ -47,7 +48,8 @@ export default defineComponent({
     })
     return {
       menuRef,
-      actions
+      actions,
+      operationText
     }
   }
 })
@@ -59,5 +61,15 @@ export default defineComponent({
   position: absolute;
   background: #fff;
   z-index: 2000;
+}
+.menu-container .ant-menu-item {
+  display: flex;
+  justify-content: space-between;
+}
+.menu-container .ant-menu-item:hover {
+  background: #efefef;
+}
+.ant-menu-item .item-shortcut {
+  color: #ccc;
 }
 </style>
