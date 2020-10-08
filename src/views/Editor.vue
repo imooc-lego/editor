@@ -144,6 +144,7 @@ import { defineComponent, ref, computed, watch, onMounted, onUnmounted } from 'v
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 import { message } from 'ant-design-vue'
+import { forEach, pickBy } from 'lodash'
 import PublishForm from './PublishForm.vue'
 import ChannelForm from './ChannelForm.vue'
 import LText from '../components/LText.vue'
@@ -243,10 +244,12 @@ export default defineComponent({
         activePanel.value = 'page'
       }
     }
-    const updatePosition = (data: { x: number; y: number; id: string}) => {
-      const { x, y, id } = data
-      store.commit('updateProp', { key: 'left', value: x, id })
-      store.commit('updateProp', { key: 'top', value: y, id })
+    const updatePosition = (data: { left: number; top: number; id: string; width: number; height: number}) => {
+      const { id } = data
+      forEach(pickBy(data, (v, k) => k !== 'id'), (value, key) => {
+        const newValue = (key === 'width' || key === 'height') ? value + 'px' : value.toString()
+        store.commit('updateProp', { key, value: newValue, id })
+      })
     }
     const logout = () => {
       store.commit('logout')

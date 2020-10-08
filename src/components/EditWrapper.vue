@@ -47,9 +47,10 @@ export default defineComponent({
       x: 0,
       y: 0
     })
+    let size: any
     const editWrapper = ref<null | HTMLElement>(null)
     // need to pick position absolute out, to go with the inner element
-    const styleProps = useStylePick(props.props || {}, ['position', 'top', 'left'])
+    const styleProps = useStylePick(props.props || {}, ['position', 'top', 'left', 'width', 'height'])
     const itemClick = () => {
       context.emit('edit', props.id)
     }
@@ -67,11 +68,10 @@ export default defineComponent({
       currentElement.style.opacity = ''
       currentElement.style.top = finalYCord
       currentElement.style.left = finalXCord
-      context.emit('update-position', { x: finalXCord, y: finalYCord, id: props.id })
+      context.emit('update-position', { left: finalXCord, top: finalYCord, id: props.id })
     }
     const caculateSize = (direction: ResizeDirection, e: MouseEvent, positions: OriginalPositions) => {
       const { left, right, top, bottom } = positions
-      console.log(left)
       const { pageX, pageY } = e
       const container = document.getElementById('canvas-area') as HTMLElement
       const rightWidth = pageX - left
@@ -112,28 +112,35 @@ export default defineComponent({
     const startResize = (event: MouseEvent, direction: ResizeDirection) => {
       const currentElement = editWrapper.value as HTMLElement
       currentElement.draggable = false
+      const currentComponent = currentElement.firstElementChild as HTMLElement
+      const resizeElements = [currentElement, currentComponent]
       const { left, right, top, bottom } = currentElement.getBoundingClientRect()
       const handleMove = (e: MouseEvent) => {
         if (currentElement) {
-          const size = caculateSize(direction, e, { left, right, top, bottom })
-          if (size) {
-            if (size.left) {
-              currentElement.style.left = size.left + 'px'
+          size = caculateSize(direction, e, { left, right, top, bottom })
+          resizeElements.forEach(element => {
+            const { style } = element
+            if (size) {
+              if (size.left) {
+                style.left = size.left + 'px'
+              }
+              if (size.top) {
+                style.top = size.top + 'px'
+              }
+              style.width = size.width + 'px'
+              style.height = size.height + 'px'
+              // context.emit('update-position', { ...size, id: props.id })
             }
-            if (size.top) {
-              currentElement.style.top = size.top + 'px'
-            }
-            currentElement.style.width = size.width + 'px'
-            currentElement.style.height = size.height + 'px'
-          }
+          })
         }
       }
       const handleMouseUp = () => {
-        console.log(123)
         document.removeEventListener('mousemove', handleMove)
         currentElement.draggable = true
+        console.log(size)
+        context.emit('update-position', { ...size, id: props.id })
         nextTick(() => {
-          document.removeEventListener('mouseup', this as any)
+          document.removeEventListener('mouseup', handleMouseUp)
         })
       }
       document.addEventListener('mousemove', handleMove)
