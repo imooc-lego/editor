@@ -11,10 +11,12 @@ import { defineComponent, PropType } from 'vue'
 import { ComponentData, PageData } from '../store/index'
 import LText from '../components/LText.vue'
 import LImage from '../components/LImage.vue'
+import LShape from '../components/LShape.vue'
 export default defineComponent({
   components: {
     LText,
-    LImage
+    LImage,
+    LShape
   },
   props: {
     page: {

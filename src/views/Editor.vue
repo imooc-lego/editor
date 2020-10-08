@@ -299,12 +299,12 @@ export default defineComponent({
 .preview-list {
   padding: 0;
   margin: 0;
-  position: relative;
-  height: 600px;
   min-width: 322px;
   border: 1px solid #efefef;
   background: #fff;
   overflow: hidden;
+  position: fixed;
+  margin-top: 50px;
 }
 .preview-list.active {
   border: 1px solid #1890ff;

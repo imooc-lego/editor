@@ -88,7 +88,7 @@ export default createStore<GlobalDataProps>({
     user: { isLogin: false },
     components: [],
     currentElement: '',
-    page: { props: { backgroundColor: '#ffffff', backgroundImage: '', backgroundRepeat: 'no-repeat', backgroundSize: 'contain' }, setting: {} },
+    page: { props: { backgroundColor: '#ffffff', backgroundImage: '', backgroundRepeat: 'no-repeat', backgroundSize: 'contain', height: '600px' }, setting: {} },
     status: { loading: false, error: null, opName: '' },
     channels: []
   },

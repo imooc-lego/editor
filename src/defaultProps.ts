@@ -57,7 +57,11 @@ export const componentsDefaultProps: DefaultPropsType = {
     props: {
       text: '正文内容',
       ...textDefaultProps,
-      fontSize: '14px'
+      fontSize: '14px',
+      width: '125px',
+      height: '36px',
+      left: (320 / 2) - (125 / 2) + 'px',
+      top: (600 / 2) - (36 / 2) + 'px'
     }
   },
   'l-image': {

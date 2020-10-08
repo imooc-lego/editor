@@ -5,7 +5,7 @@
       @click="onItemClick(item)" class="component-item"
     >
       <div class="component-wrapper" v-if="item.type !== 'upload'">
-        <component :is="item.name" v-bind="item.props"  :style="createResetCss" class="inside-component"/>
+        <component :is="item.name" v-bind="item.props"  :style="generateResetCss(item.name)" class="inside-component"/>
         <span v-if="item.text" class="tip-text">{{item.text}}</span>
       </div>
       <uploader
@@ -54,9 +54,11 @@ interface CreateComponentType {
   type?: string;
   props: { [key: string]: string };
 }
-const createResetCss = {
-  // width: '',
-  position: 'static'
+const generateResetCss = (name: string) => {
+  return {
+    position: 'static',
+    ...((name !== 'l-shape') && { height: '' })
+  }
 }
 // the component name list
 const componentsList: CreateComponentType[] = [
@@ -174,7 +176,7 @@ export default defineComponent({
       onItemClick,
       commonUploadCheck,
       handleFileUploaded,
-      createResetCss
+      generateResetCss
     }
   }
 })

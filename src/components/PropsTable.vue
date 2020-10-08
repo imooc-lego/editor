@@ -126,5 +126,9 @@ export default defineComponent({
 #item-background-processer-1 {
   width: 100%;
   cursor: pointer;
+  margin-bottom: 15px;
+}
+#item-background-processer-1 .styled-upload-component .uploader-container {
+  min-height: 200px;
 }
 </style>
