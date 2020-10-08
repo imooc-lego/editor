@@ -2,6 +2,9 @@
   <div class="editor" id="editor-layout-main">
     <a-spin tip="读取中" class="ediotr-spinner" v-if="globalStatus.loading">
     </a-spin>
+    <context-menu
+      @on-select="(id) => { editProps(id) }"
+    />
     <a-drawer
       title="设置面板"
       placement="right"
@@ -23,19 +26,11 @@
     <a-modal
       title="发布成功"
       v-model:visible="showModal"
-      @ok="handleOk"
       width="700px"
       :footer="null"
     >
       <channel-form/>
     </a-modal>
-    <div class="menu-container" ref="menuRef">
-    <a-menu mode="vertical" style="width: 200px; border: 1px solid #ccc;">
-      <a-menu-item key="1">
-        Navigation One
-      </a-menu-item>
-    </a-menu>
-    </div>
     <a-layout>
       <a-layout-header class="header">
         <div class="page-title">
@@ -152,6 +147,7 @@ import LImage from '../components/LImage.vue'
 import LShape from '../components/LShape.vue'
 import EditWrapper from '../components/EditWrapper.vue'
 import ComponentsList from '../components/ComponentsList.vue'
+import ContextMenu from '../components/ContextMenu.vue'
 import EditGroup from '../components/EditGroup.vue'
 import PropsTable from '../components/PropsTable.vue'
 import LayerList from '../components/LayerList.vue'
@@ -159,7 +155,6 @@ import FinalPage from '../components/FinalPage.vue'
 import mapPropsToComponents from '../propsMap'
 import { ComponentData, GlobalDataProps } from '../store/index'
 import { initHotKeys } from '../plugins/hotKeys'
-import useContextMenu from '../hooks/useContextMenu'
 import { takeScreenshotAndUpload } from '../helper'
 
 export type TabType = 'component' | 'layer' | 'page'
@@ -176,7 +171,8 @@ export default defineComponent({
     PropsTable,
     FinalPage,
     PublishForm,
-    ChannelForm
+    ChannelForm,
+    ContextMenu
   },
   setup () {
     const store = useStore<GlobalDataProps>()
@@ -191,9 +187,7 @@ export default defineComponent({
     const visible = ref(false)
     const showModal = ref(false)
     const activePanel = ref<TabType>('component')
-    const menuRef = ref<null | HTMLElement>(null)
     initHotKeys()
-    useContextMenu(menuRef)
     const currentWorkId = route.params.id
     let timer: any
     const saveWork = () => {
@@ -202,6 +196,7 @@ export default defineComponent({
       })
     }
     const publishWork = async () => {
+      store.commit('editProps', '')
       const { data } = await takeScreenshotAndUpload('canvas-area')
       store.commit('updatePage', { key: 'coverImg', value: data.url })
       await store.dispatch('saveAndPublishWork', { id: currentWorkId })
@@ -218,9 +213,6 @@ export default defineComponent({
     onUnmounted(() => {
       clearInterval(timer)
     })
-    const handleOk = () => {
-      showModal.value = false
-    }
     watch(activePanel, (newValue) => {
       if (newValue !== 'component') {
         store.commit('editProps', '')
@@ -262,7 +254,6 @@ export default defineComponent({
     return {
       visible,
       showModal,
-      handleOk,
       onItemCreated,
       handleChange,
       components,
@@ -270,7 +261,6 @@ export default defineComponent({
       currentId,
       currentElement,
       mapPropsToComponents,
-      menuRef,
       updatePosition,
       setPageSetting,
       activePanel,
@@ -321,11 +311,6 @@ export default defineComponent({
 }
 .sidebar-container {
   padding: 20px;
-}
-.menu-container {
-  display: none;
-  position: absolute;
-  z-index: 1000;
 }
 .body-container {
   width: 100%;

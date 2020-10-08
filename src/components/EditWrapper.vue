@@ -5,6 +5,7 @@
     @dragstart="handleDragStart"
     @dragend="handleDragEnd"
     :class="{active: active}" :style="styleProps"
+    :data-component-id="id"
 >
   <slot></slot>
   <div class='resizers'>
