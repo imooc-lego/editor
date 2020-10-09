@@ -53,7 +53,7 @@
           </a-menu-item>
           <a-menu-item key="4" v-if="userInfo.isLogin">
             <a-dropdown-button>
-              {{userInfo.nickName}}
+              {{userInfo.data.nickName}}
               <template v-slot:overlay>
                 <a-menu>
                   <a-menu-item key="1">详细资料</a-menu-item>

@@ -37,9 +37,10 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const { user, token } = store.state
+  const { user } = store.state
+  const { token, isLogin } = user
   const { requiredLogin, redirectAlreadyLogin } = to.meta
-  if (!user.isLogin) {
+  if (!isLogin) {
     if (token) {
       axios.defaults.headers.common.Authorization = `Bearer ${token}`
       store.dispatch('fetchCurrentUser').then(() => {
