@@ -1,13 +1,24 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import Editor from '../views/Editor.vue'
+import Index from '../views/Index.vue'
+import Home from '../views/Home.vue'
+import MyWork from '../views/MyWork.vue'
 import axios from 'axios'
 import store from '../store'
 
 const routes: Array<RouteRecordRaw> = [
   {
+    path: '/',
+    name: 'Index',
+    component: Index,
+    children: [
+      { path: '', component: Home },
+      { path: 'mywork', component: MyWork }
+    ]
+  },
+  {
     path: '/editor/:id',
     name: 'Editor',
-    component: Editor,
+    component: () => import(/* webpackChunkName: "about" */ '../views/Editor.vue'),
     meta: { requiredLogin: true }
   },
   {
