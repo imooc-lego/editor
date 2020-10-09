@@ -37,7 +37,7 @@
 import { defineComponent, PropType } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
 import { EyeOutlined, EyeInvisibleOutlined, LockOutlined, UnlockOutlined, DragOutlined } from '@ant-design/icons-vue'
-import { ComponentData } from '../store/index'
+import { ComponentData } from '../store/editor'
 export default defineComponent({
   props: {
     list: {

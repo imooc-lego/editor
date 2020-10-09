@@ -106,8 +106,8 @@ export default defineComponent({
     const store = useStore<GlobalDataProps>()
     const route = useRoute()
     const currentWorkId = route.params.id as string
-    const page = computed(() => store.state.page)
-    const channels = computed(() => store.state.channels)
+    const page = computed(() => store.state.editor.page)
+    const channels = computed(() => store.state.editor.channels)
     const qrCodeGenerated = ref(false)
     const generateChannelURL = (id?: number) =>
       id ? `${baseH5URL}/p/${page.value.id}-${page.value.uuid}?channel=${id}` : `${baseH5URL}/p/${page.value.id}-${page.value.uuid}`

@@ -58,7 +58,7 @@ export default defineComponent({
     const store = useStore<GlobalDataProps>()
     const route = useRoute()
     const currentWorkId = route.params.id
-    const { title, desc, setting } = store.state.page
+    const { title, desc, setting } = store.state.editor.page
     const { shareImg } = setting
     const form = reactive({
       title: title || '',

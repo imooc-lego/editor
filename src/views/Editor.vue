@@ -153,7 +153,8 @@ import PropsTable from '../components/PropsTable.vue'
 import LayerList from '../components/LayerList.vue'
 import FinalPage from '../components/FinalPage.vue'
 import mapPropsToComponents from '../propsMap'
-import { ComponentData, GlobalDataProps } from '../store/index'
+import { GlobalDataProps } from '../store/index'
+import { ComponentData } from '../store/editor'
 import { initHotKeys } from '../plugins/hotKeys'
 import { takeScreenshotAndUpload } from '../helper'
 
@@ -178,11 +179,11 @@ export default defineComponent({
     const store = useStore<GlobalDataProps>()
     const router = useRouter()
     const route = useRoute()
-    const components = computed(() => store.state.components)
-    const currentId = computed(() => store.state.currentElement)
+    const components = computed(() => store.state.editor.components)
+    const currentId = computed(() => store.state.editor.currentElement)
     const currentElement = computed<ComponentData>(() => store.getters.getCurrentElement)
     const userInfo = computed(() => store.state.user)
-    const pageState = computed(() => store.state.page)
+    const pageState = computed(() => store.state.editor.page)
     const globalStatus = computed(() => store.state.status)
     const visible = ref(false)
     const showModal = ref(false)

@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { ComponentData, PageData } from '../store/index'
+import { ComponentData, PageData } from '../store/editor'
 import LText from '../components/LText.vue'
 import LImage from '../components/LImage.vue'
 import LShape from '../components/LShape.vue'

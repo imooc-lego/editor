@@ -6,7 +6,7 @@ import DataOperation from './dataOperations'
 
 export function initHotKeys () {
   const store = useStore<GlobalDataProps>()
-  const currentId = computed(() => store.state.currentElement)
+  const currentId = computed(() => store.state.editor.currentElement)
   const operations = DataOperation(currentId)
   useHotKey('ctrl+c, command+c', () => {
     operations.copy()

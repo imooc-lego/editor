@@ -13,7 +13,7 @@ export default function dataOperations (componentId: ComputedRef<string> | Ref<s
       }
     },
     paste: () => {
-      if (componentId.value && store.state.copiedComponent) {
+      if (componentId.value && store.state.editor.copiedComponent) {
         store.commit('pasteCopiedComponent')
         message.success('已黏贴当前图层', 1)
       }
