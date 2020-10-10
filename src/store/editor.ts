@@ -102,9 +102,6 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
     deleteComponent (state, index) {
       state.components = state.components.filter(component => component.id !== index)
     },
-    createWork (state, rawData) {
-      state.page = { ...state.page, ...rawData.data }
-    },
     getWork (state, { data }) {
       const { content, ...rest } = data
       state.page = { ...state.page, ...rest }
@@ -136,9 +133,6 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
     }
   },
   actions: {
-    createWork ({ commit }, payload) {
-      return asyncAndCommit('/works', 'createWork', commit, { method: 'post', data: payload })
-    },
     getWork ({ commit }, id) {
       return asyncAndCommit(`/works/${id}`, 'getWork', commit)
     },
@@ -157,14 +151,15 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
 
       } else {
         // save current work
-        const { title, desc, props, coverImg } = state.page
+        const { title, desc, props, coverImg, setting } = state.page
         const postData = {
           title,
           desc,
           coverImg,
           content: {
             components: state.components,
-            props
+            props,
+            setting
           }
         }
         return asyncAndCommit(`/works/${id}`, 'saveWork', commit, { method: 'patch', data: postData })

@@ -2,31 +2,33 @@
   <div class="template-list-component">
     <a-row :gutter="16">
       <a-col :span="6" v-for="item in list" :key="item.id" class="poster-item">
-        <a-card hoverable>
-          <template v-slot:cover>
-            <img :src="item.coverImg"  v-if="item.coverImg" />
-            <img src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"  v-else />
-          </template>
-          <template class="ant-card-actions" v-slot:actions>
-            <EditOutlined key="setting" />
-            <BarChartOutlined key="edit" />
-            <a-dropdown>
-              <EllipsisOutlined key="ellipsis" />
-              <template v-slot:overlay>
-                <a-menu>
-                  <a-menu-item>
-                    <a href="javascript:;"><CopyOutlined/> 复制</a>
-                  </a-menu-item>
-                  <a-menu-item>
-                    <a href="javascript:;"><DeleteOutlined /> 删除</a>
-                  </a-menu-item>
-                </a-menu>
-              </template>
-            </a-dropdown>
-          </template>
-          <a-card-meta :title="item.title">
-          </a-card-meta>
-        </a-card>
+        <router-link :to="`/editor/${item.id}`">
+          <a-card hoverable>
+            <template v-slot:cover>
+              <img :src="item.coverImg"  v-if="item.coverImg" />
+              <img src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"  v-else />
+            </template>
+            <template class="ant-card-actions" v-slot:actions>
+              <router-link :to="`/editor/${item.id}`"><EditOutlined key="edit" /></router-link>
+              <router-link :to="`/static/${item.id}`"><BarChartOutlined key="chart" /></router-link>
+              <a-dropdown>
+                <EllipsisOutlined key="ellipsis" />
+                <template v-slot:overlay>
+                  <a-menu>
+                    <a-menu-item>
+                      <a href="javascript:;" @click.prevent="copyClicked(item.id)"><CopyOutlined/> 复制</a>
+                    </a-menu-item>
+                    <a-menu-item>
+                      <a href="javascript:;"  @click.prevent="deleteClicked(item.id)"><DeleteOutlined /> 删除</a>
+                    </a-menu-item>
+                  </a-menu>
+                </template>
+              </a-dropdown>
+            </template>
+            <a-card-meta :title="item.title">
+            </a-card-meta>
+          </a-card>
+        </router-link>
         <div class="tag-list">
           <a-tag color="red" v-if="item.status === '1'">
             未发布
@@ -41,11 +43,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType, ref } from 'vue'
 import { EditOutlined, BarChartOutlined, EllipsisOutlined, CopyOutlined, DeleteOutlined } from '@ant-design/icons-vue'
 import { WorkProp } from '../store/works'
+import { Modal } from 'ant-design-vue'
+import { isSupportedImage } from 'html2canvas/dist/types/css/types/image'
 export default defineComponent({
   name: 'works-list',
+  emits: ['on-copy', 'on-delete'],
   components: {
     EditOutlined,
     BarChartOutlined,
@@ -57,6 +62,26 @@ export default defineComponent({
     list: {
       type: Array as PropType<WorkProp[]>,
       required: true
+    }
+  },
+  setup (props, context) {
+    const deleteClicked = (id: number) => {
+      Modal.confirm({
+        title: '确定要删除该作品吗？',
+        okText: '删除',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk: () => {
+          context.emit('on-delete', id)
+        }
+      })
+    }
+    const copyClicked = (id: number) => {
+      context.emit('on-copy', id)
+    }
+    return {
+      deleteClicked,
+      copyClicked
     }
   }
 })

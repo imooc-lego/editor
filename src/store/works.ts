@@ -21,6 +21,13 @@ const workModule: Module<WorksProp, GlobalDataProps> = {
     fetchWorks (state, { data }) {
       console.log(data)
       state.works = [...data.list]
+    },
+    createWork (state, { data }) {
+      console.log(data)
+      state.works.unshift(data)
+    },
+    deleteWork (state, { extraData }) {
+      state.works = state.works.filter(work => work.id !== extraData.id)
     }
   },
   actions: {
@@ -31,6 +38,12 @@ const workModule: Module<WorksProp, GlobalDataProps> = {
     fetchWorks ({ commit }, queryObj = { pageIndex: 1, pageSize: 5 }) {
       const queryString = objToQueryString(queryObj)
       return asyncAndCommit(`/works?${queryString}`, 'fetchWorks', commit)
+    },
+    deleteWork ({ commit }, id) {
+      return asyncAndCommit(`/works/${id}`, 'deleteWork', commit, { method: 'delete' }, { id })
+    },
+    createWork ({ commit }, payload: WorkProp) {
+      return asyncAndCommit('/works', 'createWork', commit, { method: 'post', data: payload })
     }
   }
 }
