@@ -12,7 +12,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Index,
     children: [
       { path: '', component: Home },
-      { path: 'mywork', component: MyWork }
+      { path: 'mywork', component: MyWork, meta: { requiredLogin: true } }
     ]
   },
   {

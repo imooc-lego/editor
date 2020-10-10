@@ -54,16 +54,8 @@
           <a-menu-item key="3">
             <a-button type="primary" @click="publishWork">发布</a-button>
           </a-menu-item>
-          <a-menu-item key="4" v-if="userInfo.isLogin">
-            <a-dropdown-button>
-              {{userInfo.data.nickName}}
-              <template v-slot:overlay>
-                <a-menu>
-                  <a-menu-item key="1">详细资料</a-menu-item>
-                  <a-menu-item key="2" @click="logout">登出</a-menu-item>
-                </a-menu>
-              </template>
-            </a-dropdown-button>
+          <a-menu-item key="4">
+            <user-profile :user="userInfo"></user-profile>
           </a-menu-item>
         </a-menu>
       </a-layout-header>
@@ -155,6 +147,7 @@ import EditGroup from '../components/EditGroup.vue'
 import PropsTable from '../components/PropsTable.vue'
 import LayerList from '../components/LayerList.vue'
 import FinalPage from '../components/FinalPage.vue'
+import UserProfile from '../components/UserProfile.vue'
 import mapPropsToComponents from '../propsMap'
 import { GlobalDataProps } from '../store/index'
 import { ComponentData } from '../store/editor'
@@ -176,7 +169,8 @@ export default defineComponent({
     FinalPage,
     PublishForm,
     ChannelForm,
-    ContextMenu
+    ContextMenu,
+    UserProfile
   },
   setup () {
     const store = useStore<GlobalDataProps>()
@@ -247,14 +241,6 @@ export default defineComponent({
         store.commit('updateProp', { key, value: newValue, id })
       })
     }
-    const logout = () => {
-      store.commit('logout')
-      message.success('退出登录成功，2秒后跳转到首页', 2)
-      setTimeout(() => {
-        router.push('/login')
-      }, 2000)
-    }
-
     return {
       visible,
       showModal,
@@ -271,7 +257,6 @@ export default defineComponent({
       pageState,
       userInfo,
       globalStatus,
-      logout,
       saveWork,
       publishWork
     }

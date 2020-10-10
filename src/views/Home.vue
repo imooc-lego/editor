@@ -9,36 +9,15 @@
         </a>
       </div>
     </div>
-    <a-row type="flex" justify="space-between" align="middle" class="poster-title">
-      <h2>我的作品</h2>
-      <router-link to="/mywork">查看我的所有作品</router-link>
-    </a-row>
-    <a-row :gutter="16">
-      <a-col :span="6" v-for="item in items2" :key="item" class="poster-item">
-        <a-card hoverable>
-          <template v-slot:cover>
-            <img src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" v-if="item % 2 === 0" />
-            <img src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" v-else />
-          </template>
-          <a-card-meta title="未命名作品">
-            <template v-slot:description>
-              <div class="description-detail">
-                <span>作者：是我本人啦</span>
-                <span>浏览量：120</span>
-              </div>
-            </template>
-          </a-card-meta>
-        </a-card>
-        <div class="tag-list">
-          <a-tag color="red">
-            HOT
-          </a-tag>
-          <a-tag color="green">
-            NEW
-          </a-tag>
-        </div>
-      </a-col>
-    </a-row>
+    <div class="my-works" v-if="isLogin">
+      <a-row type="flex" justify="space-between" align="middle" class="poster-title" >
+        <h2>我的作品</h2>
+        <router-link to="/mywork">查看我的所有作品</router-link>
+      </a-row>
+      <a-row :gutter="16">
+        <template-list :list="works"></template-list>
+      </a-row>
+    </div>
     <a-row class="poster-title" justify="space-between" align="middle">
       <h2>热门海报</h2>
     </a-row>
@@ -77,18 +56,30 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent, onMounted, computed } from 'vue'
 import { useStore } from 'vuex'
 import { GlobalDataProps } from '../store/index'
+import TemplateList from '../components/TemplateList.vue'
 export default defineComponent({
+  components: {
+    TemplateList
+  },
   data () {
     return { items: [0, 1, 2, 3, 4, 5], items2: [0, 1, 2, 3] }
   },
   setup () {
     const store = useStore<GlobalDataProps>()
+    const isLogin = computed(() => store.state.user.isLogin)
+    const works = computed(() => store.state.works.works)
     onMounted(() => {
-      store.dispatch('fetchWorks')
+      if (isLogin.value) {
+        store.dispatch('fetchWorks', { pageIndex: 0, pageSize: 4 })
+      }
     })
+    return {
+      isLogin,
+      works
+    }
   }
 })
 </script>
@@ -147,6 +138,7 @@ export default defineComponent({
 }
 .poster-title {
   height: 70px;
+  line-height: 70px;
 }
 .poster-title h2 {
   margin-bottom: 0px;

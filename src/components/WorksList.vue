@@ -5,7 +5,7 @@
         <a-card hoverable>
           <template v-slot:cover>
             <img :src="item.coverImg"  v-if="item.coverImg" />
-            <img src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"  v-else />
+            <img src="http://typescript-vue.oss-cn-beijing.aliyuncs.com/vue-marker/5f81cca3f3bf7a0e1ebaf885.png"  v-else />
           </template>
           <template class="ant-card-actions" v-slot:actions>
             <router-link :to="`/editor/${item.id}`"><EditOutlined key="edit" /></router-link>

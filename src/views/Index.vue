@@ -16,15 +16,7 @@
           <a-button type="primary">
             创建设计
           </a-button>
-          <a-dropdown-button>
-            你好 Viking
-            <template v-slot:overlay>
-              <a-menu>
-                <a-menu-item key="1">详细资料</a-menu-item>
-                <a-menu-item key="2" @click="logout">登出</a-menu-item>
-              </a-menu>
-            </template>
-          </a-dropdown-button>
+          <user-profile :user="userInfo"></user-profile>
         </div>
       </a-layout-header>
       <a-layout-content style="padding: 0 50px">
@@ -63,14 +55,20 @@
 
 <script>
 import { UserOutlined } from '@ant-design/icons-vue'
-import { defineComponent } from 'vue'
+import { useStore } from 'vuex'
+import { defineComponent, computed } from 'vue'
+import UserProfile from '../components/UserProfile.vue'
 export default defineComponent({
   components: {
-    UserOutlined
+    UserOutlined,
+    UserProfile
   },
   setup () {
+    const store = useStore()
+    const userInfo = computed(() => store.state.user)
     return {
-      items: [0, 1, 2, 3, 4, 5]
+      items: [0, 1, 2, 3, 4, 5],
+      userInfo
     }
   }
 })
