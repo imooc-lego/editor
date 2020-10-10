@@ -13,7 +13,7 @@
             placeholder="输入搜索的内容"
             @search="onSearch"
           />
-          <a-button type="primary">
+          <a-button type="primary" @click="createDesign">
             创建设计
           </a-button>
           <user-profile :user="userInfo"></user-profile>
@@ -53,22 +53,40 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { UserOutlined } from '@ant-design/icons-vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 import { defineComponent, computed } from 'vue'
 import UserProfile from '../components/UserProfile.vue'
+import { GlobalDataProps } from '../store/index'
 export default defineComponent({
   components: {
     UserOutlined,
     UserProfile
   },
   setup () {
-    const store = useStore()
+    const store = useStore<GlobalDataProps>()
+    const router = useRouter()
     const userInfo = computed(() => store.state.user)
+    const createDesign = () => {
+      if (userInfo.value.isLogin) {
+        const payload = {
+          title: '未命名作品',
+          desc: '未命名作品',
+          coverImg: 'http://typescript-vue.oss-cn-beijing.aliyuncs.com/vue-marker/5f81cca3f3bf7a0e1ebaf885.png'
+        }
+        store.dispatch('createWork', payload).then(({ data }) => {
+          router.push(`/editor/${data.id}`)
+        })
+      } else {
+        router.push('/login')
+      }
+    }
     return {
       items: [0, 1, 2, 3, 4, 5],
-      userInfo
+      userInfo,
+      createDesign
     }
   }
 })
