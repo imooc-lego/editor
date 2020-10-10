@@ -123,7 +123,7 @@ export default defineComponent({
         store.dispatch('loginAndFetch', payload).then(rawData => {
           message.success('登录成功 2秒后跳转首页')
           setTimeout(() => {
-            router.push(`/editor/${rawData.data.id}`)
+            router.push('/')
           }, 2000)
         }).catch(e => {
           console.log(e)

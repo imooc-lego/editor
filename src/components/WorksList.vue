@@ -2,33 +2,31 @@
   <div class="template-list-component">
     <a-row :gutter="16">
       <a-col :span="6" v-for="item in list" :key="item.id" class="poster-item">
-        <router-link :to="`/editor/${item.id}`">
-          <a-card hoverable>
-            <template v-slot:cover>
-              <img :src="item.coverImg"  v-if="item.coverImg" />
-              <img src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"  v-else />
-            </template>
-            <template class="ant-card-actions" v-slot:actions>
-              <router-link :to="`/editor/${item.id}`"><EditOutlined key="edit" /></router-link>
-              <router-link :to="`/static/${item.id}`"><BarChartOutlined key="chart" /></router-link>
-              <a-dropdown>
-                <EllipsisOutlined key="ellipsis" />
-                <template v-slot:overlay>
-                  <a-menu>
-                    <a-menu-item>
-                      <a href="javascript:;" @click.prevent="copyClicked(item.id)"><CopyOutlined/> 复制</a>
-                    </a-menu-item>
-                    <a-menu-item>
-                      <a href="javascript:;"  @click.prevent="deleteClicked(item.id)"><DeleteOutlined /> 删除</a>
-                    </a-menu-item>
-                  </a-menu>
-                </template>
-              </a-dropdown>
-            </template>
-            <a-card-meta :title="item.title">
-            </a-card-meta>
-          </a-card>
-        </router-link>
+        <a-card hoverable>
+          <template v-slot:cover>
+            <img :src="item.coverImg"  v-if="item.coverImg" />
+            <img src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"  v-else />
+          </template>
+          <template class="ant-card-actions" v-slot:actions>
+            <router-link :to="`/editor/${item.id}`"><EditOutlined key="edit" /></router-link>
+            <router-link :to="`/static/${item.id}`"><BarChartOutlined key="chart" /></router-link>
+            <a-dropdown>
+              <EllipsisOutlined key="ellipsis" />
+              <template v-slot:overlay>
+                <a-menu>
+                  <a-menu-item>
+                    <a href="javascript:;" @click.prevent="copyClicked(item.id)"><CopyOutlined/> 复制</a>
+                  </a-menu-item>
+                  <a-menu-item>
+                    <a href="javascript:;"  @click.prevent="deleteClicked(item.id)"><DeleteOutlined /> 删除</a>
+                  </a-menu-item>
+                </a-menu>
+              </template>
+            </a-dropdown>
+          </template>
+          <a-card-meta :title="item.title">
+          </a-card-meta>
+        </a-card>
         <div class="tag-list">
           <a-tag color="red" v-if="item.status === '1'">
             未发布

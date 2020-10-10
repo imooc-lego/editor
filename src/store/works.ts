@@ -7,23 +7,36 @@ export type WorkProp = Required<Omit<PageData, 'props' | 'setting'>>
 export interface WorksProp {
   templates: WorkProp[];
   works: WorkProp[];
+  totalWorks: number;
 }
 
 const workModule: Module<WorksProp, GlobalDataProps> = {
   state: {
     templates: [],
-    works: []
+    works: [],
+    totalWorks: 0
   },
   mutations: {
-    fetchTemplates (state, { data }) {
-      state.templates = [...data.list]
+    fetchTemplates (state, { data, extraData }) {
+      const { pageIndex } = extraData
+      const { list } = data.data
+      if (pageIndex === 0) {
+        state.templates = list
+      } else {
+        state.templates = [...state.templates, ...list]
+      }
     },
-    fetchWorks (state, { data }) {
-      console.log(data)
-      state.works = [...data.list]
+    fetchWorks (state, { data, extraData }) {
+      const { pageIndex } = extraData
+      const { list, count } = data.data
+      if (pageIndex === 0) {
+        state.works = list
+      } else {
+        state.works = [...state.works, ...list]
+      }
+      state.totalWorks = count
     },
     createWork (state, { data }) {
-      console.log(data)
       state.works.unshift(data)
     },
     deleteWork (state, { extraData }) {
@@ -31,13 +44,13 @@ const workModule: Module<WorksProp, GlobalDataProps> = {
     }
   },
   actions: {
-    fetchTemplates ({ commit }, queryObj = { pageIndex: 1, pageSize: 5 }) {
+    fetchTemplates ({ commit }, queryObj = { pageIndex: 0, pageSize: 8 }) {
       const queryString = objToQueryString(queryObj)
-      return asyncAndCommit(`/templates?${queryString}`, 'fetchTemplates', commit)
+      return asyncAndCommit(`/templates?${queryString}`, 'fetchTemplates', commit, { method: 'get' }, { pageIndex: queryObj.pageIndex })
     },
-    fetchWorks ({ commit }, queryObj = { pageIndex: 1, pageSize: 5 }) {
+    fetchWorks ({ commit }, queryObj = { pageIndex: 0, pageSize: 8 }) {
       const queryString = objToQueryString(queryObj)
-      return asyncAndCommit(`/works?${queryString}`, 'fetchWorks', commit)
+      return asyncAndCommit(`/works?${queryString}`, 'fetchWorks', commit, { method: 'get' }, { pageIndex: queryObj.pageIndex })
     },
     deleteWork ({ commit }, id) {
       return asyncAndCommit(`/works/${id}`, 'deleteWork', commit, { method: 'delete' }, { id })
