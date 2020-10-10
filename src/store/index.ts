@@ -2,7 +2,7 @@ import { createStore, Commit } from 'vuex'
 import axios, { AxiosRequestConfig } from 'axios'
 import editor, { EditProps } from './editor'
 import user, { UserProps } from './user'
-
+import works, { WorksProp } from './works'
 export interface GlobalStatus {
   loading: boolean;
   error: any;
@@ -15,6 +15,7 @@ export interface GlobalDataProps {
   // 全局状态，loading，error 等等
   status: GlobalStatus;
   editor: EditProps;
+  works: WorksProp;
 }
 export type ICustomAxiosConfig = AxiosRequestConfig & {
   mutationName: string;
@@ -36,7 +37,8 @@ export default createStore<GlobalDataProps>({
   state: {
     user: {} as UserProps,
     status: { loading: false, error: null, opName: '' },
-    editor: {} as EditProps
+    editor: {} as EditProps,
+    works: {} as WorksProp
   },
   mutations: {
     setLoading (state, { status, opName }) {
@@ -51,6 +53,7 @@ export default createStore<GlobalDataProps>({
   },
   modules: {
     editor,
-    user
+    user,
+    works
   }
 })

@@ -2,6 +2,11 @@
 <div class="login-page">
   <a-row>
     <a-col :span="8" class="aside">
+      <div class="logo-area">
+        <router-link to="/">
+          <img alt="Vue logo" src="../assets/logo.png" class="logo-img">
+        </router-link>
+      </div>
       <div class="aside-inner">
         <img src="~@/assets/user-interface.svg" />
         <figure class="text-center mb-5 mx-auto">
@@ -22,14 +27,14 @@
         ref="publishForm" layout="vertical"
       >
         <h2>欢迎回来👋</h2>
-        <p>使用用户名和密码登录到慕课乐高</p>
+        <p>使用手机号码和验证码登录到慕课乐高</p>
         <a-form-item label="手机号码" required name="username">
           <a-input v-model:value="form.username" placeholder="手机号码">
             <template v-slot:prefix><UserOutlined style="color:rgba(0,0,0,.25)"/></template>
           </a-input>
         </a-form-item>
         <a-form-item label="验证码" required name="password">
-          <a-input v-model:value="form.password" type="password" placeholder="六位验证码">
+          <a-input v-model:value="form.password" type="password" placeholder="四位验证码">
             <template v-slot:prefix><LockOutlined style="color:rgba(0,0,0,.25)"/></template>
           </a-input>
         </a-form-item>
@@ -146,7 +151,12 @@ export default defineComponent({
   }
 })
 </script>
-<style>
+<style scoped>
+.logo-area {
+  position: absolute;
+  top: 30px;
+  width: 150px;
+}
 .aside {
   height: 100vh;
   background-color: #21325b;

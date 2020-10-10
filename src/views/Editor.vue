@@ -34,6 +34,9 @@
     <a-layout>
       <a-layout-header class="header">
         <div class="page-title">
+          <router-link to="/">
+            <img alt="Vue logo" src="../assets/logo-simple.png" class="logo-img">
+          </router-link>
           <h4>{{pageState.title}}</h4>
         </div>
         <a-menu
@@ -280,6 +283,13 @@ export default defineComponent({
 .header {
   display: flex;
   justify-content: space-between;
+}
+.header .logo-img {
+  margin-right: 20px;
+  height: 40px;
+}
+.page-title {
+  display: flex;
 }
 .header h4 {
   color: #ffffff;

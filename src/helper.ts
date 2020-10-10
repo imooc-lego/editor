@@ -1,10 +1,12 @@
 import { message } from 'ant-design-vue'
 import axios from 'axios'
 import html2canvas from 'html2canvas'
+import { map } from 'lodash'
 interface CheckCondition {
   format?: string[];
   size?: number;
 }
+
 type ErrorType = 'size' | 'format' | null
 export function beforeUploadCheck (file: File, condition: CheckCondition) {
   const { format, size } = condition
@@ -91,4 +93,8 @@ export const takeScreenshotAndUpload = (id: string) => {
       })
     })
   })
+}
+
+export const objToQueryString = (queryObj: { ['string']: any}) => {
+  return map(queryObj, (value: any, key: string) => `${key}=${encodeURIComponent(value)}`).join('&')
 }

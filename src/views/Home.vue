@@ -76,12 +76,21 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent, onMounted } from 'vue'
+import { useStore } from 'vuex'
+import { GlobalDataProps } from '../store/index'
+export default defineComponent({
   data () {
     return { items: [0, 1, 2, 3, 4, 5], items2: [0, 1, 2, 3] }
+  },
+  setup () {
+    const store = useStore<GlobalDataProps>()
+    onMounted(() => {
+      store.dispatch('fetchWorks')
+    })
   }
-}
+})
 </script>
 
 <style scoped>

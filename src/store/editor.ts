@@ -21,6 +21,11 @@ export interface PageData {
   latestPublishAt?: string;
   updatedAt?: string;
   isTemplate?: boolean;
+  isHot?: boolean;
+  isNew?: boolean;
+  author?: string;
+  status?: string;
+
 }
 export interface ChannelProps {
   id: number;
