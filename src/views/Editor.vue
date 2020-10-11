@@ -1,6 +1,6 @@
 <template>
   <div class="editor" id="editor-layout-main">
-    <a-spin tip="读取中" class="ediotr-spinner" v-if="globalStatus.loading">
+    <a-spin tip="读取中" class="editor-spinner" v-if="globalStatus.loading">
     </a-spin>
     <context-menu
       @on-select="(id) => { editProps(id) }"
@@ -279,7 +279,7 @@ export default defineComponent({
 .header h4 {
   color: #ffffff;
 }
-.ediotr-spinner {
+.editor-spinner {
   position: fixed;
   right: 50%;
   top: 10px;

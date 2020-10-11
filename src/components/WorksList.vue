@@ -1,5 +1,6 @@
 <template>
   <div class="template-list-component">
+    <a-skeleton v-if="loading"/>
     <a-row :gutter="16">
       <a-col :span="6" v-for="item in list" :key="item.id" class="poster-item">
         <a-card hoverable>
@@ -45,7 +46,6 @@ import { defineComponent, PropType, ref } from 'vue'
 import { EditOutlined, BarChartOutlined, EllipsisOutlined, CopyOutlined, DeleteOutlined } from '@ant-design/icons-vue'
 import { WorkProp } from '../store/works'
 import { Modal } from 'ant-design-vue'
-import { isSupportedImage } from 'html2canvas/dist/types/css/types/image'
 export default defineComponent({
   name: 'works-list',
   emits: ['on-copy', 'on-delete'],
@@ -60,6 +60,10 @@ export default defineComponent({
     list: {
       type: Array as PropType<WorkProp[]>,
       required: true
+    },
+    loading: {
+      type: Boolean,
+      default: false
     }
   },
   setup (props, context) {

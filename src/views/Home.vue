@@ -9,7 +9,7 @@
         </a>
       </div>
     </div>
-    <div class="my-works" v-if="isLogin">
+    <div class="my-works" v-if="isLogin && works.length > 0">
       <a-row type="flex" justify="space-between" align="middle" class="poster-title" >
         <h2>我的作品</h2>
         <router-link to="/mywork">查看我的所有作品</router-link>

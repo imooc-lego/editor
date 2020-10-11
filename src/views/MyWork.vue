@@ -1,9 +1,18 @@
 <template>
   <div class="homepage-container">
     <h2>我的作品</h2>
-    <works-list :list="works" @on-delete="onDelete" @on-copy="onCopy"></works-list>
+    <a-empty v-if="works.length === 0 && !loading">
+      <template v-slot:description>
+        <span> 还没有任何作品 </span>
+      </template>
+      <a-button type="primary" size="large" @click="createDesign">
+        创建你的第一个设计 🎉
+      </a-button>
+    </a-empty>
+
+    <works-list :list="works" @on-delete="onDelete" @on-copy="onCopy" :loadding="loading"></works-list>
     <a-row type="flex" justify="center">
-      <a-button type="primary" size="large" @click="loadMorePage" v-if="!isLastPage">
+      <a-button type="primary" size="large" @click="loadMorePage" v-if="!isLastPage" :loading="loading">
         加载更多
       </a-button>
     </a-row>
@@ -17,6 +26,7 @@ import { useRouter } from 'vue-router'
 import { GlobalDataProps } from '../store/index'
 import WorksList from '../components/WorksList.vue'
 import useLoadMore from '../hooks/useLoadMore'
+import useCreateDesign from '../hooks/useCreateDesign'
 export default defineComponent({
   components: {
     WorksList
@@ -26,7 +36,9 @@ export default defineComponent({
     const router = useRouter()
     const works = computed(() => store.state.works.works)
     const total = computed(() => store.state.works.totalWorks)
+    const loading = computed(() => store.state.status.loading)
     const { loadMorePage, isLastPage } = useLoadMore('fetchWorks', total, { pageIndex: 0, pageSize: 8 }, 8)
+    const createDesign = useCreateDesign()
     onMounted(() => {
       store.dispatch('fetchWorks')
     })
@@ -53,7 +65,9 @@ export default defineComponent({
       onDelete,
       onCopy,
       loadMorePage,
-      isLastPage
+      isLastPage,
+      createDesign,
+      loading
     }
   }
 })

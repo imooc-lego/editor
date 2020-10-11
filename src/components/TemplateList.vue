@@ -2,27 +2,29 @@
   <div class="template-list-component">
     <a-row :gutter="16">
       <a-col :span="6" v-for="item in list" :key="item.id" class="poster-item">
-        <a-card hoverable>
-          <template v-slot:cover>
-            <img :src="item.coverImg"  v-if="item.coverImg" />
-            <img src="http://typescript-vue.oss-cn-beijing.aliyuncs.com/vue-marker/5f81cca3f3bf7a0e1ebaf885.png"  v-else />
-          </template>
-          <a-card-meta :title="item.title">
-            <template v-slot:description>
-              <div class="description-detail">
-                <span>作者：{{item.author}}</span>
-              </div>
+        <router-link :to="(type === 'work') ? `/editor/${item.id}` : `/template/${item.id}`">
+          <a-card hoverable>
+            <template v-slot:cover>
+              <img :src="item.coverImg"  v-if="item.coverImg" />
+              <img src="http://typescript-vue.oss-cn-beijing.aliyuncs.com/vue-marker/5f81cca3f3bf7a0e1ebaf885.png"  v-else />
             </template>
-          </a-card-meta>
-        </a-card>
-        <div class="tag-list">
-          <a-tag color="red" v-if="item.isHot">
-            HOT
-          </a-tag>
-          <a-tag color="green" v-if="item.isNew">
-            NEW
-          </a-tag>
-        </div>
+            <a-card-meta :title="item.title">
+              <template v-slot:description>
+                <div class="description-detail">
+                  <span>作者：{{item.author}}</span>
+                </div>
+              </template>
+            </a-card-meta>
+          </a-card>
+          <div class="tag-list">
+            <a-tag color="red" v-if="item.isHot">
+              HOT
+            </a-tag>
+            <a-tag color="green" v-if="item.isNew">
+              NEW
+            </a-tag>
+          </div>
+        </router-link>
       </a-col>
     </a-row>
   </div>
@@ -37,6 +39,10 @@ export default defineComponent({
     list: {
       type: Array as PropType<WorkProp[]>,
       required: true
+    },
+    type: {
+      type: String,
+      default: 'work'
     }
   }
 })
