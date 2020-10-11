@@ -11,15 +11,15 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Index',
     component: Index,
     children: [
-      { path: '', component: Home },
-      { path: 'mywork', component: MyWork, meta: { requiredLogin: true } }
+      { path: '', component: Home, meta: { title: '欢迎来到慕课乐高' } },
+      { path: 'mywork', component: MyWork, meta: { requiredLogin: true, title: '我的设计列表' } }
     ]
   },
   {
     path: '/editor/:id',
     name: 'Editor',
     component: () => import(/* webpackChunkName: "about" */ '../views/Editor.vue'),
-    meta: { requiredLogin: true }
+    meta: { requiredLogin: true, title: '编辑我的设计' }
   },
   {
     path: '/login',
@@ -28,7 +28,7 @@ const routes: Array<RouteRecordRaw> = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/Login.vue'),
-    meta: { redirectAlreadyLogin: true }
+    meta: { redirectAlreadyLogin: true, title: '登录到慕课乐高' }
   }
 ]
 const router = createRouter({
@@ -39,7 +39,10 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const { user } = store.state
   const { token, isLogin } = user
-  const { requiredLogin, redirectAlreadyLogin } = to.meta
+  const { requiredLogin, redirectAlreadyLogin, title } = to.meta
+  if (title) {
+    document.title = title
+  }
   if (!isLogin) {
     if (token) {
       axios.defaults.headers.common.Authorization = `Bearer ${token}`
