@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, ref, onUnmounted } from 'vue'
 import { map } from 'lodash'
 import { clickInsideElement } from '../helper'
 import dataOperation, { operationText } from '../plugins/dataOperations'
@@ -26,25 +26,32 @@ export default defineComponent({
         action: val
       }
     })
-    onMounted(() => {
+    const triggerContextMenu = (e: MouseEvent) => {
       const domElement = menuRef.value as HTMLElement
-      document.addEventListener('contextmenu', (e) => {
-        e.preventDefault()
-        const wrapperElement = clickInsideElement(e, 'edit-wrapper')
-        if (wrapperElement) {
-          domElement.style.display = 'block'
-          domElement.style.top = e.pageY + 'px'
-          domElement.style.left = e.pageX + 'px'
-          const cid = wrapperElement.dataset.componentId
-          if (cid) {
-            componentId.value = cid
-            context.emit('on-select', wrapperElement.dataset.componentId)
-          }
+      e.preventDefault()
+      const wrapperElement = clickInsideElement(e, 'edit-wrapper')
+      if (wrapperElement) {
+        domElement.style.display = 'block'
+        domElement.style.top = e.pageY + 'px'
+        domElement.style.left = e.pageX + 'px'
+        const cid = wrapperElement.dataset.componentId
+        if (cid) {
+          componentId.value = cid
+          context.emit('on-select', wrapperElement.dataset.componentId)
         }
-      })
-      document.addEventListener('click', () => {
-        domElement.style.display = 'none'
-      })
+      }
+    }
+    const handleClick = () => {
+      const domElement = menuRef.value as HTMLElement
+      domElement.style.display = 'none'
+    }
+    onMounted(() => {
+      document.addEventListener('contextmenu', triggerContextMenu)
+      document.addEventListener('click', handleClick)
+    })
+    onUnmounted(() => {
+      document.removeEventListener('contextmenu', triggerContextMenu)
+      document.removeEventListener('click', handleClick)
     })
     return {
       menuRef,

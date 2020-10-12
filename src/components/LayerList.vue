@@ -23,7 +23,13 @@
           <template v-slot:icon v-else><LockOutlined /> </template>
         </a-button>
       </a-tooltip>
-      <span>{{item.layerName}}</span>
+      <input-edit
+        :value="item.layerName"
+        @clicked="handleClick"
+        @change="(value) => { handleChange(item.id, 'layerName', value)}"
+      >
+        <span>{{item.layerName}}</span>
+      </input-edit>
       <a-tooltip title="拖动排序">
         <a-button shape="circle" class="handle">
           <template v-slot:icon><DragOutlined /> </template
@@ -38,6 +44,7 @@ import { defineComponent, PropType } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
 import { EyeOutlined, EyeInvisibleOutlined, LockOutlined, UnlockOutlined, DragOutlined } from '@ant-design/icons-vue'
 import { ComponentData } from '../store/editor'
+import InputEdit from '../components/InputEdit.vue'
 export default defineComponent({
   props: {
     list: {
@@ -56,10 +63,11 @@ export default defineComponent({
     LockOutlined,
     UnlockOutlined,
     DragOutlined,
-    Draggable: VueDraggableNext
+    Draggable: VueDraggableNext,
+    InputEdit
   },
   setup (props, context) {
-    const handleClick = (id: string) => {
+    const handleClick = (id?: string) => {
       context.emit('select', id)
     }
     const handleChange = (id: string, key: string, value: boolean) => {

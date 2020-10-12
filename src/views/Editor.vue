@@ -3,7 +3,7 @@
     <a-spin tip="读取中" class="editor-spinner" v-if="globalStatus.loading">
     </a-spin>
     <context-menu
-      @on-select="(id) => { editProps(id) }"
+      @on-select="(id) => { setActive(id) }"
     />
     <a-drawer
       title="设置面板"
@@ -37,7 +37,9 @@
           <router-link to="/">
             <img alt="Vue logo" src="../assets/logo-simple.png" class="logo-img">
           </router-link>
-          <h4>{{pageState.title}}</h4>
+          <input-edit :value="pageState.title" @change="titleChange">
+            <h4>{{pageState.title}}</h4>
+          </input-edit>
         </div>
         <a-menu
           :selectable="false"
@@ -76,7 +78,9 @@
               <div v-for="item in components" :key="item.id">
                 <EditWrapper v-if="!item.isHidden"
                   :id="item.id"
-                  @edit="editProps"
+                  :editing="currentEditing"
+                  @active="setActive"
+                  @editing="setEditing"
                   @update-position="updatePosition"
                   :active="currentId === item.id" :props="item.props"
                 >
@@ -113,7 +117,7 @@
           <a-tab-pane key="layer" tab="图层设置">
             <layer-list
               :list="components" :selectedId="currentId"
-              @select="(id) => { editProps(id) }"
+              @select="(id) => { setActive(id, true) }"
               @change="handleChange"
             >
             </layer-list>
@@ -130,7 +134,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { defineComponent, ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 import { message } from 'ant-design-vue'
@@ -148,6 +152,7 @@ import PropsTable from '../components/PropsTable.vue'
 import LayerList from '../components/LayerList.vue'
 import FinalPage from '../components/FinalPage.vue'
 import UserProfile from '../components/UserProfile.vue'
+import InputEdit from '../components/InputEdit.vue'
 import mapPropsToComponents from '../propsMap'
 import { GlobalDataProps } from '../store/index'
 import { ComponentData } from '../store/editor'
@@ -170,14 +175,15 @@ export default defineComponent({
     PublishForm,
     ChannelForm,
     ContextMenu,
-    UserProfile
+    UserProfile,
+    InputEdit
   },
   setup () {
     const store = useStore<GlobalDataProps>()
-    const router = useRouter()
     const route = useRoute()
     const components = computed(() => store.state.editor.components)
     const currentId = computed(() => store.state.editor.currentElement)
+    const currentEditing = computed(() => store.state.editor.currentEditing)
     const currentElement = computed<ComponentData>(() => store.getters.getCurrentElement)
     const userInfo = computed(() => store.state.user)
     const pageState = computed(() => store.state.editor.page)
@@ -194,7 +200,7 @@ export default defineComponent({
       })
     }
     const publishWork = async () => {
-      store.commit('editProps', '')
+      store.commit('setActive', '')
       const { data } = await takeScreenshotAndUpload('canvas-area')
       store.commit('updatePage', { key: 'coverImg', value: data.url })
       await store.dispatch('saveAndPublishWork', { id: currentWorkId })
@@ -213,15 +219,21 @@ export default defineComponent({
     })
     watch(activePanel, (newValue) => {
       if (newValue !== 'component') {
-        store.commit('editProps', '')
+        store.commit('setActive', '')
       }
     })
     const onItemCreated = (component: ComponentData) => {
       // we should copy this props, not pass by ref
       store.commit('addComponentToEditor', { name: component.name, props: { ...component.props } })
     }
-    const editProps = (id: string) => {
-      store.commit('editProps', id)
+    const setActive = (id: string, notSwitchPanel = false) => {
+      store.commit('setActive', id)
+      if (!notSwitchPanel) {
+        activePanel.value = 'component'
+      }
+    }
+    const setEditing = (id: string) => {
+      store.commit('setEditing', id)
       activePanel.value = 'component'
     }
     const handleChange = (data: any) => {
@@ -230,7 +242,7 @@ export default defineComponent({
     const setPageSetting = (e: Event) => {
       const currentTarget = e.target as HTMLElement
       if (currentTarget.classList.contains('body-container')) {
-        store.commit('editProps', '')
+        store.commit('setActive', '')
         activePanel.value = 'page'
       }
     }
@@ -241,15 +253,23 @@ export default defineComponent({
         store.commit('updateProp', { key, value: newValue, id })
       })
     }
+    const titleChange = (newTitle: string) => {
+      store.commit('updatePage', { key: 'title', value: newTitle })
+      nextTick(() => {
+        saveWork()
+      })
+    }
     return {
       visible,
       showModal,
       onItemCreated,
       handleChange,
       components,
-      editProps,
+      setActive,
+      setEditing,
       currentId,
       currentElement,
+      currentEditing,
       mapPropsToComponents,
       updatePosition,
       setPageSetting,
@@ -258,7 +278,8 @@ export default defineComponent({
       userInfo,
       globalStatus,
       saveWork,
-      publishWork
+      publishWork,
+      titleChange
     }
   }
 })

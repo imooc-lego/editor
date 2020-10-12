@@ -26,7 +26,7 @@ export default function dataOperations (componentId: ComputedRef<string> | Ref<s
     },
     cancel: () => {
       if (componentId.value) {
-        store.commit('editProps', '')
+        store.commit('setActive', '')
       }
     }
   }

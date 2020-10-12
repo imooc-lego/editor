@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, reactive, ref } from 'vue'
+import { defineComponent, nextTick, reactive, ref, computed, watch } from 'vue'
 import useStylePick from '../hooks/useStylePick'
 type ResizeDirection = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
 interface OriginalPositions {
@@ -38,11 +38,14 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
+    editing: {
+      type: String
+    },
     props: {
       type: Object
     }
   },
-  emits: ['edit', 'update-position'],
+  emits: ['active', 'update-position', 'editing'],
   setup (props, context) {
     const gap = reactive({
       x: 0,
@@ -52,8 +55,17 @@ export default defineComponent({
     const editWrapper = ref<null | HTMLElement>(null)
     // need to pick position absolute out, to go with the inner element
     const styleProps = useStylePick(props.props || {}, ['position', 'top', 'left', 'width', 'height'])
+    const isEditable = computed(() => props.editing === props.id)
+    watch(isEditable, (newValue) => {
+      if (newValue && editWrapper.value) {
+        editWrapper.value.focus()
+      }
+    })
     const itemClick = () => {
-      context.emit('edit', props.id)
+      context.emit('active', props.id)
+    }
+    const itemEdit = () => {
+      context.emit('editing', props.id)
     }
     const handleDragStart = (e: DragEvent) => {
       const currentElement = e.currentTarget as HTMLElement
@@ -138,7 +150,6 @@ export default defineComponent({
       const handleMouseUp = () => {
         document.removeEventListener('mousemove', handleMove)
         currentElement.draggable = true
-        console.log(size)
         context.emit('update-position', { ...size, id: props.id })
         nextTick(() => {
           document.removeEventListener('mouseup', handleMouseUp)
@@ -153,7 +164,9 @@ export default defineComponent({
       handleDragStart,
       handleDragEnd,
       startResize,
-      editWrapper
+      editWrapper,
+      itemEdit,
+      isEditable
     }
   }
 })

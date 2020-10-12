@@ -35,8 +35,10 @@ export interface ChannelProps {
 export interface EditProps {
   // 页面所有组件
   components: ComponentData[];
-  // 当前被编辑的组件 id
+  // 当前被选中的组件 id
   currentElement: string;
+  // 当前正在 inline editing 的组件
+  currentEditing: string;
   // 当前被复制的组件
   copiedComponent?: ComponentData;
   // 当前 work 的数据
@@ -48,6 +50,7 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
   state: {
     components: [],
     currentElement: '',
+    currentEditing: '',
     page: { props: { backgroundColor: '#ffffff', backgroundImage: '', backgroundRepeat: 'no-repeat', backgroundSize: 'contain', height: '600px' }, setting: {} },
     channels: []
   },
@@ -57,8 +60,11 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
       component.layerName = '图层' + (state.components.length + 1)
       state.components.push(component)
     },
-    editProps (state, index) {
-      state.currentElement = index
+    setActive (state, id) {
+      state.currentElement = id
+    },
+    setEditing (state, id) {
+      state.currentEditing = id
     },
     updateProp (state, { key, value, id }) {
       const currentComponent = state.components.find((component) => component.id === (id || state.currentElement))
