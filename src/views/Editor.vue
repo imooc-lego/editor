@@ -136,7 +136,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { useStore } from 'vuex'
-import { useRouter, useRoute } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { message } from 'ant-design-vue'
 import { forEach, pickBy } from 'lodash'
 import PublishForm from './PublishForm.vue'
@@ -157,6 +157,7 @@ import mapPropsToComponents from '../propsMap'
 import { GlobalDataProps } from '../store/index'
 import { ComponentData } from '../store/editor'
 import { initHotKeys } from '../plugins/hotKeys'
+import showError from '../hooks/useShowError'
 import { takeScreenshotAndUpload } from '../helper'
 
 export type TabType = 'component' | 'layer' | 'page'
@@ -192,6 +193,7 @@ export default defineComponent({
     const showModal = ref(false)
     const activePanel = ref<TabType>('component')
     initHotKeys()
+    showError()
     const currentWorkId = route.params.id
     let timer: any
     const saveWork = () => {

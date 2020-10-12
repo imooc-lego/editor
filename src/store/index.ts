@@ -36,7 +36,7 @@ export const asyncAndCommit = async (url: string, mutationName: string,
 export default createStore<GlobalDataProps>({
   state: {
     user: {} as UserProps,
-    status: { loading: false, error: null, opName: '' },
+    status: { loading: false, error: { status: false, message: '' }, opName: '' },
     editor: {} as EditProps,
     works: {} as WorksProp
   },
