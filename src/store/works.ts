@@ -8,23 +8,26 @@ export interface WorksProp {
   templates: WorkProp[];
   works: WorkProp[];
   totalWorks: number;
+  totalTemplates: number;
 }
 
 const workModule: Module<WorksProp, GlobalDataProps> = {
   state: {
     templates: [],
     works: [],
-    totalWorks: 0
+    totalWorks: 0,
+    totalTemplates: 0
   },
   mutations: {
     fetchTemplates (state, { data, extraData }) {
       const { pageIndex } = extraData
-      const { list } = data.data
+      const { list, count } = data.data
       if (pageIndex === 0) {
         state.templates = list
       } else {
         state.templates = [...state.templates, ...list]
       }
+      state.totalTemplates = count
     },
     fetchWorks (state, { data, extraData }) {
       const { pageIndex } = extraData

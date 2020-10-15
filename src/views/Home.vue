@@ -22,33 +22,10 @@
       <h2>热门海报</h2>
     </a-row>
     <a-row :gutter="16">
-      <a-col :span="6" v-for="item in items" :key="item" class="poster-item">
-        <a-card hoverable>
-          <template v-slot:cover>
-            <img src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" v-if="item % 2 === 0" />
-            <img src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" v-else />
-          </template>
-          <a-card-meta title="未命名作品">
-            <template v-slot:description>
-              <div class="description-detail">
-                <span>作者：是我本人啦</span>
-                <span>浏览量：120</span>
-              </div>
-            </template>
-          </a-card-meta>
-        </a-card>
-        <div class="tag-list">
-          <a-tag color="red">
-            HOT
-          </a-tag>
-          <a-tag color="green">
-            NEW
-          </a-tag>
-        </div>
-      </a-col>
+      <template-list :list="templates"></template-list>
     </a-row>
     <a-row type="flex" justify="center">
-      <a-button type="primary" size="large">
+      <a-button type="primary" size="large" @click="loadMorePage" v-if="!isLastPage" :loading="loading">
         加载更多
       </a-button>
     </a-row>
@@ -60,25 +37,32 @@ import { defineComponent, onMounted, computed } from 'vue'
 import { useStore } from 'vuex'
 import { GlobalDataProps } from '../store/index'
 import TemplateList from '../components/TemplateList.vue'
+import useLoadMore from '../hooks/useLoadMore'
 export default defineComponent({
   components: {
     TemplateList
-  },
-  data () {
-    return { items: [0, 1, 2, 3, 4, 5], items2: [0, 1, 2, 3] }
   },
   setup () {
     const store = useStore<GlobalDataProps>()
     const isLogin = computed(() => store.state.user.isLogin)
     const works = computed(() => store.state.works.works)
+    const templates = computed(() => store.state.works.templates)
+    const total = computed(() => store.state.works.totalTemplates)
+    const loading = computed(() => store.state.status.loading)
+    const { loadMorePage, isLastPage } = useLoadMore('fetchWorks', total, { pageIndex: 0, pageSize: 8 }, 8)
     onMounted(() => {
       if (isLogin.value) {
         store.dispatch('fetchWorks', { pageIndex: 0, pageSize: 4 })
+        store.dispatch('fetchTemplates', { pageIndex: 0, pageSize: 8 })
       }
     })
     return {
       isLogin,
-      works
+      works,
+      templates,
+      loadMorePage,
+      loading,
+      isLastPage
     }
   }
 })
