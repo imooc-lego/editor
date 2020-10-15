@@ -46,18 +46,8 @@ export default defineComponent({
       store.dispatch('deleteWork', id)
     }
     const onCopy = (id: number) => {
-      store.dispatch('getWork', id).then(({ data }) => {
-        const { title, desc, coverImg, content } = data
-        const payload = {
-          title: title + '复制',
-          desc,
-          coverImg,
-          content
-        }
-        // delete some of the data
-        return store.dispatch('createWork', payload).then(({ data }) => {
-          router.push(`/editor/${data.id}`)
-        })
+      store.dispatch('copyWork', id).then(({ data }) => {
+        router.push(`/editor/${data.id}`)
       })
     }
     return {

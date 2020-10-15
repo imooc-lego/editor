@@ -131,6 +131,9 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
     saveWork (state) {
       state.page.updatedAt = new Date().toISOString()
     },
+    copyWork (state) {
+      state.page.updatedAt = new Date().toISOString()
+    },
     publishWork (state) {
       state.page.latestPublishAt = new Date().toISOString()
     },
@@ -170,6 +173,9 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
         }
         return asyncAndCommit(`/works/${id}`, 'saveWork', commit, { method: 'patch', data: postData })
       }
+    },
+    copyWork ({ commit }, id) {
+      return asyncAndCommit(`/works/copy/${id}`, 'copyWork', commit, { method: 'post' })
     },
     publishWork ({ commit }, id) {
       return asyncAndCommit(`/works/publish/${id}`, 'publishWork', commit, { method: 'post' })
