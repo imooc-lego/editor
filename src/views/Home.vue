@@ -9,17 +9,9 @@
         </a>
       </div>
     </div>
-    <div class="my-works" v-if="isLogin && works.length > 0">
-      <a-row type="flex" justify="space-between" align="middle" class="poster-title" >
-        <h2>我的作品</h2>
-        <router-link to="/mywork">查看我的所有作品</router-link>
-      </a-row>
-      <a-row :gutter="16">
-        <template-list :list="works"></template-list>
-      </a-row>
-    </div>
     <a-row class="poster-title" justify="space-between" align="middle">
-      <h2>热门海报</h2>
+      <h2 v-if="searchText">{{searchText}}的结果</h2>
+      <h2 v-else>热门海报</h2>
     </a-row>
     <a-row :gutter="16">
       <template-list :list="templates"></template-list>
@@ -29,6 +21,15 @@
         加载更多
       </a-button>
     </a-row>
+    <div class="my-works" v-if="isLogin && works.length > 0">
+      <a-row type="flex" justify="space-between" align="middle" class="poster-title" >
+        <h2>我的作品</h2>
+        <router-link to="/mywork">查看我的所有作品</router-link>
+      </a-row>
+      <a-row :gutter="16">
+        <template-list :list="works"></template-list>
+      </a-row>
+    </div>
   </div>
 </template>
 
@@ -49,7 +50,8 @@ export default defineComponent({
     const templates = computed(() => store.state.works.templates)
     const total = computed(() => store.state.works.totalTemplates)
     const loading = computed(() => store.state.status.loading)
-    const { loadMorePage, isLastPage } = useLoadMore('fetchWorks', total, { pageIndex: 0, pageSize: 8 }, 8)
+    const searchText = computed(() => store.state.works.searchText)
+    const { loadMorePage, isLastPage } = useLoadMore('fetchWorks', total, { pageIndex: 0, pageSize: 8, title: searchText.value }, 8)
     onMounted(() => {
       if (isLogin.value) {
         store.dispatch('fetchWorks', { pageIndex: 0, pageSize: 4 })
@@ -62,7 +64,8 @@ export default defineComponent({
       templates,
       loadMorePage,
       loading,
-      isLastPage
+      isLastPage,
+      searchText
     }
   }
 })

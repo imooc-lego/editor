@@ -1,6 +1,7 @@
 <template>
   <div class="homepage-container">
-    <h2>我的作品</h2>
+    <h2 v-if="searchText">{{searchText}}的结果</h2>
+    <h2 v-else>我的作品</h2>
     <a-empty v-if="works.length === 0 && !loading">
       <template v-slot:description>
         <span> 还没有任何作品 </span>
@@ -37,6 +38,7 @@ export default defineComponent({
     const works = computed(() => store.state.works.works)
     const total = computed(() => store.state.works.totalWorks)
     const loading = computed(() => store.state.status.loading)
+    const searchText = computed(() => store.state.works.searchText)
     const { loadMorePage, isLastPage } = useLoadMore('fetchWorks', total, { pageIndex: 0, pageSize: 8 }, 8)
     const createDesign = useCreateDesign()
     onMounted(() => {
@@ -57,7 +59,8 @@ export default defineComponent({
       loadMorePage,
       isLastPage,
       createDesign,
-      loading
+      loading,
+      searchText
     }
   }
 })

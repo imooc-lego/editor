@@ -9,6 +9,7 @@ export interface WorksProp {
   works: WorkProp[];
   totalWorks: number;
   totalTemplates: number;
+  searchText: string;
 }
 
 const workModule: Module<WorksProp, GlobalDataProps> = {
@@ -16,11 +17,12 @@ const workModule: Module<WorksProp, GlobalDataProps> = {
     templates: [],
     works: [],
     totalWorks: 0,
-    totalTemplates: 0
+    totalTemplates: 0,
+    searchText: ''
   },
   mutations: {
     fetchTemplates (state, { data, extraData }) {
-      const { pageIndex } = extraData
+      const { pageIndex, searchText } = extraData
       const { list, count } = data.data
       if (pageIndex === 0) {
         state.templates = list
@@ -28,9 +30,10 @@ const workModule: Module<WorksProp, GlobalDataProps> = {
         state.templates = [...state.templates, ...list]
       }
       state.totalTemplates = count
+      state.searchText = searchText || ''
     },
     fetchWorks (state, { data, extraData }) {
-      const { pageIndex } = extraData
+      const { pageIndex, searchText } = extraData
       const { list, count } = data.data
       if (pageIndex === 0) {
         state.works = list
@@ -38,6 +41,7 @@ const workModule: Module<WorksProp, GlobalDataProps> = {
         state.works = [...state.works, ...list]
       }
       state.totalWorks = count
+      state.searchText = searchText || ''
     },
     createWork (state, { data }) {
       state.works.unshift(data)
@@ -47,13 +51,19 @@ const workModule: Module<WorksProp, GlobalDataProps> = {
     }
   },
   actions: {
-    fetchTemplates ({ commit }, queryObj = { pageIndex: 0, pageSize: 8 }) {
+    fetchTemplates ({ commit }, queryObj = { pageIndex: 0, pageSize: 8, title: '' }) {
+      if (!queryObj.title) {
+        delete queryObj.title
+      }
       const queryString = objToQueryString(queryObj)
-      return asyncAndCommit(`/templates?${queryString}`, 'fetchTemplates', commit, { method: 'get' }, { pageIndex: queryObj.pageIndex })
+      return asyncAndCommit(`/templates?${queryString}`, 'fetchTemplates', commit, { method: 'get' }, { pageIndex: queryObj.pageIndex, searchText: queryObj.title })
     },
-    fetchWorks ({ commit }, queryObj = { pageIndex: 0, pageSize: 8 }) {
+    fetchWorks ({ commit }, queryObj = { pageIndex: 0, pageSize: 8, title: '' }) {
+      if (!queryObj.title) {
+        delete queryObj.title
+      }
       const queryString = objToQueryString(queryObj)
-      return asyncAndCommit(`/works?${queryString}`, 'fetchWorks', commit, { method: 'get' }, { pageIndex: queryObj.pageIndex })
+      return asyncAndCommit(`/works?${queryString}`, 'fetchWorks', commit, { method: 'get' }, { pageIndex: queryObj.pageIndex, searchText: queryObj.title })
     },
     deleteWork ({ commit }, id) {
       return asyncAndCommit(`/works/${id}`, 'deleteWork', commit, { method: 'delete' }, { id })

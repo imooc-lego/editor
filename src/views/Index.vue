@@ -11,7 +11,7 @@
         </div>
         <div class="right-col">
           <a-input-search
-            v-model:value="value"
+            v-model:value="searchText"
             placeholder="输入搜索的内容"
             @search="onSearch"
           />
@@ -58,7 +58,8 @@
 <script lang="ts">
 import { UserOutlined } from '@ant-design/icons-vue'
 import { useStore } from 'vuex'
-import { defineComponent, computed } from 'vue'
+import { useRoute } from 'vue-router'
+import { defineComponent, computed, ref, watch } from 'vue'
 import UserProfile from '../components/UserProfile.vue'
 import { GlobalDataProps } from '../store/index'
 import useCreateDesign from '../hooks/useCreateDesign'
@@ -69,14 +70,32 @@ export default defineComponent({
   },
   setup () {
     const store = useStore<GlobalDataProps>()
+    const route = useRoute()
+    const currentMutation = ref('fetchTemplates')
+    watch(() => route.name, (newValue) => {
+      if (newValue === 'Home') {
+        currentMutation.value = 'fetchTemplates'
+      } else if (newValue === 'MyWork') {
+        currentMutation.value = 'fetchWorks'
+      }
+    })
     const userInfo = computed(() => store.state.user)
     const loading = computed(() => store.state.status.loading)
+    const searchText = ref('')
     const createDesign = useCreateDesign()
+    const onSearch = () => {
+      const title = searchText.value.trim()
+      if (title !== '') {
+        store.dispatch(currentMutation.value, { title, pageIndex: 0, pageSize: 8 })
+      }
+    }
     return {
       items: [0, 1, 2, 3, 4, 5],
       userInfo,
       createDesign,
-      loading
+      loading,
+      searchText,
+      onSearch
     }
   }
 })

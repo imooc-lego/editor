@@ -11,8 +11,8 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Index',
     component: Index,
     children: [
-      { path: '', component: Home, meta: { title: '欢迎来到慕课乐高' } },
-      { path: 'mywork', component: MyWork, meta: { requiredLogin: true, title: '我的设计列表' } }
+      { path: '', name: 'Home', component: Home, meta: { title: '欢迎来到慕课乐高' } },
+      { path: 'mywork', name: 'MyWork', component: MyWork, meta: { requiredLogin: true, title: '我的设计列表' } }
     ]
   },
   {
