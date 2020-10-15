@@ -43,7 +43,7 @@ export const operationText: { [key: string]: any} = {
   },
   delete: {
     text: '删除图层',
-    shortcut: 'DEL / Backspace'
+    shortcut: 'Ctrl+Backspace'
   },
   cancel: {
     text: '取消选中',

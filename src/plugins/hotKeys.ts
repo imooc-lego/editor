@@ -11,7 +11,7 @@ export function initHotKeys () {
   useHotKey('ctrl+c, command+c', () => {
     operations.copy()
   })
-  useHotKey('backspace, delete, del', () => {
+  useHotKey('ctrl+backspace, command+backspace, ', () => {
     operations.delete()
   })
   useHotKey('ctrl+v, command+v', () => {
