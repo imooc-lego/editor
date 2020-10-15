@@ -23,30 +23,7 @@
       </a-layout-header>
       <a-layout-content style="padding: 0 50px">
         <a-layout style="padding: 24px 0; background: #fff">
-          <a-layout-sider width="250" style="background: #fff">
-            <a-menu
-              mode="inline"
-              style="height: 100%"
-            >
-              <a-menu-item key="1">
-                <UserOutlined />
-                <span>我的设计</span>
-              </a-menu-item>
-              <a-menu-item key="2">
-                <UserOutlined />
-                <span>我的设计</span>
-              </a-menu-item>
-              <a-menu-item key="3">
-                <UserOutlined />
-                <span>我的设计</span>
-              </a-menu-item>
-              <a-menu-item key="4">
-                <UserOutlined />
-                <span>我的设计</span>
-              </a-menu-item>
-            </a-menu>
-          </a-layout-sider>
-          <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
+          <a-layout-content :style="{ padding: '0 24px', minHeight: '280px', maxWidth: '1480px', margin: '0 auto' }">
             <router-view></router-view>
           </a-layout-content>
         </a-layout>
@@ -65,7 +42,6 @@ import { GlobalDataProps } from '../store/index'
 import useCreateDesign from '../hooks/useCreateDesign'
 export default defineComponent({
   components: {
-    UserOutlined,
     UserProfile
   },
   setup () {
