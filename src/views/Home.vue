@@ -3,14 +3,23 @@
     <div class="banner">
       <img class="banner-img" src="https://inproductmarketing-static.canva.cn/featureBanners/20201008-Double11-desktop_x2.jpg" style="background-color: rgb(0, 0, 0);">
       <div class="banner-text">
-        <h2 class="text-headline" style="color: rgb(255, 255, 255);">创建精彩设计</h2>
-        <a class="text-link" href="https://www.canva.cn/search/templates?q=%E5%8F%8C%E5%8D%81%E4%B8%80%E6%B5%B7%E6%8A%A5" >
-          <p>购物狂欢节，双十一海报合辑</p>
-        </a>
+        <h2 class="text-headline" style="color: rgb(255, 255, 255);">海量精彩设计 一键生成</h2>
+        <a-input-search
+          v-model:value="searchText"
+          placeholder="搜索一下，快速找模版"
+          @search="onSearch"
+        />
       </div>
     </div>
-    <a-row class="poster-title" >
-      <h2 v-if="searchText">{{searchText}}的结果</h2>
+    <a-row class="poster-title" type="flex" align="middle">
+      <h2 v-if="currentSearchText">{{currentSearchText}}的结果</h2>
+      <a-button
+        shape="circle" size="small"
+        v-if="currentSearchText" :style="{marginLeft: '10px'}"
+        @click="clearSearch"
+      >
+        ×
+      </a-button>
       <h2 v-else>热门海报</h2>
     </a-row>
     <a-row :gutter="16">
@@ -34,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, computed } from 'vue'
+import { defineComponent, onMounted, computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { GlobalDataProps } from '../store/index'
 import TemplateList from '../components/TemplateList.vue'
@@ -45,13 +54,23 @@ export default defineComponent({
   },
   setup () {
     const store = useStore<GlobalDataProps>()
+    const searchText = ref('')
     const isLogin = computed(() => store.state.user.isLogin)
     const works = computed(() => store.state.works.works)
     const templates = computed(() => store.state.works.templates)
     const total = computed(() => store.state.works.totalTemplates)
     const loading = computed(() => store.state.status.loading)
-    const searchText = computed(() => store.state.works.searchText)
-    const { loadMorePage, isLastPage } = useLoadMore('fetchWorks', total, { pageIndex: 0, pageSize: 8, title: searchText.value }, 8)
+    const currentSearchText = computed(() => store.state.works.searchText)
+    const { loadMorePage, isLastPage } = useLoadMore('fetchTemplates', total, { pageIndex: 0, pageSize: 8, title: searchText.value }, 8)
+    const onSearch = () => {
+      const title = searchText.value.trim()
+      if (title !== '') {
+        store.dispatch('fetchTemplates', { title, pageIndex: 0, pageSize: 8 })
+      }
+    }
+    const clearSearch = () => {
+      store.dispatch('fetchTemplates', { title: '', pageIndex: 0, pageSize: 8 })
+    }
     onMounted(() => {
       if (isLogin.value) {
         store.dispatch('fetchWorks', { pageIndex: 0, pageSize: 4 })
@@ -65,13 +84,16 @@ export default defineComponent({
       loadMorePage,
       loading,
       isLastPage,
-      searchText
+      searchText,
+      onSearch,
+      currentSearchText,
+      clearSearch
     }
   }
 })
 </script>
 
-<style scoped>
+<style>
 .banner {
   display: flex;
   position: relative;
@@ -95,9 +117,18 @@ export default defineComponent({
   justify-content: center;
   box-sizing: border-box;
 }
+.banner-text .ant-input-search {
+  width: 40%;
+}
+.banner-text .ant-input {
+  height: 40px;
+  font-size: 17px;
+  padding: 7px 15px;
+  padding-right: 30px;
+}
 .text-headline {
   text-shadow: 0 0 1px rgba(68,92,116,.02), 0 2px 8px rgba(57,76,96,.15);
-  font-size: 3rem;
+  font-size: 2rem;
 }
 .text-link {
   color: #ffffff;
@@ -109,19 +140,6 @@ export default defineComponent({
 .poster-item {
   position: relative;
   margin-bottom: 20px;
-}
-.tag-list {
-  position: absolute;
-  top: -4px;
-  left: 6px;
-}
-.ant-card-cover img {
-  height: 300px;
-  object-fit: cover;
-}
-.description-detail {
-  display: flex;
-  justify-content: space-between;
 }
 .poster-title {
   height: 70px;

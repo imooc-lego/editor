@@ -128,7 +128,7 @@ export default defineComponent({
   top: -4px;
   left: 6px;
 }
-.ant-card-cover img {
+.ant-card-cover > img {
   height: 300px;
   object-fit: cover;
 }

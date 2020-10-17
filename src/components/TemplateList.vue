@@ -79,7 +79,7 @@ export default defineComponent({
   position: relative;
   overflow: hidden;
 }
-.ant-card-cover img {
+.ant-card-cover > img {
   transition: all ease-in .2s;
 }
 .hover-item {
