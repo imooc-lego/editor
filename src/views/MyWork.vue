@@ -43,6 +43,7 @@ export default defineComponent({
     const createDesign = useCreateDesign()
     onMounted(() => {
       store.dispatch('fetchWorks')
+      store.dispatch('fetchStatic', { label: '49', value: '24', startDate: '2020-09-29', endDate: '2020-10-30' })
     })
     const onDelete = (id: number) => {
       store.dispatch('deleteWork', id)

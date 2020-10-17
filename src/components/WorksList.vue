@@ -2,11 +2,15 @@
   <div class="template-list-component">
     <a-skeleton v-if="loading"/>
     <a-row :gutter="16">
-      <a-col :span="6" v-for="item in list" :key="item.id" class="poster-item">
-        <a-card hoverable>
+      <a-col :span="6" v-for="item in listWithBarcode" :key="item.id" class="poster-item">
+        <a-card hoverable @mouseenter="() => showBarcode(item.id, item.barcodeUrl)">
           <template v-slot:cover>
             <img :src="item.coverImg"  v-if="item.coverImg" />
             <img src="http://typescript-vue.oss-cn-beijing.aliyuncs.com/vue-marker/5f81cca3f3bf7a0e1ebaf885.png"  v-else />
+            <div class="hover-item">
+              <div :id="`barcode-${item.id}`" class="barcode-container">
+              </div>
+            </div>
           </template>
           <template class="ant-card-actions" v-slot:actions>
             <router-link :to="`/editor/${item.id}`"><EditOutlined key="edit" /></router-link>
@@ -42,10 +46,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue'
+import { defineComponent, PropType, computed, ref, nextTick } from 'vue'
 import { EditOutlined, BarChartOutlined, EllipsisOutlined, CopyOutlined, DeleteOutlined } from '@ant-design/icons-vue'
+import QRCode from 'qrcodejs2'
 import { WorkProp } from '../store/works'
 import { Modal } from 'ant-design-vue'
+import { baseH5URL } from '../main'
 export default defineComponent({
   name: 'works-list',
   emits: ['on-copy', 'on-delete'],
@@ -67,6 +73,26 @@ export default defineComponent({
     }
   },
   setup (props, context) {
+    const container = ref<null | HTMLElement>(null)
+    const listWithBarcode = computed(() => {
+      return props.list.map(item => {
+        item.barcodeUrl = `${baseH5URL}/p/${item.id}-${item.uuid}`
+        return item
+      })
+    })
+    const showBarcode = (id: number, url?: string) => {
+      nextTick(() => {
+        const container = document.getElementById(`barcode-${id}`)
+        if (container && url && !container.hasChildNodes()) {
+          // eslint-disable-next-line no-new
+          new QRCode(container, {
+            text: url,
+            width: 120,
+            height: 120
+          })
+        }
+      })
+    }
     const deleteClicked = (id: number) => {
       Modal.confirm({
         title: '确定要删除该作品吗？',
@@ -83,7 +109,10 @@ export default defineComponent({
     }
     return {
       deleteClicked,
-      copyClicked
+      copyClicked,
+      listWithBarcode,
+      showBarcode,
+      container
     }
   }
 })
@@ -106,5 +135,9 @@ export default defineComponent({
 .description-detail {
   display: flex;
   justify-content: space-between;
+}
+.barcode-container {
+  width: 120px;
+  height: 120px;
 }
 </style>

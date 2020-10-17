@@ -9,12 +9,12 @@
         </a>
       </div>
     </div>
-    <a-row class="poster-title" justify="space-between" align="middle">
+    <a-row class="poster-title" >
       <h2 v-if="searchText">{{searchText}}的结果</h2>
       <h2 v-else>热门海报</h2>
     </a-row>
     <a-row :gutter="16">
-      <template-list :list="templates"></template-list>
+      <template-list :list="templates" type="template"></template-list>
     </a-row>
     <a-row type="flex" justify="center">
       <a-button type="primary" size="large" @click="loadMorePage" v-if="!isLastPage" :loading="loading">
@@ -55,8 +55,8 @@ export default defineComponent({
     onMounted(() => {
       if (isLogin.value) {
         store.dispatch('fetchWorks', { pageIndex: 0, pageSize: 4 })
-        store.dispatch('fetchTemplates', { pageIndex: 0, pageSize: 8 })
       }
+      store.dispatch('fetchTemplates', { pageIndex: 0, pageSize: 8 })
     })
     return {
       isLogin,

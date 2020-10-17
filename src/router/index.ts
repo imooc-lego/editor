@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Index from '../views/Index.vue'
 import Home from '../views/Home.vue'
 import MyWork from '../views/MyWork.vue'
+import TemplateDetail from '../views/TemplateDetail.vue'
 import axios from 'axios'
 import store from '../store'
 
@@ -12,7 +13,8 @@ const routes: Array<RouteRecordRaw> = [
     component: Index,
     children: [
       { path: '', name: 'Home', component: Home, meta: { title: '欢迎来到慕课乐高' } },
-      { path: 'mywork', name: 'MyWork', component: MyWork, meta: { requiredLogin: true, title: '我的设计列表' } }
+      { path: 'mywork', name: 'MyWork', component: MyWork, meta: { requiredLogin: true, title: '我的设计列表' } },
+      { path: '/template/:id', name: 'TemplateDetail', component: TemplateDetail, meta: { title: '模版详情' } }
     ]
   },
   {

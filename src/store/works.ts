@@ -2,11 +2,14 @@ import { Module } from 'vuex'
 import { GlobalDataProps, asyncAndCommit } from './index'
 import { PageData } from './editor'
 import { objToQueryString } from '../helper'
-export type WorkProp = Required<Omit<PageData, 'props' | 'setting'>>
+export type WorkProp = Required<Omit<PageData, 'props' | 'setting'>> & {
+  barcodeUrl?: string;
+}
 
 export interface WorksProp {
   templates: WorkProp[];
   works: WorkProp[];
+  statics: any;
   totalWorks: number;
   totalTemplates: number;
   searchText: string;
@@ -17,6 +20,7 @@ const workModule: Module<WorksProp, GlobalDataProps> = {
     templates: [],
     works: [],
     totalWorks: 0,
+    statics: [],
     totalTemplates: 0,
     searchText: ''
   },
@@ -48,6 +52,9 @@ const workModule: Module<WorksProp, GlobalDataProps> = {
     },
     deleteWork (state, { extraData }) {
       state.works = state.works.filter(work => work.id !== extraData.id)
+    },
+    fetchStatic (state, { data }) {
+      console.log(data)
     }
   },
   actions: {
@@ -70,6 +77,11 @@ const workModule: Module<WorksProp, GlobalDataProps> = {
     },
     createWork ({ commit }, payload: WorkProp) {
       return asyncAndCommit('/works', 'createWork', commit, { method: 'post', data: payload })
+    },
+    fetchStatic ({ commit }, queryObj) {
+      const newObj = { category: 'h5', action: 'pv', ...queryObj }
+      const queryString = objToQueryString(newObj)
+      return asyncAndCommit(`http://182.92.168.192:8080/api/event?${queryString}`, 'fetchStatic', commit)
     }
   }
 }
