@@ -87,8 +87,8 @@ export default defineComponent({
           // eslint-disable-next-line no-new
           new QRCode(container, {
             text: url,
-            width: 120,
-            height: 120
+            width: 80,
+            height: 80
           })
         }
       })
@@ -137,7 +137,7 @@ export default defineComponent({
   justify-content: space-between;
 }
 .barcode-container {
-  width: 120px;
-  height: 120px;
+  width: 80px;
+  height: 80px;
 }
 </style>

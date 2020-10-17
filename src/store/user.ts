@@ -12,6 +12,8 @@ export interface UserDataProps {
   createdAt?: string;
   iat?: number;
   exp?: number;
+  picture?: string;
+  gender?: string;
 }
 
 export interface UserProps {
@@ -30,6 +32,9 @@ const userModule: Module<UserProps, GlobalDataProps> = {
     fetchCurrentUser (state, rawData) {
       state.isLogin = true
       state.data = { ...rawData.data }
+    },
+    updateUser (state, { extraData }) {
+      state.data = { ...state.data, ...extraData }
     },
     login (state, rawData) {
       const { token } = rawData.data
@@ -56,9 +61,9 @@ const userModule: Module<UserProps, GlobalDataProps> = {
       return dispatch('login', loginData).then(() => {
         return dispatch('fetchCurrentUser')
       })
-      // then(() => {
-      //   return dispatch('createWork', { title: '未命名作品', desc: '未命名作品', coverImg: 'http://vue-maker.oss-cn-hangzhou.aliyuncs.com/vue-marker/5f79389d4737571e2e1dc7cb.png' })
-      // })
+    },
+    updateUser ({ commit }, payload) {
+      return asyncAndCommit('/users/updateUserInfo', 'updateUser', commit, { method: 'patch', data: payload }, payload)
     }
   }
 }

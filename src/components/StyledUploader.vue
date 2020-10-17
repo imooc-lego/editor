@@ -49,7 +49,6 @@ export default defineComponent({
   emits: ['file-uploaded'],
   setup (props, context) {
     const handleFileUploaded = (data: any) => {
-      console.log(data)
       context.emit('file-uploaded', data)
     }
     return {
