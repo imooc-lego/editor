@@ -5,3 +5,4 @@ declare module '*.vue' {
 }
 declare module 'vue-draggable-next'
 declare module 'qrcodejs2'
+declare module 'echarts/lib/echarts'

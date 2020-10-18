@@ -78,6 +78,9 @@ export default defineComponent({
         data: { url: rawData.data.url }
       }
     }
+    onMounted(() => {
+      store.dispatch('fetchWorks', { pageIndex: 0, pageSize: 8, status: 2 })
+    })
     const update = () => {
       publishForm.value.validate().then(() => {
         console.log(form.username)

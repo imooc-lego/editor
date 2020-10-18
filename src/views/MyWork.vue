@@ -1,6 +1,18 @@
 <template>
   <div class="mywork-container">
-
+    <a-modal
+      title="数据统计"
+      v-model:visible="showModal"
+      width="700px"
+      :footer="null"
+    >
+      <a-range-picker
+        :value="dateRange"
+        @change="onDateChange"
+        format="YYYY-MM-DD"
+      />
+      <div id="main" :style="{width: '500px', height: '300px'}"></div>
+    </a-modal>
     <a-row type="flex" justify="space-between" align="middle" class="poster-title" >
       <div v-if="currentSearchText" class="searchResult">
         <h2>{{currentSearchText}}的结果</h2>
@@ -28,7 +40,7 @@
       </a-button>
     </a-empty>
 
-    <works-list :list="works" @on-delete="onDelete" @on-copy="onCopy" :loadding="loading"></works-list>
+    <works-list :list="works" @on-delete="onDelete" @on-copy="onCopy" :loading="loading" @on-static="openStatic"></works-list>
     <a-row type="flex" justify="center">
       <a-button type="primary" size="large" @click="loadMorePage" v-if="!isLastPage" :loading="loading">
         加载更多
@@ -38,13 +50,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref } from 'vue'
+import { defineComponent, computed, onMounted, ref, nextTick, reactive } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import echarts from 'echarts/lib/echarts'
+import 'echarts/lib/chart/line'
 import { GlobalDataProps } from '../store/index'
 import WorksList from '../components/WorksList.vue'
 import useLoadMore from '../hooks/useLoadMore'
 import useCreateDesign from '../hooks/useCreateDesign'
+import { toDateFormat, toDateFromDays } from '../helper'
 export default defineComponent({
   components: {
     WorksList
@@ -55,13 +70,43 @@ export default defineComponent({
     const works = computed(() => store.state.works.works)
     const total = computed(() => store.state.works.totalWorks)
     const loading = computed(() => store.state.status.loading)
+    const statics = computed(() => store.state.works.statics)
+    const channels = computed(() => store.state.editor.channels)
+    const staticOptions = computed(() => {
+      const legend = statics.value.map(stat => stat.name)
+      const xAxis = statics.value.map(stat => {
+        return {
+          type: 'category',
+          data: stat.list.map(i => i.eventDate.split('T')[0])
+        }
+      })
+      const series = statics.value.map(stat => {
+        return {
+          type: 'line',
+          name: stat.name,
+          data: stat.list.map(i => i.eventData.pv)
+        }
+      })
+      return {
+        legend: {
+          data: legend
+        },
+        xAxis,
+        yAxis: {
+          type: 'value'
+        },
+        series
+      }
+    })
     const searchText = ref('')
+    const showModal = ref<boolean | number>(false)
+    const dateRange = ref([toDateFormat(toDateFromDays(new Date(), -30)), toDateFormat(new Date())])
     const currentSearchText = computed(() => store.state.works.searchText)
     const { loadMorePage, isLastPage } = useLoadMore('fetchWorks', total, { pageIndex: 0, pageSize: 8 }, 8)
     const createDesign = useCreateDesign()
+    let myChart: any
     onMounted(() => {
       store.dispatch('fetchWorks')
-      store.dispatch('fetchStatic', { label: '49', value: '24', startDate: '2020-09-29', endDate: '2020-10-30' })
     })
     const onSearch = () => {
       const title = searchText.value.trim()
@@ -80,6 +125,36 @@ export default defineComponent({
         router.push(`/editor/${data.id}`)
       })
     }
+    const getChannelStatic = (id: number) => {
+      store.commit('clearStatic')
+      store.dispatch('getChannels', id).then(() => {
+        const promiseArr = channels.value.map(channel => {
+          return store.dispatch('fetchStatic', {
+            name: channel.name,
+            label: id,
+            value: channel.id,
+            startDate: dateRange.value[0],
+            endDate: dateRange.value[1]
+          })
+        })
+        return Promise.all(promiseArr)
+      }).then(() => {
+        if (!myChart) {
+          myChart = echarts.init(document.getElementById('main'))
+        }
+        myChart.setOption(staticOptions.value)
+      })
+    }
+    const openStatic = (id: number) => {
+      showModal.value = id
+      getChannelStatic(id)
+    }
+    const onDateChange = (newDate: any, dateString: any) => {
+      console.log(dateString)
+      dateRange.value[0] = dateString[0]
+      dateRange.value[1] = dateString[1]
+      getChannelStatic(showModal.value as number)
+    }
     return {
       works,
       onDelete,
@@ -91,7 +166,11 @@ export default defineComponent({
       searchText,
       currentSearchText,
       onSearch,
-      clearSearch
+      clearSearch,
+      openStatic,
+      showModal,
+      onDateChange,
+      dateRange
     }
   }
 })

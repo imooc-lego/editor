@@ -59,11 +59,11 @@ export default defineComponent({
     const route = useRoute()
     const currentWorkId = route.params.id
     const { title, desc, setting } = store.state.editor.page
-    const { shareImg } = setting
+    // const { shareImg } = setting
     const form = reactive({
       title: title || '',
       subTitle: desc || '',
-      uploaded: { data: { url: shareImg || 'http://vue-maker.oss-cn-hangzhou.aliyuncs.com/vue-marker/5f79389d4737571e2e1dc7cb.png' } }
+      uploaded: { data: { url: (setting && setting.shareImg) || 'http://vue-maker.oss-cn-hangzhou.aliyuncs.com/vue-marker/5f79389d4737571e2e1dc7cb.png' } }
     })
     const publishForm = ref() as Ref<RuleFormInstance>
     const rules = {

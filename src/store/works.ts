@@ -6,10 +6,17 @@ export type WorkProp = Required<Omit<PageData, 'props' | 'setting'>> & {
   barcodeUrl?: string;
 }
 
+export interface StaticProps {
+  eventDate: string;
+  eventData: { pv: number };
+  eventKey: string;
+  _id: string;
+}
+
 export interface WorksProp {
   templates: WorkProp[];
   works: WorkProp[];
-  statics: any;
+  statics: { id: number; name: string; list: StaticProps[]}[];
   totalWorks: number;
   totalTemplates: number;
   searchText: string;
@@ -53,8 +60,13 @@ const workModule: Module<WorksProp, GlobalDataProps> = {
     deleteWork (state, { extraData }) {
       state.works = state.works.filter(work => work.id !== extraData.id)
     },
-    fetchStatic (state, { data }) {
-      console.log(data)
+    fetchStatic (state, { data, extraData }) {
+      const list = data.data
+      const { name, id } = extraData
+      state.statics.push({ name, id, list })
+    },
+    clearStatic (state) {
+      state.statics = []
     }
   },
   actions: {
@@ -81,7 +93,7 @@ const workModule: Module<WorksProp, GlobalDataProps> = {
     fetchStatic ({ commit }, queryObj) {
       const newObj = { category: 'h5', action: 'pv', ...queryObj }
       const queryString = objToQueryString(newObj)
-      return asyncAndCommit(`http://182.92.168.192:8080/api/event?${queryString}`, 'fetchStatic', commit)
+      return asyncAndCommit(`http://182.92.168.192:8080/api/event?${queryString}`, 'fetchStatic', commit, { method: 'get' }, { name: queryObj.name, id: queryObj.label })
     }
   }
 }

@@ -96,5 +96,15 @@ export const takeScreenshotAndUpload = (id: string) => {
 }
 
 export const objToQueryString = (queryObj: { ['string']: any}) => {
-  return map(queryObj, (value: any, key: string) => `${key}=${encodeURIComponent(value)}`).join('&')
+  return map(queryObj, (value: any, key: string) => `${key}=${value}`).join('&')
+}
+
+export const toDateFormat = (date: Date) => {
+  return date.toISOString().split('T')[0]
+}
+
+export const toDateFromDays = (date: Date, n: number) => {
+  const newDate = new Date(date.getTime())
+  newDate.setDate(date.getDate() + n)
+  return newDate
 }

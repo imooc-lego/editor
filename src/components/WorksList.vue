@@ -14,7 +14,7 @@
           </template>
           <template class="ant-card-actions" v-slot:actions>
             <router-link :to="`/editor/${item.id}`"><EditOutlined key="edit" /></router-link>
-            <router-link :to="`/static/${item.id}`"><BarChartOutlined key="chart" /></router-link>
+            <a href="javascript:;"  @click.prevent="staticClicked(item.id)"><BarChartOutlined key="chart" /></a>
             <a-dropdown>
               <EllipsisOutlined key="ellipsis" />
               <template v-slot:overlay>
@@ -54,7 +54,7 @@ import { Modal } from 'ant-design-vue'
 import { baseH5URL } from '../main'
 export default defineComponent({
   name: 'works-list',
-  emits: ['on-copy', 'on-delete'],
+  emits: ['on-copy', 'on-delete', 'on-static'],
   components: {
     EditOutlined,
     BarChartOutlined,
@@ -107,12 +107,16 @@ export default defineComponent({
     const copyClicked = (id: number) => {
       context.emit('on-copy', id)
     }
+    const staticClicked = (id: number) => {
+      context.emit('on-static', id)
+    }
     return {
       deleteClicked,
       copyClicked,
       listWithBarcode,
       showBarcode,
-      container
+      container,
+      staticClicked
     }
   }
 })

@@ -8,7 +8,7 @@
       <a-col :span="16" class="right-col">
         <a-row>
           <a-col :span="6">
-            <img :src="page.setting.shareImg" :alt="page.title" />
+            <img :src=" (page.setting && page.setting.shareImg) || 'http://vue-maker.oss-cn-hangzhou.aliyuncs.com/vue-marker/5f79389d4737571e2e1dc7cb.png'" :alt="page.title" />
           </a-col>
           <a-col :span="18" class="left-gap">
             <h4>{{page.title}}</h4>
