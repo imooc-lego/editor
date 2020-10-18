@@ -12,6 +12,8 @@
         format="YYYY-MM-DD"
       />
       <div id="main" :style="{width: '500px', height: '300px'}"></div>
+      <a-table :columns="tableColumns" :data-source="tableData">
+      </a-table>
     </a-modal>
     <a-row type="flex" justify="space-between" align="middle" class="poster-title" >
       <div v-if="currentSearchText" class="searchResult">
@@ -98,8 +100,45 @@ export default defineComponent({
         series
       }
     })
+    const tableColumns = [
+      {
+        title: '渠道名称',
+        dataIndex: 'name',
+        key: 'name'
+      },
+      {
+        title: 'PV',
+        dataIndex: 'pv',
+        key: 'pv'
+      },
+      {
+        title: '占比',
+        dataIndex: 'percent',
+        key: 'percent'
+      }
+    ]
+    const totalPv = computed(() => {
+      let total = 0
+      statics.value.forEach(stat => {
+        const pv = stat.list.reduce((prev, current) => current.eventData.pv + prev, 0)
+        total += pv
+      })
+      return total
+    })
+    const tableData = computed(() => {
+      return statics.value.map(stat => {
+        const pv = stat.list.reduce((prev, current) => current.eventData.pv + prev, 0)
+        return {
+          name: stat.name,
+          key: stat.id,
+          pv,
+          percent: (pv / totalPv.value) * 100 + '%'
+        }
+      })
+    })
     const searchText = ref('')
-    const showModal = ref<boolean | number>(false)
+    const showModal = ref(false)
+    const currentStaticId = ref(0)
     const dateRange = ref([toDateFormat(toDateFromDays(new Date(), -30)), toDateFormat(new Date())])
     const currentSearchText = computed(() => store.state.works.searchText)
     const { loadMorePage, isLastPage } = useLoadMore('fetchWorks', total, { pageIndex: 0, pageSize: 8 }, 8)
@@ -146,14 +185,14 @@ export default defineComponent({
       })
     }
     const openStatic = (id: number) => {
-      showModal.value = id
+      showModal.value = true
+      currentStaticId.value = id
       getChannelStatic(id)
     }
     const onDateChange = (newDate: any, dateString: any) => {
-      console.log(dateString)
       dateRange.value[0] = dateString[0]
       dateRange.value[1] = dateString[1]
-      getChannelStatic(showModal.value as number)
+      getChannelStatic(currentStaticId.value)
     }
     return {
       works,
@@ -170,7 +209,9 @@ export default defineComponent({
       openStatic,
       showModal,
       onDateChange,
-      dateRange
+      dateRange,
+      tableData,
+      tableColumns
     }
   }
 })
