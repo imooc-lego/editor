@@ -8,13 +8,14 @@
             <img :src="item.coverImg"  v-if="item.coverImg" />
             <img src="http://typescript-vue.oss-cn-beijing.aliyuncs.com/vue-marker/5f81cca3f3bf7a0e1ebaf885.png"  v-else />
             <div class="hover-item">
-              <div :id="`barcode-${item.id}`" class="barcode-container">
+              <div :id="`barcode-${item.id}`" class="barcode-container" v-if="item.status === '2'">
               </div>
+              <router-link :to="`/editor/${item.id}`" v-else><a-button size="large" type="primary">继续编辑该作品</a-button></router-link>
             </div>
           </template>
           <template class="ant-card-actions" v-slot:actions>
             <router-link :to="`/editor/${item.id}`"><EditOutlined key="edit" /></router-link>
-            <a href="javascript:;"  @click.prevent="staticClicked(item.id)"><BarChartOutlined key="chart" /></a>
+            <a href="javascript:;"  @click.prevent="staticClicked(item.id)" v-if="item.status === '2'"><BarChartOutlined key="chart" /></a>
             <a-dropdown>
               <EllipsisOutlined key="ellipsis" />
               <template v-slot:overlay>
