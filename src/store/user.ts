@@ -33,12 +33,15 @@ const userModule: Module<UserProps, GlobalDataProps> = {
       state.isLogin = true
       state.data = { ...rawData.data }
     },
-    updateUser (state, { extraData }) {
+    updateUser (state, { data, extraData }) {
+      const { token } = data.data
       state.data = { ...state.data, ...extraData }
+      state.token = token
+      localStorage.setItem('token', token)
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`
     },
     login (state, rawData) {
       const { token } = rawData.data
-      console.log(token)
       state.token = token
       localStorage.setItem('token', token)
       axios.defaults.headers.common.Authorization = `Bearer ${token}`
@@ -64,6 +67,11 @@ const userModule: Module<UserProps, GlobalDataProps> = {
     },
     updateUser ({ commit }, payload) {
       return asyncAndCommit('/users/updateUserInfo', 'updateUser', commit, { method: 'patch', data: payload }, payload)
+    },
+    updateUserAndFetch ({ dispatch }, payload) {
+      return dispatch('updateUser', payload).then(() => {
+        return dispatch('fetchCurrentUser')
+      })
     }
   }
 }

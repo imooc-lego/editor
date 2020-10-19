@@ -37,6 +37,8 @@
             </a-button>
           </a-form-item>
         </a-form>
+        <!-- <a-table :columns="tableColumns" :data-source="works">
+        </a-table> -->
       </a-col>
     </a-row>
   </div>
@@ -62,12 +64,30 @@ export default defineComponent({
     const store = useStore<GlobalDataProps>()
     const publishForm = ref() as Ref<RuleFormInstance>
     const user = computed(() => store.state.user.data)
+    const works = computed(() => store.state.works.works)
     const form = reactive({
       username: user.value.nickName || '',
       gender: user.value.gender || '0',
       uploaded: { data: { url: (user.value.picture || 'http://vue-maker.oss-cn-hangzhou.aliyuncs.com/vue-marker/5f79389d4737571e2e1dc7cb.png') } }
     })
     const status = computed(() => store.state.status)
+    const tableColumns = [
+      {
+        title: '作品',
+        dataIndex: 'title',
+        key: 'title'
+      },
+      {
+        title: 'ID',
+        dataIndex: 'id',
+        key: 'id'
+      },
+      {
+        title: '最后更新',
+        dataIndex: 'updatedAt',
+        key: 'updatedAt'
+      }
+    ]
     const rules = {
       username: [
         { required: true, message: '用户昵称不能为空', trigger: 'blur' }
@@ -79,18 +99,16 @@ export default defineComponent({
       }
     }
     onMounted(() => {
-      store.dispatch('fetchWorks', { pageIndex: 0, pageSize: 8, status: 2 })
+      store.dispatch('fetchWorks', { pageIndex: 0, pageSize: 8, status: 0 })
     })
     const update = () => {
       publishForm.value.validate().then(() => {
-        console.log(form.username)
-        console.log(form.gender)
         const payload = {
           nickName: form.username,
           gender: parseInt(form.gender),
           picture: form.uploaded.data.url
         }
-        store.dispatch('updateUser', payload).then(() => {
+        store.dispatch('updateUserAndFetch', payload).then(() => {
           message.success('更新信息成功', 1)
         })
       })
@@ -101,7 +119,9 @@ export default defineComponent({
       rules,
       update,
       updateAvatar,
-      publishForm
+      publishForm,
+      works,
+      tableColumns
     }
   }
 })
