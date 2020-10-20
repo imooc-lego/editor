@@ -60,6 +60,9 @@ const workModule: Module<WorksProp, GlobalDataProps> = {
     deleteWork (state, { extraData }) {
       state.works = state.works.filter(work => work.id !== extraData.id)
     },
+    recoverWork (state, { extraData }) {
+      state.works = state.works.filter(work => work.id !== extraData.id)
+    },
     fetchStatic (state, { data, extraData }) {
       const list = data.data
       const { name, id } = extraData
@@ -94,6 +97,9 @@ const workModule: Module<WorksProp, GlobalDataProps> = {
       const newObj = { category: 'h5', action: 'pv', ...queryObj }
       const queryString = objToQueryString(newObj)
       return asyncAndCommit(`http://182.92.168.192:8080/api/event?${queryString}`, 'fetchStatic', commit, { method: 'get' }, { name: queryObj.name, id: queryObj.label })
+    },
+    recoverWork ({ commit }, id) {
+      return asyncAndCommit(`/works/put-back/${id}`, 'recoverWork', commit, { method: 'post' }, { id })
     }
   }
 }
