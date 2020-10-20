@@ -43,6 +43,9 @@ const workModule: Module<WorksProp, GlobalDataProps> = {
       state.totalTemplates = count
       state.searchText = searchText || ''
     },
+    fetchTemplate (state, { data }) {
+      state.templates = [data]
+    },
     fetchWorks (state, { data, extraData }) {
       const { pageIndex, searchText } = extraData
       const { list, count } = data.data
@@ -80,6 +83,9 @@ const workModule: Module<WorksProp, GlobalDataProps> = {
       const queryString = objToQueryString(queryObj)
       return asyncAndCommit(`/templates?${queryString}`, 'fetchTemplates', commit, { method: 'get' }, { pageIndex: queryObj.pageIndex, searchText: queryObj.title })
     },
+    fetchTemplate ({ commit }, id) {
+      return asyncAndCommit(`/templates/${id}`, 'fetchTemplate', commit)
+    },
     fetchWorks ({ commit }, queryObj = { pageIndex: 0, pageSize: 8, title: '' }) {
       if (!queryObj.title) {
         delete queryObj.title
@@ -100,6 +106,11 @@ const workModule: Module<WorksProp, GlobalDataProps> = {
     },
     recoverWork ({ commit }, id) {
       return asyncAndCommit(`/works/put-back/${id}`, 'recoverWork', commit, { method: 'post' }, { id })
+    }
+  },
+  getters: {
+    getCurrentTemplate: state => (id: string) => {
+      return state.templates.find((template) => template.id === parseInt(id))
     }
   }
 }
