@@ -49,11 +49,12 @@ const workModule: Module<WorksProp, GlobalDataProps> = {
     fetchWorks (state, { data, extraData }) {
       const { pageIndex, searchText } = extraData
       const { list, count } = data.data
-      if (pageIndex === 0) {
-        state.works = list
-      } else {
-        state.works = [...state.works, ...list]
-      }
+      // if (pageIndex === 0) {
+      //   state.works = list
+      // } else {
+      //   state.works = [...state.works, ...list]
+      // }
+      state.works = list
       state.totalWorks = count
       state.searchText = searchText || ''
     },

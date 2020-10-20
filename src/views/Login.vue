@@ -131,9 +131,8 @@ export default defineComponent({
       })
     }
     const getCode = () => {
-      axios.post('/users/genVeriCode', { phoneNumber: form.username }, { mutationName: 'getCode' } as AxiosRequestConfig).then(resp => {
-        const { data } = resp.data
-        message.success(`手机登录校验码为 ${data.code}`, 5)
+      axios.post('/users/genVeriCode', { phoneNumber: form.username }, { mutationName: 'getCode' } as AxiosRequestConfig).then(() => {
+        message.success('验证码已发送，请注意查收', 5)
         startCounter()
       })
     }

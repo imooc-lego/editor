@@ -1,7 +1,7 @@
 <template>
   <div class="template-list-component">
     <a-skeleton v-if="loading"/>
-    <a-row :gutter="16">
+    <a-row :gutter="16" v-else>
       <a-col :span="6" v-for="item in listWithBarcode" :key="item.id" class="poster-item">
         <a-card hoverable @mouseenter="() => showBarcode(item.id, item.barcodeUrl)">
           <template v-slot:cover>

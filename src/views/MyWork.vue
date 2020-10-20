@@ -44,9 +44,7 @@
 
     <works-list :list="works" @on-delete="onDelete" @on-copy="onCopy" :loading="loading" @on-static="openStatic"></works-list>
     <a-row type="flex" justify="center">
-      <a-button type="primary" size="large" @click="loadMorePage" v-if="!isLastPage" :loading="loading">
-        加载更多
-      </a-button>
+      <a-pagination v-model:current="currentPage" :total="total" :pageSize="8" show-less-items @change="pageChange"/>
     </a-row>
   </div>
 </template>
@@ -59,7 +57,6 @@ import echarts from 'echarts/lib/echarts'
 import 'echarts/lib/chart/line'
 import { GlobalDataProps } from '../store/index'
 import WorksList from '../components/WorksList.vue'
-import useLoadMore from '../hooks/useLoadMore'
 import useCreateDesign from '../hooks/useCreateDesign'
 import { toDateFormat, toDateFromDays } from '../helper'
 export default defineComponent({
@@ -74,6 +71,7 @@ export default defineComponent({
     const loading = computed(() => store.state.status.loading)
     const statics = computed(() => store.state.works.statics)
     const channels = computed(() => store.state.editor.channels)
+    const currentPage = ref(1)
     const staticOptions = computed(() => {
       const legend = statics.value.map(stat => stat.name)
       const xAxis = statics.value.map(stat => {
@@ -141,7 +139,6 @@ export default defineComponent({
     const currentStaticId = ref(0)
     const dateRange = ref([toDateFormat(toDateFromDays(new Date(), -30)), toDateFormat(new Date())])
     const currentSearchText = computed(() => store.state.works.searchText)
-    const { loadMorePage, isLastPage } = useLoadMore('fetchWorks', total, { pageIndex: 0, pageSize: 8 }, 8)
     const createDesign = useCreateDesign()
     let myChart: any
     onMounted(() => {
@@ -163,6 +160,10 @@ export default defineComponent({
       store.dispatch('copyWork', id).then(({ data }) => {
         router.push(`/editor/${data.id}`)
       })
+    }
+    const pageChange = () => {
+      console.log(currentPage.value)
+      store.dispatch('fetchWorks', { title: currentSearchText.value, pageIndex: (currentPage.value - 1), pageSize: 8 })
     }
     const getChannelStatic = (id: number) => {
       store.commit('clearStatic')
@@ -189,7 +190,7 @@ export default defineComponent({
       currentStaticId.value = id
       getChannelStatic(id)
     }
-    const onDateChange = (newDate: any, dateString: any) => {
+    const onDateChange = (newDate: string, dateString: string) => {
       dateRange.value[0] = dateString[0]
       dateRange.value[1] = dateString[1]
       getChannelStatic(currentStaticId.value)
@@ -198,8 +199,6 @@ export default defineComponent({
       works,
       onDelete,
       onCopy,
-      loadMorePage,
-      isLastPage,
       createDesign,
       loading,
       searchText,
@@ -211,7 +210,10 @@ export default defineComponent({
       onDateChange,
       dateRange,
       tableData,
-      tableColumns
+      tableColumns,
+      total,
+      currentPage,
+      pageChange
     }
   }
 })
