@@ -71,7 +71,7 @@ import { GlobalDataProps } from '../store/index'
 import StyledUploader from '../components/StyledUploader.vue'
 import { useStore } from 'vuex'
 import { message } from 'ant-design-vue'
-interface RuleFormInstance {
+export interface RuleFormInstance {
   validate: () => Promise<any>;
 }
 interface PaginationProps {

@@ -67,6 +67,11 @@ const workModule: Module<WorksProp, GlobalDataProps> = {
     recoverWork (state, { extraData }) {
       state.works = state.works.filter(work => work.id !== extraData.id)
     },
+    transferWork (state, { data, extraData }) {
+      if (data.errno === 0) {
+        state.works = state.works.filter(work => work.id !== extraData.id)
+      }
+    },
     fetchStatic (state, { data, extraData }) {
       const list = data.data
       const { name, id } = extraData
@@ -107,6 +112,9 @@ const workModule: Module<WorksProp, GlobalDataProps> = {
     },
     recoverWork ({ commit }, id) {
       return asyncAndCommit(`/works/put-back/${id}`, 'recoverWork', commit, { method: 'post' }, { id })
+    },
+    transferWork ({ commit }, { id, username }) {
+      return asyncAndCommit(`/works/transfer/${id}/${username}`, 'transferWork', commit, { method: 'post' }, { id })
     }
   },
   getters: {

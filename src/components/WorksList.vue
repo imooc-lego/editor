@@ -1,5 +1,28 @@
 <template>
   <div class="template-list-component">
+    <a-modal
+      title="转赠作品"
+      v-model:visible="sendModal"
+      :footer="null"
+    >
+      <a-form
+        :model="form" :rules="rules"
+        ref="publishForm" layout="vertical"
+      >
+        <a-form-item label="用户名" required name="username">
+          <a-input v-model:value="form.username" placeholder="填写要转赠人的用户名">
+            <template v-slot:prefix><UserOutlined style="color:rgba(0,0,0,.25)"/></template>
+          </a-input>
+        </a-form-item>
+        <a-form-item>
+          <a-button type="primary" @click="sendGift" size="large"
+            :loading="loading"
+          >
+            {{ loading ? '加载中' : '转赠该作品'}}
+          </a-button>
+        </a-form-item>
+      </a-form>
+    </a-modal>
     <a-skeleton v-if="loading"/>
     <a-row :gutter="16" v-else>
       <a-col :span="6" v-for="item in listWithBarcode" :key="item.id" class="poster-item">
@@ -26,6 +49,9 @@
                   <a-menu-item>
                     <a href="javascript:;"  @click.prevent="deleteClicked(item.id)"><DeleteOutlined /> 删除</a>
                   </a-menu-item>
+                  <a-menu-item v-if="item.isTemplate">
+                    <a href="javascript:;"  @click.prevent="sendClicked(item.id)"><GiftOutlined /> 转赠</a>
+                  </a-menu-item>
                 </a-menu>
               </template>
             </a-dropdown>
@@ -47,21 +73,24 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref, nextTick } from 'vue'
-import { EditOutlined, BarChartOutlined, EllipsisOutlined, CopyOutlined, DeleteOutlined } from '@ant-design/icons-vue'
+import { defineComponent, PropType, computed, ref, nextTick, reactive, Ref, watch } from 'vue'
+import { EditOutlined, BarChartOutlined, EllipsisOutlined, CopyOutlined, DeleteOutlined, GiftOutlined, UserOutlined } from '@ant-design/icons-vue'
 import QRCode from 'qrcodejs2'
 import { WorkProp } from '../store/works'
 import { Modal } from 'ant-design-vue'
 import { baseH5URL } from '../main'
+import { RuleFormInstance } from '../views/Setting.vue'
 export default defineComponent({
   name: 'works-list',
-  emits: ['on-copy', 'on-delete', 'on-static'],
+  emits: ['on-copy', 'on-delete', 'on-static', 'on-send'],
   components: {
     EditOutlined,
     BarChartOutlined,
     EllipsisOutlined,
     CopyOutlined,
-    DeleteOutlined
+    DeleteOutlined,
+    GiftOutlined,
+    UserOutlined
   },
   props: {
     list: {
@@ -71,16 +100,36 @@ export default defineComponent({
     loading: {
       type: Boolean,
       default: false
+    },
+    transferStatus: {
+      type: Boolean,
+      default: false
     }
   },
   setup (props, context) {
     const container = ref<null | HTMLElement>(null)
+    const sendModal = ref(false)
+    const currentItem = ref(0)
+    const publishForm = ref() as Ref<RuleFormInstance>
     const listWithBarcode = computed(() => {
       return props.list.map(item => {
         item.barcodeUrl = `${baseH5URL}/p/${item.id}-${item.uuid}`
         return item
       })
     })
+    watch(() => props.transferStatus, () => {
+      if (props.transferStatus) {
+        sendModal.value = false
+      }
+    })
+    const form = reactive({
+      username: ''
+    })
+    const rules = {
+      username: [
+        { required: true, message: '用户昵称不能为空', trigger: 'blur' }
+      ]
+    }
     const showBarcode = (id: number, url?: string) => {
       nextTick(() => {
         const container = document.getElementById(`barcode-${id}`)
@@ -111,13 +160,28 @@ export default defineComponent({
     const staticClicked = (id: number) => {
       context.emit('on-static', id)
     }
+    const sendClicked = (id: number) => {
+      sendModal.value = true
+      currentItem.value = id
+    }
+    const sendGift = () => {
+      publishForm.value.validate().then(() => {
+        context.emit('on-send', { id: currentItem.value, username: form.username })
+      })
+    }
     return {
       deleteClicked,
       copyClicked,
       listWithBarcode,
       showBarcode,
       container,
-      staticClicked
+      staticClicked,
+      sendClicked,
+      sendModal,
+      publishForm,
+      rules,
+      form,
+      sendGift
     }
   }
 })

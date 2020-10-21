@@ -49,7 +49,14 @@
       </a-button>
     </a-empty>
 
-    <works-list :list="works" @on-delete="onDelete" @on-copy="onCopy" :loading="loading" @on-static="openStatic"></works-list>
+    <works-list
+      :list="works" @on-delete="onDelete"
+      @on-copy="onCopy" :loading="loading"
+      @on-static="openStatic"
+      @on-send="sendGift"
+      :transfer-status="transferDone"
+    >
+    </works-list>
     <a-row type="flex" justify="center">
       <a-pagination v-model:current="currentPage" :total="total" :pageSize="8" show-less-items @change="pageChange"/>
     </a-row>
@@ -66,6 +73,7 @@ import { GlobalDataProps } from '../store/index'
 import WorksList from '../components/WorksList.vue'
 import useCreateDesign from '../hooks/useCreateDesign'
 import { toDateFormat, toDateFromDays } from '../helper'
+import { message } from 'ant-design-vue'
 export default defineComponent({
   components: {
     WorksList
@@ -79,6 +87,7 @@ export default defineComponent({
     const statics = computed(() => store.state.works.statics)
     const channels = computed(() => store.state.editor.channels)
     const currentPage = ref(1)
+    const transferDone = ref(false)
     const staticOptions = computed(() => {
       const legend = statics.value.map(stat => stat.name)
       const xAxis = statics.value.map(stat => {
@@ -169,6 +178,17 @@ export default defineComponent({
         router.push(`/editor/${data.id}`)
       })
     }
+    const sendGift = (data: { id: number; username: string}) => {
+      store.dispatch('transferWork', data).then((data) => {
+        console.log(data)
+        if (data.errno !== 0) {
+          message.error(data.message)
+        } else {
+          message.success('转赠作品成功')
+          transferDone.value = true
+        }
+      })
+    }
     const changeCategory = (key: any) => {
       isTemplate.value = key
       currentPage.value = 1
@@ -228,7 +248,9 @@ export default defineComponent({
       total,
       currentPage,
       pageChange,
-      changeCategory
+      changeCategory,
+      sendGift,
+      transferDone
     }
   }
 })
