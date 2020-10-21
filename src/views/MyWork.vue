@@ -26,13 +26,20 @@
           ×
         </a-button>
       </div>
-      <h2 v-else>我的作品</h2>
+      <h2 v-else>我的作品和模版</h2>
       <a-input-search
         v-model:value="searchText"
-        placeholder="搜索我的模版"
+        placeholder="搜索我的作品或者模版"
         @search="onSearch"
       />
     </a-row>
+    <a-tabs @change="changeCategory">
+      <a-tab-pane key="0" tab="我的作品">
+      </a-tab-pane>
+      <a-tab-pane key="1" tab="我的模版">
+      </a-tab-pane>
+    </a-tabs>
+
     <a-empty v-if="works.length === 0 && !loading">
       <template v-slot:description>
         <span> 还没有任何作品 </span>
@@ -50,7 +57,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref, nextTick, reactive } from 'vue'
+import { defineComponent, computed, onMounted, ref, nextTick } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import echarts from 'echarts/lib/echarts'
@@ -137,6 +144,7 @@ export default defineComponent({
     const searchText = ref('')
     const showModal = ref(false)
     const currentStaticId = ref(0)
+    const isTemplate = ref(0)
     const dateRange = ref([toDateFormat(toDateFromDays(new Date(), -30)), toDateFormat(new Date())])
     const currentSearchText = computed(() => store.state.works.searchText)
     const createDesign = useCreateDesign()
@@ -147,11 +155,11 @@ export default defineComponent({
     const onSearch = () => {
       const title = searchText.value.trim()
       if (title !== '') {
-        store.dispatch('fetchWorks', { title, pageIndex: 0, pageSize: 8 })
+        store.dispatch('fetchWorks', { title, pageIndex: 0, pageSize: 8, isTemplate: isTemplate.value })
       }
     }
     const clearSearch = () => {
-      store.dispatch('fetchWorks', { title: '', pageIndex: 0, pageSize: 8 })
+      store.dispatch('fetchWorks', { title: '', pageIndex: 0, pageSize: 8, isTemplate: isTemplate.value })
     }
     const onDelete = (id: number) => {
       store.dispatch('deleteWork', id)
@@ -161,9 +169,15 @@ export default defineComponent({
         router.push(`/editor/${data.id}`)
       })
     }
+    const changeCategory = (key: any) => {
+      isTemplate.value = key
+      currentPage.value = 1
+      nextTick(() => {
+        store.dispatch('fetchWorks', { title: '', pageIndex: (currentPage.value - 1), pageSize: 8, isTemplate: isTemplate.value })
+      })
+    }
     const pageChange = () => {
-      console.log(currentPage.value)
-      store.dispatch('fetchWorks', { title: currentSearchText.value, pageIndex: (currentPage.value - 1), pageSize: 8 })
+      store.dispatch('fetchWorks', { title: currentSearchText.value, pageIndex: (currentPage.value - 1), pageSize: 8, isTemplate: isTemplate.value })
     }
     const getChannelStatic = (id: number) => {
       store.commit('clearStatic')
@@ -213,7 +227,8 @@ export default defineComponent({
       tableColumns,
       total,
       currentPage,
-      pageChange
+      pageChange,
+      changeCategory
     }
   }
 })

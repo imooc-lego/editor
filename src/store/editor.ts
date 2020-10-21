@@ -39,6 +39,8 @@ export interface EditProps {
   currentElement: string;
   // 当前正在 inline editing 的组件
   currentEditing: string;
+  // 当前数据已经被修改
+  isDirty: boolean;
   // 当前被复制的组件
   copiedComponent?: ComponentData;
   // 当前 work 的数据
@@ -46,11 +48,16 @@ export interface EditProps {
   // 当前 work 的 channels
   channels: ChannelProps[];
 }
+const setDirty = (state: EditProps, fn: Function) => {
+  state.isDirty = true
+  return fn
+}
 const editorModule: Module<EditProps, GlobalDataProps> = {
   state: {
     components: [],
     currentElement: '',
     currentEditing: '',
+    isDirty: false,
     page: { props: { backgroundColor: '#ffffff', backgroundImage: '', backgroundRepeat: 'no-repeat', backgroundSize: 'contain', height: '600px' }, setting: {} },
     channels: []
   },
@@ -59,6 +66,7 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
       component.id = uuidv4()
       component.layerName = '图层' + (state.components.length + 1)
       state.components.push(component)
+      state.isDirty = true
     },
     setActive (state, id) {
       state.currentElement = id
@@ -70,14 +78,17 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
       const currentComponent = state.components.find((component) => component.id === (id || state.currentElement))
       if (currentComponent) {
         currentComponent.props[key] = value
+        state.isDirty = true
       }
     },
     updatePage (state, { key, value }) {
       (state.page as { [key: string]: any })[key] = value
+      state.isDirty = true
     },
     updatePageProps (state, { key, value }) {
       if (state.page.props) {
         state.page.props[key] = value
+        state.isDirty = true
       }
     },
     updatePageSetting (state, { key, value }) {
@@ -89,6 +100,7 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
       const updatedComponent = state.components.find((component) => component.id === id) as any
       if (updatedComponent) {
         updatedComponent[key] = value
+        state.isDirty = true
       }
     },
     copyComponent (state, index) {
@@ -103,10 +115,12 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
         clone.id = uuidv4()
         clone.layerName = clone.layerName + '副本'
         state.components.push(clone)
+        state.isDirty = true
       }
     },
     deleteComponent (state, index) {
       state.components = state.components.filter(component => component.id !== index)
+      state.isDirty = true
     },
     getWork (state, { data }) {
       const { content, ...rest } = data
@@ -129,6 +143,7 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
       state.channels = state.channels.filter(channel => channel.id !== extraData.id)
     },
     saveWork (state) {
+      state.isDirty = false
       state.page.updatedAt = new Date().toISOString()
     },
     copyWork (state) {

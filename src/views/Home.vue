@@ -23,6 +23,11 @@
       <h2 v-else>热门海报</h2>
     </a-row>
     <a-row :gutter="16">
+      <a-empty v-if="templates.length === 0 && !loading">
+        <template v-slot:description>
+          <span> 没找到任何海报 换个关键词试试 </span>
+        </template>
+      </a-empty>
       <template-list :list="templates" type="template"></template-list>
     </a-row>
     <a-row type="flex" justify="center">

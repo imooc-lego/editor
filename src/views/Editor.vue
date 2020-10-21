@@ -188,6 +188,7 @@ export default defineComponent({
     const currentElement = computed<ComponentData>(() => store.getters.getCurrentElement)
     const userInfo = computed(() => store.state.user)
     const pageState = computed(() => store.state.editor.page)
+    const isDirty = computed(() => store.state.editor.isDirty)
     const globalStatus = computed(() => store.state.status)
     const visible = ref(false)
     const showModal = ref(false)
@@ -214,7 +215,11 @@ export default defineComponent({
         store.dispatch('getWork', currentWorkId)
       }
       // start autoSave timer, per 30 secs
-      timer = setInterval(saveWork, 1000 * 30)
+      timer = setInterval(() => {
+        if (isDirty.value) {
+          saveWork()
+        }
+      }, 1000 * 30)
     })
     onUnmounted(() => {
       clearInterval(timer)
