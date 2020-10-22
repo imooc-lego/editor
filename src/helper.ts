@@ -8,6 +8,14 @@ interface CheckCondition {
 }
 
 type ErrorType = 'size' | 'format' | null
+
+export interface UploadImgProps {
+  data: {
+    urls: string[];
+  };
+  errno: number;
+  file: File;
+}
 export function beforeUploadCheck (file: File, condition: CheckCondition) {
   const { format, size } = condition
   const isValidFormat = format ? format.includes(file.type) : true
@@ -74,13 +82,13 @@ export function isMobile (mobile: string) {
 
 export const takeScreenshotAndUpload = (id: string) => {
   return html2canvas(document.getElementById(id) as HTMLElement, { allowTaint: false, useCORS: true }).then(canvas => {
-    return new Promise<any>((resolve, reject) => {
+    return new Promise<UploadImgProps>((resolve, reject) => {
       canvas.toBlob((data) => {
         if (data) {
           const newFile = new File([data], 'screenshot.png')
           const formData = new FormData()
           formData.append('file', newFile)
-          axios.post('http://182.92.193.142:8081/api/upload', formData, {
+          axios.post('/utils/upload-img', formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }

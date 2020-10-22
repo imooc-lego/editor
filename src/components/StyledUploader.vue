@@ -1,7 +1,7 @@
 <template>
 <div class="styled-upload-component">
   <uploader
-    action="http://182.92.193.142:8081/api/upload"
+    action="/utils/upload-img"
     :beforeUpload="commonUploadCheck"
     :uploaded="uploaded"
     @file-uploaded="handleFileUploaded"

@@ -16,7 +16,7 @@
     </div>
     <div class="image-process">
       <uploader
-        action="http://182.92.193.142:8081/api/upload"
+        action="/utils/upload-img"
         @file-uploaded="handleFileUploaded"
         :beforeUpload="commonUploadCheck"
       >
@@ -54,7 +54,7 @@ import Cropper from 'cropperjs'
 import { message } from 'ant-design-vue'
 import { UploadOutlined, ScissorOutlined, LoadingOutlined, DeleteOutlined } from '@ant-design/icons-vue'
 import Uploader from './Uploader.vue'
-import { commonUploadCheck } from '../helper'
+import { commonUploadCheck, UploadImgProps } from '../helper'
 export default defineComponent({
   props: {
     value: {
@@ -113,9 +113,9 @@ export default defineComponent({
       context.emit('change', cropperedUrl)
       showModal.value = false
     }
-    const handleFileUploaded = (uploadedData: any) => {
+    const handleFileUploaded = (uploadedData: UploadImgProps) => {
       message.success('上传成功')
-      context.emit('change', uploadedData.data.url)
+      context.emit('change', uploadedData.data.urls[0])
     }
     const handleDelete = () => {
       context.emit('change', '')

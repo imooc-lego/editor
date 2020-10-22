@@ -205,7 +205,7 @@ export default defineComponent({
     const publishWork = async () => {
       store.commit('setActive', '')
       const { data } = await takeScreenshotAndUpload('canvas-area')
-      store.commit('updatePage', { key: 'coverImg', value: data.url })
+      store.commit('updatePage', { key: 'coverImg', value: data.urls[0] })
       await store.dispatch('saveAndPublishWork', { id: currentWorkId })
       showModal.value = true
     }

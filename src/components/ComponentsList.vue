@@ -10,7 +10,7 @@
       </div>
       <uploader
         v-else
-        action="http://182.92.193.142:8081/api/upload"
+        action="/utils/upload-img"
         @file-uploaded="(uploaded) => { handleFileUploaded(uploaded, item) }"
         :beforeUpload="commonUploadCheck"
       >
@@ -44,7 +44,7 @@ import LImage from './LImage.vue'
 import LShape from './LShape.vue'
 import Uploader from './Uploader.vue'
 import { componentsDefaultProps } from '../defaultProps'
-import { commonUploadCheck, imageDimensions } from '../helper'
+import { commonUploadCheck, imageDimensions, UploadImgProps } from '../helper'
 const textDefaultProps = componentsDefaultProps['l-text'].props
 const imageDefaultProps = componentsDefaultProps['l-image'].props
 const shapeDefaultProps = componentsDefaultProps['l-shape'].props
@@ -162,9 +162,9 @@ export default defineComponent({
         context.emit('on-item-click', data)
       }
     }
-    const handleFileUploaded = (uploadedData: any, data: CreateComponentType) => {
+    const handleFileUploaded = (uploadedData: UploadImgProps, data: CreateComponentType) => {
       message.success('上传成功')
-      data.props.imageSrc = uploadedData.data.url
+      data.props.imageSrc = uploadedData.data.urls[0]
       imageDimensions(uploadedData.file).then(dimension => {
         const maxWidth = 300
         data.props.width = ((dimension.width > maxWidth) ? maxWidth : dimension.width) + 'px'

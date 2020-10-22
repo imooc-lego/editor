@@ -71,6 +71,7 @@ import { GlobalDataProps } from '../store/index'
 import StyledUploader from '../components/StyledUploader.vue'
 import { useStore } from 'vuex'
 import { message } from 'ant-design-vue'
+import { UploadImgProps } from '../helper'
 export interface RuleFormInstance {
   validate: () => Promise<any>;
 }
@@ -130,9 +131,9 @@ export default defineComponent({
         { required: true, message: '用户昵称不能为空', trigger: 'blur' }
       ]
     }
-    const updateAvatar = (rawData: any) => {
+    const updateAvatar = (rawData: UploadImgProps) => {
       form.uploaded = {
-        data: { url: rawData.data.url }
+        data: { url: rawData.data.urls[0] }
       }
     }
     onMounted(() => {

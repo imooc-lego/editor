@@ -9,7 +9,7 @@
 import { defineComponent } from 'vue'
 import { message } from 'ant-design-vue'
 import ImageProcesser from './ImageProcess.vue'
-import { commonUploadCheck } from '../helper'
+import { commonUploadCheck, UploadImgProps } from '../helper'
 import StyledUploader from './StyledUploader.vue'
 
 export default defineComponent({
@@ -28,9 +28,9 @@ export default defineComponent({
   },
   emits: ['change'],
   setup (props, context) {
-    const handleFileUploaded = (uploadedData: any) => {
+    const handleFileUploaded = (uploadedData: UploadImgProps) => {
       message.success('上传成功')
-      context.emit('change', uploadedData.data.url)
+      context.emit('change', uploadedData.data.urls[0])
     }
     const updateUrl = (value: string) => {
       context.emit('change', value)

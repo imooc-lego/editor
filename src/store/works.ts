@@ -2,6 +2,7 @@ import { Module } from 'vuex'
 import { GlobalDataProps, asyncAndCommit } from './index'
 import { PageData } from './editor'
 import { objToQueryString } from '../helper'
+import { baseStaticURL } from '../main'
 export type WorkProp = Required<Omit<PageData, 'props' | 'setting'>> & {
   barcodeUrl?: string;
 }
@@ -108,7 +109,7 @@ const workModule: Module<WorksProp, GlobalDataProps> = {
     fetchStatic ({ commit }, queryObj) {
       const newObj = { category: 'h5', action: 'pv', ...queryObj }
       const queryString = objToQueryString(newObj)
-      return asyncAndCommit(`http://182.92.168.192:8080/api/event?${queryString}`, 'fetchStatic', commit, { method: 'get' }, { name: queryObj.name, id: queryObj.label })
+      return asyncAndCommit(`${baseStaticURL}/api/event?${queryString}`, 'fetchStatic', commit, { method: 'get' }, { name: queryObj.name, id: queryObj.label })
     },
     recoverWork ({ commit }, id) {
       return asyncAndCommit(`/works/put-back/${id}`, 'recoverWork', commit, { method: 'post' }, { id })

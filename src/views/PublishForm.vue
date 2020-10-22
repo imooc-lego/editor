@@ -7,7 +7,7 @@
       <a-col :span="10">
         <styled-uploader
           text="上传封面图"
-          @file-uploaded="(rawData) => { updatePage('shareImg', rawData.data.url, true) }"
+          @file-uploaded="updateAvatar"
           :uploaded="form.uploaded"
         >
         </styled-uploader>
@@ -42,7 +42,7 @@
 <script lang="ts">
 import { defineComponent, reactive, ref, Ref } from 'vue'
 import StyledUploader from '../components/StyledUploader.vue'
-import { commonUploadCheck } from '../helper'
+import { commonUploadCheck, UploadImgProps } from '../helper'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import { GlobalDataProps } from '../store'
@@ -81,6 +81,13 @@ export default defineComponent({
         store.commit('updatePage', { key, value })
       }
     }
+    const updateAvatar = (rawData: UploadImgProps) => {
+      const url = rawData.data.urls[0]
+      form.uploaded = {
+        data: { url }
+      }
+      updatePage('shareImg', url, true)
+    }
     const validate = () => {
       return publishForm.value.validate()
     }
@@ -105,7 +112,8 @@ export default defineComponent({
       saveWork,
       cancelEdit,
       commonUploadCheck,
-      updatePage
+      updatePage,
+      updateAvatar
     }
   }
 })
