@@ -11,7 +11,9 @@
         @change="onDateChange"
         format="YYYY-MM-DD"
       />
-      <div id="main" :style="{width: '500px', height: '300px'}"></div>
+      <div id="main-chart" :style="{width: '600px', height: '400px'}">
+        <a-spin v-if="loading" size="large" class="chart-loading"/>
+      </div>
       <a-table :columns="tableColumns" :data-source="tableData">
       </a-table>
     </a-modal>
@@ -72,7 +74,7 @@ import 'echarts/lib/chart/line'
 import { GlobalDataProps } from '../store/index'
 import WorksList from '../components/WorksList.vue'
 import useCreateDesign from '../hooks/useCreateDesign'
-import { toDateFormat, toDateFromDays } from '../helper'
+import { toDateFormat, toDateFromDays, getDaysArray, objToArr } from '../helper'
 import { message } from 'ant-design-vue'
 export default defineComponent({
   components: {
@@ -88,19 +90,33 @@ export default defineComponent({
     const channels = computed(() => store.state.editor.channels)
     const currentPage = ref(1)
     const transferDone = ref(false)
+    const dateRange = ref([toDateFormat(toDateFromDays(new Date(), -30)), toDateFormat(new Date())])
+    const dateArray = computed(() => getDaysArray(new Date(dateRange.value[0]), new Date(dateRange.value[1])))
+    const dateArrayFormat = dateArray.value.map(date => toDateFormat(date))
     const staticOptions = computed(() => {
       const legend = statics.value.map(stat => stat.name)
-      const xAxis = statics.value.map(stat => {
-        return {
-          type: 'category',
-          data: stat.list.map(i => i.eventDate.split('T')[0])
-        }
-      })
+      const xAxis = {
+        type: 'category',
+        data: dateArrayFormat
+      }
       const series = statics.value.map(stat => {
+        const statMap = {} as any
+        stat.list.forEach(i => {
+          const key = i.eventDate.split('T')[0]
+          statMap[key] = i.eventData.pv
+        })
+        const dateArrayFormatMap = {} as any
+        dateArrayFormat.forEach(date => {
+          if (statMap[date]) {
+            dateArrayFormatMap[date] = statMap[date]
+          } else {
+            dateArrayFormatMap[date] = 0
+          }
+        })
         return {
           type: 'line',
           name: stat.name,
-          data: stat.list.map(i => i.eventData.pv)
+          data: objToArr(dateArrayFormatMap)
         }
       })
       return {
@@ -154,7 +170,6 @@ export default defineComponent({
     const showModal = ref(false)
     const currentStaticId = ref(0)
     const isTemplate = ref(0)
-    const dateRange = ref([toDateFormat(toDateFromDays(new Date(), -30)), toDateFormat(new Date())])
     const currentSearchText = computed(() => store.state.works.searchText)
     const createDesign = useCreateDesign()
     let myChart: any
@@ -214,8 +229,9 @@ export default defineComponent({
         return Promise.all(promiseArr)
       }).then(() => {
         if (!myChart) {
-          myChart = echarts.init(document.getElementById('main'))
+          myChart = echarts.init(document.getElementById('main-chart'))
         }
+        myChart.clear()
         myChart.setOption(staticOptions.value)
       })
     }
@@ -263,5 +279,13 @@ export default defineComponent({
 .searchResult {
   display: flex;
   align-items: center;
+}
+#main-chart {
+  position: relative
+}
+.chart-loading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
 }
 </style>

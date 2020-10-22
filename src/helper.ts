@@ -108,3 +108,16 @@ export const toDateFromDays = (date: Date, n: number) => {
   newDate.setDate(date.getDate() + n)
   return newDate
 }
+
+export const getDaysArray = (start: Date, end: Date) => {
+  const arr = []
+  // eslint-disable-next-line no-unmodified-loop-condition
+  for (let dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
+    arr.push(new Date(dt))
+  }
+  return arr
+}
+
+export const objToArr = <T>(obj: {[key: string]: T}) => {
+  return Object.keys(obj).map(key => obj[key])
+}
