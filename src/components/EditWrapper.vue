@@ -71,7 +71,7 @@ export default defineComponent({
       const currentElement = e.currentTarget as HTMLElement
       gap.x = e.clientX - currentElement.getBoundingClientRect().left
       gap.y = e.clientY - currentElement.getBoundingClientRect().top
-      currentElement.style.opacity = '.5'
+      currentElement.style.opacity = '0.5'
     }
     const handleDragEnd = (e: DragEvent) => {
       const container = document.getElementById('canvas-area') as HTMLElement

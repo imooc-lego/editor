@@ -37,8 +37,10 @@ const numberToPxHandle = {
 const mapPropsToComponents: MapTypes = {
   text: {
     ...defaultMap,
+    component: 'a-textarea',
     afterTransform: (e: any) => e.target.value,
-    text: '文本'
+    text: '文本',
+    extraProps: { rows: 3 }
   },
   href: {
     ...defaultMap,

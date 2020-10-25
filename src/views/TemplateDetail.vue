@@ -56,10 +56,14 @@ export default defineComponent({
     const currentTemplate = computed<WorkProp>(() => store.getters.getCurrentTemplate(currentTemplateId) || {})
     const channelURL = computed(() => `${baseH5URL}/p/${currentTemplate.value.id}-${currentTemplate.value.uuid}`)
     const onCopy = (id: number) => {
-      isCreating.value = true
-      store.dispatch('copyWork', id).then(({ data }) => {
-        router.push(`/editor/${data.id}`)
-      })
+      if (store.state.user.isLogin) {
+        isCreating.value = true
+        store.dispatch('copyWork', id).then(({ data }) => {
+          router.push(`/editor/${data.id}`)
+        })
+      } else {
+        router.push('/login')
+      }
     }
     onMounted(() => {
       store.dispatch('fetchTemplate', currentTemplateId).then(() => {

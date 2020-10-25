@@ -84,7 +84,7 @@
                   @update-position="updatePosition"
                   :active="currentId === item.id" :props="item.props"
                 >
-                  <component :is="item.name" v-bind="item.props"/>
+                  <component :is="item.name" v-bind="item.props" :isEditing="true"/>
                 </EditWrapper>
               </div>
             </div>
