@@ -34,7 +34,7 @@
           </a-input>
         </a-form-item>
         <a-form-item label="验证码" required name="password">
-          <a-input v-model:value="form.password" type="password" placeholder="四位验证码">
+          <a-input v-model:value="form.password" placeholder="四位验证码">
             <template v-slot:prefix><LockOutlined style="color:rgba(0,0,0,.25)"/></template>
           </a-input>
         </a-form-item>
@@ -111,7 +111,7 @@ export default defineComponent({
         { validator: cellnumberValidator, trigger: 'blur' }
       ],
       password: [
-        { required: true, message: '密码不能为空', trigger: 'blur' }
+        { required: true, message: '验证码不能为空', trigger: 'blur' }
       ]
     }
     const login = () => {

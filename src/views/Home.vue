@@ -7,24 +7,40 @@
         <a-input-search
           v-model:value="searchText"
           placeholder="搜索一下，快速找模版"
+          enter-button
           @search="onSearch"
         />
       </div>
     </div>
-    <!-- <a-row>
-      <a-col :span="8" class="feature-item">
-        <Html5TwoTone :size=""/>
-        <h2>专注H5 始终如一</h2>
-      </a-col>
-      <a-col :span="8" class="feature-item">
-        <h2>专注H5 始终如一</h2>
-      </a-col>
-      <a-col :span="8" class="feature-item">
-        <h2>专注H5 始终如一</h2>
-      </a-col>
-    </a-row> -->
+    <div class="welcome-container">
+      <a-row>
+        <a-col :span="8" class="feature-item">
+          <Html5TwoTone />
+          <h3>专注H5 始终如一</h3>
+          <p>三年保持行业领先</p>
+        </a-col>
+        <a-col :span="8" class="feature-item">
+          <BuildTwoTone />
+          <h3>海量 H5 模版</h3>
+          <p>一键生成，一分钟轻松制作</p>
+        </a-col>
+        <a-col :span="8" class="feature-item">
+          <BulbTwoTone />
+          <h3>极致体验</h3>
+          <p>用户的一致选择</p>
+        </a-col>
+      </a-row>
+      <!-- <a-row type="flex" align="middle" justify="center">
+        <a-input-search
+          v-model:value="searchText"
+          placeholder="搜索一下，快速找模版"
+          enter-button
+          @search="onSearch"
+        />
+      </a-row> -->
+    </div>
     <div class="content-container">
-      <a-row class="poster-title" type="flex" align="middle">
+      <a-row class="content-title" type="flex" align="middle">
         <h2 v-if="currentSearchText">{{currentSearchText}}的结果</h2>
         <a-button
           shape="circle" size="small"
@@ -33,7 +49,11 @@
         >
           ×
         </a-button>
-        <h2 v-else>热门海报</h2>
+        <div class="hot-title" v-else>
+          <h2 class="hot-template">热门海报</h2>
+          <p>只需替换文字和图片，一键自动生成H5</p>
+        </div>
+
       </a-row>
       <a-row :gutter="16">
         <a-empty v-if="templates.length === 0 && !loading">
@@ -49,7 +69,7 @@
         </a-button>
       </a-row>
       <div class="my-works" v-if="isLogin && works.length > 0">
-        <a-row type="flex" justify="space-between" align="middle" class="poster-title" >
+        <a-row type="flex" justify="space-between" align="middle" class="content-title" >
           <h2>我的作品</h2>
           <router-link to="/mywork">查看我的所有作品</router-link>
         </a-row>
@@ -67,10 +87,13 @@ import { useStore } from 'vuex'
 import { GlobalDataProps } from '../store/index'
 import TemplateList from '../components/TemplateList.vue'
 import useLoadMore from '../hooks/useLoadMore'
-import { Html5TwoTone } from '@ant-design/icons-vue'
+import { Html5TwoTone, BuildTwoTone, BulbTwoTone } from '@ant-design/icons-vue'
 export default defineComponent({
   components: {
-    TemplateList
+    TemplateList,
+    Html5TwoTone,
+    BuildTwoTone,
+    BulbTwoTone
   },
   setup () {
     const store = useStore<GlobalDataProps>()
@@ -84,7 +107,7 @@ export default defineComponent({
     const { loadMorePage, isLastPage } = useLoadMore('fetchTemplates', total, { pageIndex: 0, pageSize: 8, title: searchText.value }, 8)
     const onSearch = () => {
       const title = searchText.value.trim()
-      if (title !== '') {
+      if (title !== '' || currentSearchText.value !== '') {
         store.dispatch('fetchTemplates', { title, pageIndex: 0, pageSize: 8 })
       }
     }
@@ -145,6 +168,9 @@ export default defineComponent({
   padding: 7px 15px;
   padding-right: 30px;
 }
+.banner-text .ant-input-search-button {
+  height: 40px;
+}
 .text-headline {
   text-shadow: 0 0 1px rgba(68,92,116,.02), 0 2px 8px rgba(57,76,96,.15);
   font-size: 2rem;
@@ -158,10 +184,44 @@ export default defineComponent({
 }
 .feature-item {
   text-align: center;
+  padding: 20px 0;
+}
+.feature-item .anticon {
+  font-size: 45px;
+}
+.feature-item p {
+  font-size: .5rem;
+}
+.feature-item h3 {
+  margin: .5em 0;
+}
+.welcome-container {
+  max-width: 1480px;
+  margin: 0 auto;
+}
+
+.hot-title {
+  margin: 0 auto;
+  padding: 20px 0;
+}
+.hot-title p {
+  text-align: center;
+}
+.hot-template {
+  font-size: 1.5rem;
+}
+.hot-template::before, .hot-template::after {
+  content: "";
+  display: inline-block;
+  width: 57px;
+  height: 1px;
+  margin: 0 26px;
+  background-color: #d8d8d8;
+  vertical-align: middle;
 }
 .content-container {
   background: #fff;
-  padding: 30px 24px;
+  padding: 0 24px 24px 30px;
   min-height: 85vh;
   max-width: 1480px;
   margin: 0 auto;
@@ -171,11 +231,10 @@ export default defineComponent({
   position: relative;
   margin-bottom: 20px;
 }
-.poster-title {
-  height: 70px;
-  line-height: 70px;
+.content-title {
+  min-height: 70px;
 }
-.poster-title h2 {
+.content-title h2 {
   margin-bottom: 0px;
 }
 </style>

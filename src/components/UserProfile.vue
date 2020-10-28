@@ -1,6 +1,6 @@
 <template>
   <a-button type="primary" v-if="!user.isLogin">
-    <router-link to="/login">手机登录</router-link>
+    <router-link to="/login">登录</router-link>
   </a-button>
   <a-dropdown-button v-else>
     {{user.data.nickName}}

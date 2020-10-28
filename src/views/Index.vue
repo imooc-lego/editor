@@ -93,7 +93,7 @@ export default defineComponent({
   z-index: 100;
 }
 .header .logo-img {
-  height: 60px;
+  height: 45px;
 }
 .header .ant-input-search {
   width: 250px;
