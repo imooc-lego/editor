@@ -27,6 +27,15 @@
           </a-layout-content>
         </a-layout>
       </a-layout-content>
+      <a-layout-footer :style="{ paddingTop: '0' }">
+        <ul class="list-inline mb-0" :class="{'extra-margin': !isHomePage}">
+          <li class="list-inline-item">© 慕课网（imooc.com）版权所有 | 津ICP备20000929号-2</li>
+          <li class="list-inline-item"><a href="#" target="_blank">购买课程</a></li>
+          <li class="list-inline-item"><a href="#" target="_blank">文档</a></li>
+          <li class="list-inline-item"><a href="#" target="_blank">开源仓库</a></li>
+          <li class="list-inline-item"><a href="#" target="_blank">帮助</a></li>
+        </ul>
+      </a-layout-footer>
     </a-layout>
   </div>
 </template>
@@ -129,5 +138,16 @@ export default defineComponent({
 .poster-item {
   position: relative;
   margin-bottom: 20px;
+}
+.list-inline {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+}
+.list-inline li {
+  margin-right: 20px;
+}
+.extra-margin {
+  margin-top: 70px;
 }
 </style>
