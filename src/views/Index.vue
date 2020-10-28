@@ -3,10 +3,11 @@
     <a-spin tip="读取中" class="editor-spinner" v-if="loading">
     </a-spin>
     <a-layout>
-      <a-layout-header class="header">
+      <a-layout-header class="header" :class="{'transparent-header': isHomePage}">
         <div class="page-title">
           <router-link to="/">
-            <img alt="Vue logo" src="../assets/logo.png" class="logo-img">
+            <img alt="Vue logo" src="../assets/logo.png" class="logo-img" v-if="isHomePage">
+            <img alt="Vue logo" src="../assets/new-logo.png" class="logo-img" v-else>
           </router-link>
         </div>
         <div class="right-col">
@@ -16,7 +17,10 @@
           <user-profile :user="userInfo"></user-profile>
         </div>
       </a-layout-header>
-      <a-layout-content style="padding: 0 50px">
+      <a-layout-content v-if="isHomePage" class="home-layout">
+        <router-view></router-view>
+      </a-layout-content>
+      <a-layout-content style="padding: 0 50px" v-else>
         <a-layout style="padding: 24px 0; background: #fff">
           <a-layout-content :style="{ padding: '0 24px', minHeight: '85vh', maxWidth: '1480px', margin: '0 auto', width: '100%' }">
             <router-view></router-view>
@@ -30,6 +34,7 @@
 <script lang="ts">
 import { useStore } from 'vuex'
 import { defineComponent, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import UserProfile from '../components/UserProfile.vue'
 import { GlobalDataProps } from '../store/index'
 import useCreateDesign from '../hooks/useCreateDesign'
@@ -39,13 +44,16 @@ export default defineComponent({
   },
   setup () {
     const store = useStore<GlobalDataProps>()
+    const route = useRoute()
+    const isHomePage = computed(() => route.name === 'Home')
     const userInfo = computed(() => store.state.user)
     const loading = computed(() => store.state.status.loading)
     const createDesign = useCreateDesign()
     return {
       userInfo,
       createDesign,
-      loading
+      loading,
+      isHomePage
     }
   }
 })
@@ -57,10 +65,23 @@ export default defineComponent({
   justify-content: space-between;
   align-items: center;
 }
+.ant-layout-header {
+  z-index: 50;
+  background: #fff;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, .1);
+}
+.transparent-header {
+  background: transparent;
+}
+.home-layout {
+  position: relative;
+  top: -70px;
+}
 .editor-spinner {
   position: fixed;
   right: 50%;
   top: 10px;
+  z-index: 100;
 }
 .header .logo-img {
   height: 60px;

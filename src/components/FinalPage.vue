@@ -1,6 +1,6 @@
 <template>
   <div class="final-page" :style="page.props">
-    <div v-for="item in components" :key="item.id">
+    <div v-for="item in components" :key="item.id" :id="`component-${item.id}`">
       <component :is="item.name" v-bind="item.props"/>
     </div>
   </div>
