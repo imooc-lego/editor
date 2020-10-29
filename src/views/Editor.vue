@@ -210,6 +210,8 @@ export default defineComponent({
       showModal.value = true
     }
     onMounted(() => {
+      // clear the editor store data
+      store.commit('resetEditor')
       // fetch work
       if (currentWorkId) {
         store.dispatch('getWork', currentWorkId)

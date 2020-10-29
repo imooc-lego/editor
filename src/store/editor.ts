@@ -48,20 +48,23 @@ export interface EditProps {
   // 当前 work 的 channels
   channels: ChannelProps[];
 }
-const setDirty = (state: EditProps, fn: Function) => {
-  state.isDirty = true
-  return fn
-}
+const pageDefaultProps = { backgroundColor: '#ffffff', backgroundImage: '', backgroundRepeat: 'no-repeat', backgroundSize: 'contain', height: '600px' }
 const editorModule: Module<EditProps, GlobalDataProps> = {
   state: {
     components: [],
     currentElement: '',
     currentEditing: '',
     isDirty: false,
-    page: { props: { backgroundColor: '#ffffff', backgroundImage: '', backgroundRepeat: 'no-repeat', backgroundSize: 'contain', height: '600px' }, setting: {} },
+    page: { props: pageDefaultProps, setting: {} },
     channels: []
   },
   mutations: {
+    // reset editor to clear
+    resetEditor (state) {
+      state.page = { props: pageDefaultProps, setting: {} }
+      state.components = []
+      state.isDirty = false
+    },
     addComponentToEditor (state, component) {
       component.id = uuidv4()
       component.layerName = '图层' + (state.components.length + 1)
