@@ -51,10 +51,10 @@
             <a-button type="primary" @click="visible = true">预览和设置</a-button>
           </a-menu-item>
           <a-menu-item key="2">
-            <a-button type="primary" @click="saveWork">保存</a-button>
+            <a-button type="primary" @click="saveWork" :loading="globalStatus.loading">保存</a-button>
           </a-menu-item>
           <a-menu-item key="3">
-            <a-button type="primary" @click="publishWork">发布</a-button>
+            <a-button type="primary" @click="publishWork" :loading="globalStatus.loading">发布</a-button>
           </a-menu-item>
           <a-menu-item key="4">
             <user-profile :user="userInfo"></user-profile>
