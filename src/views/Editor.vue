@@ -71,7 +71,7 @@
         </div>
       </a-layout-sider>
       <a-layout style="padding: 0 24px 24px">
-        <a-layout-content class="preview-container">
+        <a-layout-content class="preview-container" @click.prevent="clearSelection">
           <p>画布区域</p>
           <div class="preview-list" id="canvas-area" @click="setPageSetting" :class="{active: activePanel === 'page'}">
             <div class="body-container" :style="pageState.props">
@@ -255,6 +255,14 @@ export default defineComponent({
         activePanel.value = 'page'
       }
     }
+    // clear component or page selection when clicking the gray area
+    const clearSelection = (e: Event) => {
+      const currentTarget = e.target as HTMLElement
+      if (currentTarget.classList.contains('preview-container')) {
+        store.commit('setActive', '')
+        activePanel.value = 'component'
+      }
+    }
     const updatePosition = (data: { left: number; top: number; id: string; width: number; height: number}) => {
       const { id } = data
       forEach(pickBy(data, (v, k) => k !== 'id'), (value, key) => {
@@ -288,7 +296,8 @@ export default defineComponent({
       globalStatus,
       saveWork,
       publishWork,
-      titleChange
+      titleChange,
+      clearSelection
     }
   }
 })
