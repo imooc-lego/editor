@@ -6,6 +6,7 @@ const CompressionWebpackPlugin = require('compression-webpack-plugin')
 const isProduction = process.env.NODE_ENV === 'production'
 
 module.exports = {
+  publicPath: './',
   configureWebpack: config => {
     // 开启gzip压缩
     if (isProduction) {
