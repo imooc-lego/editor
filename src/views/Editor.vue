@@ -136,8 +136,8 @@
 <script lang="ts">
 import { defineComponent, ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { useStore } from 'vuex'
-import { useRoute } from 'vue-router'
-import { message } from 'ant-design-vue'
+import { useRoute, onBeforeRouteLeave } from 'vue-router'
+import { message, Modal } from 'ant-design-vue'
 import { forEach, pickBy } from 'lodash'
 import PublishForm from './PublishForm.vue'
 import ChannelForm from './ChannelForm.vue'
@@ -189,6 +189,7 @@ export default defineComponent({
     const userInfo = computed(() => store.state.user)
     const pageState = computed(() => store.state.editor.page)
     const isDirty = computed(() => store.state.editor.isDirty)
+    const isChangedNotPublished = computed(() => store.state.editor.isChangedNotPublished)
     const globalStatus = computed(() => store.state.status)
     const visible = ref(false)
     const showModal = ref(false)
@@ -204,6 +205,7 @@ export default defineComponent({
     }
     const publishWork = async () => {
       store.commit('setActive', '')
+      await nextTick()
       try {
         const rawData = await takeScreenshotAndUpload('canvas-area')
         if (rawData) {
@@ -232,6 +234,32 @@ export default defineComponent({
     })
     onUnmounted(() => {
       clearInterval(timer)
+    })
+    onBeforeRouteLeave((to, from, next) => {
+      // 未保存，给出提示并且保存发布
+      if (isDirty.value) {
+        Modal.confirm({
+          title: '作品还未保存，是否保存？',
+          okText: '保存',
+          okType: 'primary',
+          cancelText: '不保存',
+          onOk: () => {
+            publishWork().then(() => {
+              next()
+            })
+          },
+          onCancel () {
+            next()
+          }
+        })
+      // 有修改但是未发布 直接发布
+      } else if (isChangedNotPublished.value) {
+        publishWork().then(() => {
+          next()
+        })
+      } else {
+        next()
+      }
     })
     watch(activePanel, (newValue) => {
       if (newValue !== 'component') {

@@ -41,6 +41,8 @@ export interface EditProps {
   currentEditing: string;
   // 当前数据已经被修改
   isDirty: boolean;
+  // 当前模版是否修改但未发布
+  isChangedNotPublished: boolean;
   // 当前被复制的组件
   copiedComponent?: ComponentData;
   // 当前 work 的数据
@@ -55,6 +57,7 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
     currentElement: '',
     currentEditing: '',
     isDirty: false,
+    isChangedNotPublished: false,
     page: { props: pageDefaultProps, setting: {} },
     channels: []
   },
@@ -64,12 +67,14 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
       state.page = { props: pageDefaultProps, setting: {} }
       state.components = []
       state.isDirty = false
+      state.isChangedNotPublished = false
     },
     addComponentToEditor (state, component) {
       component.id = uuidv4()
       component.layerName = '图层' + (state.components.length + 1)
       state.components.push(component)
       state.isDirty = true
+      state.isChangedNotPublished = true
     },
     setActive (state, id) {
       state.currentElement = id
@@ -82,16 +87,19 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
       if (currentComponent) {
         currentComponent.props[key] = value
         state.isDirty = true
+        state.isChangedNotPublished = true
       }
     },
     updatePage (state, { key, value }) {
       (state.page as { [key: string]: any })[key] = value
       state.isDirty = true
+      state.isChangedNotPublished = true
     },
     updatePageProps (state, { key, value }) {
       if (state.page.props) {
         state.page.props[key] = value
         state.isDirty = true
+        state.isChangedNotPublished = true
       }
     },
     updatePageSetting (state, { key, value }) {
@@ -104,6 +112,7 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
       if (updatedComponent) {
         updatedComponent[key] = value
         state.isDirty = true
+        state.isChangedNotPublished = true
       }
     },
     copyComponent (state, index) {
@@ -119,11 +128,13 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
         clone.layerName = clone.layerName + '副本'
         state.components.push(clone)
         state.isDirty = true
+        state.isChangedNotPublished = true
       }
     },
     deleteComponent (state, index) {
       state.components = state.components.filter(component => component.id !== index)
       state.isDirty = true
+      state.isChangedNotPublished = true
     },
     getWork (state, { data }) {
       const { content, ...rest } = data
@@ -153,6 +164,7 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
       state.page.updatedAt = new Date().toISOString()
     },
     publishWork (state) {
+      state.isChangedNotPublished = false
       state.page.latestPublishAt = new Date().toISOString()
     },
     publishTemplate (state) {
