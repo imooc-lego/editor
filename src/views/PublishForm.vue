@@ -25,10 +25,10 @@
         <a-input v-model:value="form.subTitle" @change="updatePage('desc', form.subTitle)"/>
       </a-form-item>
       <a-form-item :wrapper-col="{ span: 18, offset: 4 }">
-        <a-button type="primary" @click="publishWork">
+        <a-button type="primary" @click="checkAndpublish" :loading="loading">
           发布
         </a-button>
-        <a-button style="margin-left: 10px;" @click="saveWork">
+        <a-button style="margin-left: 10px;" @click="saveWork" :loading="loading">
           保存
         </a-button>
         <a-button style="margin-left: 10px;" @click="cancelEdit">
@@ -40,9 +40,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, Ref } from 'vue'
+import { defineComponent, reactive, ref, Ref, nextTick, computed } from 'vue'
 import StyledUploader from '../components/StyledUploader.vue'
-import { commonUploadCheck, UploadImgProps } from '../helper'
+import { commonUploadCheck, UploadImgProps, takeScreenshotAndUpload } from '../helper'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import { GlobalDataProps } from '../store'
@@ -59,6 +59,7 @@ export default defineComponent({
     const route = useRoute()
     const currentWorkId = route.params.id
     const { title, desc, setting } = store.state.editor.page
+    const loading = computed(() => store.state.status.loading)
     // const { shareImg } = setting
     const form = reactive({
       title: title || '',
@@ -91,9 +92,24 @@ export default defineComponent({
     const validate = () => {
       return publishForm.value.validate()
     }
-    const publishWork = () => {
+    const publishWork = async () => {
+      store.commit('setActive', '')
+      await nextTick()
+      try {
+        const rawData = await takeScreenshotAndUpload('canvas-area')
+        if (rawData) {
+          store.commit('updatePage', { key: 'coverImg', value: rawData.data.urls[0] })
+        }
+      } catch (e) {
+        console.error(e)
+      } finally {
+        await store.dispatch('saveAndPublishWork', { id: currentWorkId })
+        context.emit('publish-success', true)
+      }
+    }
+    const checkAndpublish = () => {
       validate()
-        .then(() => store.dispatch('saveAndPublishWork', { id: currentWorkId }))
+        .then(() => { return publishWork() })
         .then(() => { context.emit('publish-success', true) })
     }
     const saveWork = () => {
@@ -108,12 +124,13 @@ export default defineComponent({
       form,
       rules,
       publishForm,
-      publishWork,
+      checkAndpublish,
       saveWork,
       cancelEdit,
       commonUploadCheck,
       updatePage,
-      updateAvatar
+      updateAvatar,
+      loading
     }
   }
 })
