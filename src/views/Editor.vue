@@ -204,10 +204,17 @@ export default defineComponent({
     }
     const publishWork = async () => {
       store.commit('setActive', '')
-      const { data } = await takeScreenshotAndUpload('canvas-area')
-      store.commit('updatePage', { key: 'coverImg', value: data.urls[0] })
-      await store.dispatch('saveAndPublishWork', { id: currentWorkId })
-      showModal.value = true
+      try {
+        const rawData = await takeScreenshotAndUpload('canvas-area')
+        if (rawData) {
+          store.commit('updatePage', { key: 'coverImg', value: rawData.data.urls[0] })
+        }
+      } catch (e) {
+        console.error(e)
+      } finally {
+        await store.dispatch('saveAndPublishWork', { id: currentWorkId })
+        showModal.value = true
+      }
     }
     onMounted(() => {
       // clear the editor store data

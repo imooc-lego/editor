@@ -91,9 +91,12 @@ export const takeScreenshotAndUpload = (id: string) => {
           axios.post('/utils/upload-img', formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
-            }
+            },
+            timeout: 5000
           }).then(data => {
             resolve(data.data)
+          }).catch(err => {
+            reject(err)
           })
         } else {
           reject(new Error('blob data error'))

@@ -37,16 +37,15 @@ axios.interceptors.request.use(config => {
 
 axios.interceptors.response.use(resp => {
   store.commit('setLoading', { status: false })
-  console.log(resp.data)
   if (resp.data.errno !== 0) {
     store.commit('setError', { status: true, message: resp.data.message })
   }
   return resp
 }, e => {
-  const error = e.response.data
+  const error = e.response ? e.response.data : e.message
   store.commit('setError', { status: true, message: error })
   store.commit('setLoading', { status: false })
-  return Promise.reject(e.response.data)
+  return Promise.reject(error)
 })
 
 app.use(store).use(router).use(Antd)
