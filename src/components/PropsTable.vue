@@ -26,7 +26,7 @@
             v-for="(option, k) in value.options" :key="k"
             :value="option.value"
           >
-            {{option.text}}
+            <render-vnode :vNode="option.text"></render-vnode>
           </component>
         </component>
       </div>
@@ -44,6 +44,7 @@ import IconSwitch from './IconSwitch.vue'
 import ShadowPicker from './ShadowPicker.vue'
 import ImageProcesser from './ImageProcess.vue'
 import BackgroundProcesser from './BackgroundProcesser.vue'
+import RenderVnode from './RenderVnode'
 export default defineComponent({
   props: {
     props: {
@@ -60,7 +61,8 @@ export default defineComponent({
     IconSwitch,
     ShadowPicker,
     ImageProcesser,
-    BackgroundProcesser
+    BackgroundProcesser,
+    RenderVnode
   },
   setup (props) {
     const { commit } = useStore()

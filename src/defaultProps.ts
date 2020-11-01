@@ -35,6 +35,7 @@ export const commonDefaultProps = {
 export const textDefaultProps = {
   // basic props - font styles
   fontSize: '14px',
+  fontFamily: '',
   fontWeight: 'normal',
   fontStyle: 'normal',
   textDecoration: 'none',

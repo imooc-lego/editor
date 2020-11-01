@@ -6,6 +6,7 @@
 // 4 afterTransform 触发更改以后，不同类型需要不同处理，因为 e 的值是不同的，或者需要回灌的值不同
 // 5 text 属性对应的中文名称
 // 6 给组件赋值的时候 属性的名称，一般是 value，也有可能是另外的，比如 checkbox 就是 checked
+import { h, VNode } from 'vue'
 interface PropDetailType {
   component: string;
   eventName: string;
@@ -14,7 +15,7 @@ interface PropDetailType {
   text?: string;
   valueProp: string;
   subComponent?: string;
-  options?: { text: string; value: any }[];
+  options?: { text: string | VNode; value: any }[];
   extraProps?: { [key: string]: any };
 }
 interface MapTypes {
@@ -34,6 +35,19 @@ const numberToPxHandle = {
   intialTransform: (v: string) => v ? parseInt(v) : 0,
   afterTransform: (e: number) => e ? `${e}px` : '0'
 }
+const fontFamilyArr = [
+  { text: '宋体', value: '"SimSun","STSong"' },
+  { text: '黑体', value: '"SimHei","STHeiti"' },
+  { text: '楷体', value: '"KaiTi","STKaiti"' },
+  { text: '仿宋', value: '"FangSong","STFangsong"' }
+]
+
+const fontFamilyOptions = fontFamilyArr.map(font => {
+  return {
+    value: font.value,
+    text: h('span', { style: { fontFamily: font.value } }, font.text)
+  }
+})
 const mapPropsToComponents: MapTypes = {
   text: {
     ...defaultMap,
@@ -50,6 +64,16 @@ const mapPropsToComponents: MapTypes = {
   fontSize: {
     ...numberToPxHandle,
     text: '字号'
+  },
+  fontFamily: {
+    ...defaultMap,
+    component: 'a-select',
+    subComponent: 'a-select-option',
+    text: '字体',
+    options: [
+      { value: '', text: '无' },
+      ...fontFamilyOptions
+    ]
   },
   fontWeight: {
     ...defaultMap,
