@@ -62,7 +62,7 @@ export default defineComponent({
   left: 6px;
 }
 .ant-card-cover > img {
-  height: 300px;
+  height: 400px;
   object-fit: cover;
 }
 .description-detail {

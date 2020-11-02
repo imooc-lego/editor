@@ -2,7 +2,6 @@ import { Module } from 'vuex'
 import { v4 as uuidv4 } from 'uuid'
 import { cloneDeep } from 'lodash'
 import { GlobalDataProps, asyncAndCommit } from './index'
-import { textDefaultProps } from '../defaultProps'
 export interface ComponentData {
   props: { [key: string]: any };
   id: string;
@@ -230,18 +229,7 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
   },
   getters: {
     getCurrentElement: (state) => {
-      // adding default props in case missing some props
-      const currentEle = state.components.find((component) => component.id === state.currentElement)
-      if (currentEle) {
-        switch (currentEle.name) {
-          case 'l-text':
-            currentEle.props = { ...textDefaultProps, ...currentEle.props }
-            break
-          default:
-            break
-        }
-      }
-      return currentEle
+      return state.components.find((component) => component.id === state.currentElement)
     }
   }
 }
