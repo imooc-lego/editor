@@ -22,8 +22,6 @@ const useLoadMore = (actionName: string, total: ComputedRef<number>, params: Loa
     })
   }
   const isLastPage = computed(() => {
-    console.log(Math.ceil((total.value || 1) / pageSize))
-    console.log(pageIndex.value)
     return Math.ceil((total.value || 1) / pageSize) === pageIndex.value + 1
   })
   return {

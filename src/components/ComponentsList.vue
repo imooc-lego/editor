@@ -39,9 +39,6 @@
 import { defineComponent } from 'vue'
 import { FileImageOutlined, LoadingOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
-import LText from './LText.vue'
-import LImage from './LImage.vue'
-import LShape from './LShape.vue'
 import Uploader from './Uploader.vue'
 import { componentsDefaultProps } from '../defaultProps'
 import { commonUploadCheck, imageDimensions, UploadImgProps } from '../helper'
@@ -147,9 +144,6 @@ const componentsList: CreateComponentType[] = [
 ]
 export default defineComponent({
   components: {
-    LText,
-    LImage,
-    LShape,
     Uploader,
     FileImageOutlined,
     LoadingOutlined

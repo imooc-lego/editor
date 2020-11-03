@@ -141,16 +141,12 @@ import { message, Modal } from 'ant-design-vue'
 import { forEach, pickBy } from 'lodash'
 import PublishForm from './PublishForm.vue'
 import ChannelForm from './ChannelForm.vue'
-import LText from '../components/LText.vue'
-import LImage from '../components/LImage.vue'
-import LShape from '../components/LShape.vue'
 import EditWrapper from '../components/EditWrapper.vue'
 import ComponentsList from '../components/ComponentsList.vue'
 import ContextMenu from '../components/ContextMenu.vue'
 import EditGroup from '../components/EditGroup.vue'
 import PropsTable from '../components/PropsTable.vue'
 import LayerList from '../components/LayerList.vue'
-import FinalPage from '../components/FinalPage.vue'
 import UserProfile from '../components/UserProfile.vue'
 import InputEdit from '../components/InputEdit.vue'
 import mapPropsToComponents from '../propsMap'
@@ -164,15 +160,11 @@ export type TabType = 'component' | 'layer' | 'page'
 export default defineComponent({
   name: 'Home',
   components: {
-    LText,
-    LImage,
-    LShape,
     EditWrapper,
     ComponentsList,
     EditGroup,
     LayerList,
     PropsTable,
-    FinalPage,
     PublishForm,
     ChannelForm,
     ContextMenu,

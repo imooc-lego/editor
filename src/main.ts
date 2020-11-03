@@ -1,7 +1,9 @@
 import { createApp } from 'vue'
 import axios from 'axios'
 import Antd from 'ant-design-vue'
+import Lego from 'lego-components'
 import 'ant-design-vue/dist/antd.css'
+import 'lego-components/dist/lego-components.css'
 import 'cropperjs/dist/cropper.css'
 import App from './App.vue'
 import router from './router'
@@ -48,5 +50,5 @@ axios.interceptors.response.use(resp => {
   return Promise.reject(error)
 })
 
-app.use(store).use(router).use(Antd)
+app.use(store).use(router).use(Antd).use(Lego)
 app.mount('#app')
