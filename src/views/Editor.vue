@@ -65,7 +65,6 @@
     <a-layout>
       <a-layout-sider width="300" style="background: #fff">
         <div class="sidebar-container">
-          <h2>组件面板</h2>
           <components-list @on-item-click="onItemCreated">
           </components-list>
         </div>
@@ -197,6 +196,7 @@ export default defineComponent({
     }
     const publishWork = async () => {
       store.commit('setActive', '')
+      activePanel.value = 'component'
       await nextTick()
       try {
         const rawData = await takeScreenshotAndUpload('canvas-area')

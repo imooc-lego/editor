@@ -24,8 +24,14 @@ export interface PageData {
   isHot?: boolean;
   isNew?: boolean;
   author?: string;
+  copiedCount?: number;
   status?: string;
-
+  user? : {
+    gender: string;
+    nickName: string;
+    picture: string;
+    userName: string;
+  };
 }
 export interface ChannelProps {
   id: number;
@@ -50,7 +56,7 @@ export interface EditProps {
   // 当前 work 的 channels
   channels: ChannelProps[];
 }
-const pageDefaultProps = { backgroundColor: '#ffffff', backgroundImage: '', backgroundRepeat: 'no-repeat', backgroundSize: 'contain', height: '600px' }
+const pageDefaultProps = { backgroundColor: '#ffffff', backgroundImage: '', backgroundRepeat: 'no-repeat', backgroundSize: 'contain', height: '500px' }
 const editorModule: Module<EditProps, GlobalDataProps> = {
   state: {
     components: [],

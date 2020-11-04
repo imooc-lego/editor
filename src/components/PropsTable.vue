@@ -3,7 +3,7 @@
     <li v-for="(value, key) in finalProps"
       :key="key" class="prop-item"
       :class="{'no-text': !value.text}"
-      :id="`item-${value.component}-${key}`"
+      :id="`item-${value.key}`"
     >
       <span class="label" v-if="value.text">{{value.text}}:</span>
       <div :class="`prop-component component-${value.component}`">
@@ -76,6 +76,7 @@ export default defineComponent({
           eventName, text, valueProp, options, subComponent, extraProps = {}
         } = maps[key]
         return {
+          key,
           component,
           text,
           valueProp,
@@ -110,7 +111,7 @@ export default defineComponent({
   display: inline-block;
   margin: 0 10px 0 0;
 }
-#item-icon-switch-2 {
+#item-fontWeight {
   margin-left: 28%;
 }
 .prop-component {
@@ -125,12 +126,12 @@ export default defineComponent({
 .prop-component.component-shadow-picker, .prop-component.component-image-processer, .prop-component.component-background-processer {
   width: 100%;
 }
-#item-background-processer-1 {
+#item-backgroundImage {
   width: 100%;
   cursor: pointer;
   margin-bottom: 15px;
 }
-#item-background-processer-1 .styled-upload-component .uploader-container {
+#item-backgroundImage .styled-upload-component .uploader-container {
   min-height: 200px;
 }
 </style>

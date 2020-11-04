@@ -81,7 +81,7 @@ export function isMobile (mobile: string) {
 }
 
 export const takeScreenshotAndUpload = (id: string) => {
-  return html2canvas(document.getElementById(id) as HTMLElement, { allowTaint: false, useCORS: true }).then(canvas => {
+  return html2canvas(document.getElementById(id) as HTMLElement, { allowTaint: false, useCORS: true, proxy: 'http://static-dev.imooc-lego.com/' }).then(canvas => {
     return new Promise<UploadImgProps>((resolve, reject) => {
       canvas.toBlob((data) => {
         if (data) {

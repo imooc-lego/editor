@@ -39,7 +39,13 @@ const fontFamilyArr = [
   { text: '宋体', value: '"SimSun","STSong"' },
   { text: '黑体', value: '"SimHei","STHeiti"' },
   { text: '楷体', value: '"KaiTi","STKaiti"' },
-  { text: '仿宋', value: '"FangSong","STFangsong"' }
+  { text: '仿宋', value: '"FangSong","STFangsong"' },
+  { text: 'Arial', value: '"Arial", sans-serif' },
+  { text: 'Arial Black', value: '"Arial Black", sans-serif' },
+  { text: 'Comic Sans MS', value: '"Comic Sans MS"' },
+  { text: 'Courier New', value: '"Courier New", monospace' },
+  { text: 'Georgia', value: '"Georgia", serif' },
+  { text: 'Times New Roman', value: '"Times New Roman", serif' }
 ]
 
 const fontFamilyOptions = fontFamilyArr.map(font => {

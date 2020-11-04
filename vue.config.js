@@ -3,10 +3,11 @@ const CompressionWebpackPlugin = require('compression-webpack-plugin')
 // 在vue-config.js 中加入
 // 开启gzip压缩
 // 判断开发环境
+const isStaging = !!process.env.VUE_APP_IS_STAGING
 const isProduction = process.env.NODE_ENV === 'production'
 
 module.exports = {
-  publicPath: isProduction ? '/editor' : '/',
+  publicPath: (isProduction && !isStaging) ? '/editor' : '/',
   configureWebpack: config => {
     // 开启gzip压缩
     if (isProduction) {

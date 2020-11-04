@@ -14,7 +14,8 @@
             <a-card-meta :title="item.title">
               <template v-slot:description>
                 <div class="description-detail">
-                  <span>作者：{{item.author}}</span>
+                  <span>作者：{{item.user.nickName}}</span>
+                  <span class="user-number"><UserOutlined /> {{item.copiedCount}}</span>
                 </div>
               </template>
             </a-card-meta>
@@ -35,9 +36,13 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
+import { UserOutlined } from '@ant-design/icons-vue'
 import { WorkProp } from '../store/works'
 export default defineComponent({
   name: 'template-list',
+  components: {
+    UserOutlined
+  },
   props: {
     list: {
       type: Array as PropType<WorkProp[]>,
@@ -62,12 +67,16 @@ export default defineComponent({
   left: 6px;
 }
 .ant-card-cover > img {
-  height: 400px;
+  height: 500px;
   object-fit: cover;
 }
 .description-detail {
   display: flex;
   justify-content: space-between;
+}
+.user-number {
+  color: #1890ff;
+  font-weight: bold;
 }
 .poster-title {
   height: 70px;

@@ -8,10 +8,12 @@
         <h2>{{currentTemplate.title}}</h2>
         <p>{{currentTemplate.desc}}</p>
       <div class="author">
-        <a-avatar>
+        <a-avatar :src="currentTemplate.user.picture" v-if="currentTemplate.user.picture">
+        </a-avatar>
+        <a-avatar v-else>
           <template v-slot:icon><UserOutlined /></template>
         </a-avatar>
-        该模版由 <b>{{currentTemplate.author}}</b> 创作
+        该模版由 <b>{{currentTemplate.user.nickName}}</b> 创作
       </div>
       <div class="bar-code-area" >
         <span>扫一扫，手机预览</span>
