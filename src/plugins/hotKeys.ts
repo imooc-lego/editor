@@ -11,8 +11,12 @@ export function initHotKeys () {
   useHotKey('ctrl+c, command+c', () => {
     operations.copy()
   })
-  useHotKey('ctrl+backspace, command+backspace', () => {
-    operations.delete()
+  useHotKey('backspace, delete', (event) => {
+    const tagName = (event.target as HTMLElement).tagName
+    const isInput = tagName === 'TEXTAREA' || tagName === 'INPUT'
+    if (!isInput) {
+      operations.delete()
+    }
   })
   useHotKey('ctrl+v, command+v', () => {
     operations.paste()

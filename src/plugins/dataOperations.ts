@@ -21,7 +21,7 @@ export default function dataOperations (componentId: ComputedRef<string> | Ref<s
     delete: () => {
       if (componentId.value) {
         store.commit('deleteComponent', componentId.value)
-        message.error('删除当前图层成功', 1)
+        message.success('删除当前图层成功', 1)
       }
     },
     cancel: () => {
@@ -43,7 +43,7 @@ export const operationText: { [key: string]: any} = {
   },
   delete: {
     text: '删除图层',
-    shortcut: 'Ctrl+Backspace'
+    shortcut: 'Backspace / Delete'
   },
   cancel: {
     text: '取消选中',
