@@ -70,7 +70,7 @@
         </div>
       </a-layout-sider>
       <a-layout style="padding: 0 24px 24px">
-        <a-layout-content class="preview-container" @click.prevent="clearSelection">
+        <a-layout-content class="preview-container" @mousedown.prevent="clearSelection">
           <p>画布区域</p>
           <div class="preview-list" id="canvas-area" @click="setPageSetting" :class="{active: activePanel === 'page'}">
             <div class="body-container" :style="pageState.props">
@@ -284,6 +284,7 @@ export default defineComponent({
     }
     // clear component or page selection when clicking the gray area
     const clearSelection = (e: Event) => {
+      console.log('triggered')
       const currentTarget = e.target as HTMLElement
       if (currentTarget.classList.contains('preview-container')) {
         store.commit('setActive', '')

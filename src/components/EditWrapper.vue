@@ -1,13 +1,12 @@
 <template>
 <div class="edit-wrapper" @click="itemClick"
     ref="editWrapper"
-    :draggable="true"
-    @dragstart="handleDragStart"
-    @dragend="handleDragEnd"
     :class="{active: active}" :style="styleProps"
     :data-component-id="id"
 >
-  <slot></slot>
+  <div class="move-wrapper" ref="moveWrapper" @mousedown="startMove">
+    <slot></slot>
+  </div>
   <div class='resizers'>
     <div class='resizer top-left' @mousedown="startResize($event, 'top-left')"></div>
     <div class='resizer top-right'  @mousedown="startResize($event, 'top-right')"></div>
@@ -53,6 +52,8 @@ export default defineComponent({
     })
     let size: any
     const editWrapper = ref<null | HTMLElement>(null)
+    const moveWrapper = ref<null | HTMLElement>(null)
+    let isMoving = false
     // need to pick position absolute out, to go with the inner element
     const styleProps = useStylePick(props.props || {}, ['position', 'top', 'left', 'width', 'height'])
     const isEditable = computed(() => props.editing === props.id)
@@ -67,21 +68,38 @@ export default defineComponent({
     const itemEdit = () => {
       context.emit('editing', props.id)
     }
-    const handleDragStart = (e: DragEvent) => {
-      const currentElement = e.currentTarget as HTMLElement
+    const caculateMovePosition = (e: MouseEvent) => {
+      const container = document.getElementById('canvas-area') as HTMLElement
+      const left = e.clientX - container.offsetLeft - gap.x + 'px'
+      const top = e.clientY - container.offsetTop - gap.y + 'px'
+      return {
+        left,
+        top
+      }
+    }
+    const startMove = (e: MouseEvent) => {
+      const currentElement = editWrapper.value as HTMLElement
       gap.x = e.clientX - currentElement.getBoundingClientRect().left
       gap.y = e.clientY - currentElement.getBoundingClientRect().top
-      currentElement.style.opacity = '0.5'
-    }
-    const handleDragEnd = (e: DragEvent) => {
-      const container = document.getElementById('canvas-area') as HTMLElement
-      const currentElement = e.currentTarget as HTMLElement
-      const finalXCord = e.clientX - container.offsetLeft - gap.x + 'px'
-      const finalYCord = e.clientY - container.offsetTop - gap.y + 'px'
-      currentElement.style.opacity = ''
-      currentElement.style.top = finalYCord
-      currentElement.style.left = finalXCord
-      context.emit('update-position', { left: finalXCord, top: finalYCord, id: props.id })
+      const handleMove = (e: MouseEvent) => {
+        isMoving = true
+        const { left, top } = caculateMovePosition(e)
+        currentElement.style.top = top
+        currentElement.style.left = left
+      }
+      const handleMouseUp = (e: MouseEvent) => {
+        const { left, top } = caculateMovePosition(e)
+        document.removeEventListener('mousemove', handleMove)
+        if (isMoving) {
+          context.emit('update-position', { left, top, id: props.id })
+          isMoving = false
+        }
+        nextTick(() => {
+          document.removeEventListener('mouseup', handleMouseUp)
+        })
+      }
+      document.addEventListener('mousemove', handleMove)
+      document.addEventListener('mouseup', handleMouseUp)
     }
     const caculateSize = (direction: ResizeDirection, e: MouseEvent, positions: OriginalPositions) => {
       const { left, right, top, bottom } = positions
@@ -124,8 +142,9 @@ export default defineComponent({
     }
     const startResize = (event: MouseEvent, direction: ResizeDirection) => {
       const currentElement = editWrapper.value as HTMLElement
-      currentElement.draggable = false
-      const currentComponent = currentElement.firstElementChild as HTMLElement
+      const moveElement = moveWrapper.value as HTMLElement
+      // get the component element
+      const currentComponent = moveElement.firstElementChild as HTMLElement
       const resizeElements = [currentElement, currentComponent]
       const { left, right, top, bottom } = currentElement.getBoundingClientRect()
       const handleMove = (e: MouseEvent) => {
@@ -161,12 +180,12 @@ export default defineComponent({
     return {
       itemClick,
       styleProps,
-      handleDragStart,
-      handleDragEnd,
       startResize,
       editWrapper,
+      moveWrapper,
       itemEdit,
-      isEditable
+      isEditable,
+      startMove
     }
   }
 })
