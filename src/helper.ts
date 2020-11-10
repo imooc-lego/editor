@@ -132,3 +132,9 @@ export const getDaysArray = (start: Date, end: Date) => {
 export const objToArr = <T>(obj: {[key: string]: T}) => {
   return Object.keys(obj).map(key => obj[key])
 }
+
+export const insertAt = (arr: any[], index: number, newItem: any) => [
+  ...arr.slice(0, index),
+  newItem,
+  ...arr.slice(index)
+]

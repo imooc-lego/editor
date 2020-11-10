@@ -72,6 +72,7 @@
       <a-layout style="padding: 0 24px 24px">
         <a-layout-content class="preview-container" @mousedown.prevent="clearSelection">
           <p>画布区域</p>
+          <history-area></history-area>
           <div class="preview-list" id="canvas-area" @click="setPageSetting" :class="{active: activePanel === 'page'}">
             <div class="body-container" :style="pageState.props">
               <div v-for="item in components" :key="item.id">
@@ -140,6 +141,7 @@ import { message, Modal } from 'ant-design-vue'
 import { forEach, pickBy } from 'lodash'
 import PublishForm from './PublishForm.vue'
 import ChannelForm from './ChannelForm.vue'
+import HistoryArea from './HistoryArea.vue'
 import EditWrapper from '../components/EditWrapper.vue'
 import ComponentsList from '../components/ComponentsList.vue'
 import ContextMenu from '../components/ContextMenu.vue'
@@ -168,7 +170,8 @@ export default defineComponent({
     ChannelForm,
     ContextMenu,
     UserProfile,
-    InputEdit
+    InputEdit,
+    HistoryArea
   },
   setup () {
     const store = useStore<GlobalDataProps>()
@@ -358,6 +361,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
 }
 .preview-list {
   padding: 0;

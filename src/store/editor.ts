@@ -2,6 +2,7 @@ import { Module } from 'vuex'
 import { v4 as uuidv4 } from 'uuid'
 import { cloneDeep } from 'lodash'
 import { GlobalDataProps, asyncAndCommit } from './index'
+import { insertAt } from '../helper'
 export interface ComponentData {
   props: { [key: string]: any };
   id: string;
@@ -41,8 +42,10 @@ export interface ChannelProps {
 
 export interface HistoryProps {
   id: string;
+  componentId: string;
   type: 'add' | 'delete' | 'modify';
   data: any;
+  index?: number;
 }
 export interface EditProps {
   // 页面所有组件
@@ -63,6 +66,8 @@ export interface EditProps {
   channels: ChannelProps[];
   // 当前操作的历史记录
   histories: HistoryProps[];
+  // 当前历史记录的操作位置
+  historyIndex: number;
 }
 const pageDefaultProps = { backgroundColor: '#ffffff', backgroundImage: '', backgroundRepeat: 'no-repeat', backgroundSize: 'contain', height: '500px' }
 const editorModule: Module<EditProps, GlobalDataProps> = {
@@ -74,7 +79,8 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
     isChangedNotPublished: false,
     page: { props: pageDefaultProps, setting: {} },
     channels: [],
-    histories: []
+    histories: [],
+    historyIndex: -1
   },
   mutations: {
     // reset editor to clear
@@ -89,8 +95,68 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
       component.id = uuidv4()
       component.layerName = '图层' + (state.components.length + 1)
       state.components.push(component)
+      // check if historyIndex is already moved
+      if (state.historyIndex !== -1) {
+        // if already moved, we need delete all the records greater than the index
+        state.histories = state.histories.slice(0, state.historyIndex)
+        // move the historyIndex to the last  -1
+        state.historyIndex = -1
+      }
+      state.histories.push({
+        id: uuidv4(),
+        componentId: component.id,
+        type: 'add',
+        data: cloneDeep(component)
+      })
       state.isDirty = true
       state.isChangedNotPublished = true
+    },
+    // undo history
+    undo (state) {
+      // never undo before
+      if (state.historyIndex === -1) {
+        // undo to the last item of the histories array
+        state.historyIndex = state.histories.length - 1
+      } else {
+        // undo to the previous step
+        state.historyIndex--
+      }
+      // get the record
+      const history = state.histories[state.historyIndex]
+      // process the history data
+      switch (history.type) {
+        case 'add':
+          // if we create a component, then we should remove it
+          state.components = state.components.filter(component => component.id !== history.componentId)
+          break
+        case 'delete':
+          // if we delete a component, we should restore it at the right position
+          state.components = insertAt(state.components, history.index as number, history.data)
+          break
+        default:
+          break
+      }
+    },
+    redo (state) {
+      // can't redo when historyIndex is the last item or historyIndex is never moved
+      if (state.historyIndex === -1) {
+        return
+      }
+      // get the record
+      console.log(state.historyIndex)
+      const history = state.histories[state.historyIndex]
+      // process the history data
+      switch (history.type) {
+        case 'add':
+          state.components = insertAt(state.components, history.index as number, history.data)
+          break
+        case 'delete':
+          state.components = state.components.filter(component => component.id !== history.componentId)
+          break
+        default:
+          break
+      }
+      state.historyIndex++
     },
     setActive (state, id) {
       state.currentElement = id
@@ -134,10 +200,26 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
         state.components.push(clone)
         state.isDirty = true
         state.isChangedNotPublished = true
+        state.histories.push({
+          id: uuidv4(),
+          componentId: clone.id,
+          type: 'add',
+          data: cloneDeep(clone)
+        })
       }
     },
-    deleteComponent (state, index) {
-      state.components = state.components.filter(component => component.id !== index)
+    deleteComponent (state, id) {
+      // find the current component and index
+      const componentData = state.components.find(component => component.id === id) as ComponentData
+      const componentIndex = state.components.findIndex(component => component.id === id)
+      state.components = state.components.filter(component => component.id !== id)
+      state.histories.push({
+        id: uuidv4(),
+        componentId: componentData.id,
+        type: 'delete',
+        data: componentData,
+        index: componentIndex
+      })
       state.isDirty = true
       state.isChangedNotPublished = true
     },
@@ -235,6 +317,24 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
   getters: {
     getCurrentElement: (state) => {
       return state.components.find((component) => component.id === state.currentElement)
+    },
+    checkUndoDisable: (state) => {
+      // no history item or move to the first item
+      if (state.histories.length === 0 || state.historyIndex === 0) {
+        return true
+      }
+      return false
+    },
+    checkRedoDisable: (state) => {
+      // 1 no history item
+      // 2 move to the last item
+      // 3 never undo before
+      if (state.histories.length === 0 ||
+        state.historyIndex === state.histories.length ||
+        state.historyIndex === -1) {
+        return true
+      }
+      return false
     }
   }
 }
