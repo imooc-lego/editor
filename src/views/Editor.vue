@@ -123,7 +123,7 @@
           </a-tab-pane>
           <a-tab-pane key="page" tab="页面设置">
             <div class="page-settings">
-              <props-table :props="pageState.props" mutationName="updatePageProps"></props-table>
+              <props-table :props="pageState.props" mutationName="updatePage" :mutationExtraData="{ level: 'props' }"></props-table>
             </div>
           </a-tab-pane>
         </a-tabs>
@@ -295,7 +295,7 @@ export default defineComponent({
       const { id } = data
       forEach(pickBy(data, (v, k) => k !== 'id'), (value, key) => {
         const newValue = (key === 'width' || key === 'height') ? value + 'px' : value.toString()
-        store.commit('updateProp', { key, value: newValue, id })
+        store.commit('updateComponent', { key, value: newValue, id, isProps: true })
       })
     }
     const titleChange = (newTitle: string) => {

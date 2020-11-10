@@ -38,6 +38,12 @@ export interface ChannelProps {
   name: string;
   workId: number;
 }
+
+export interface HistoryProps {
+  id: string;
+  type: 'add' | 'delete' | 'modify';
+  data: any;
+}
 export interface EditProps {
   // 页面所有组件
   components: ComponentData[];
@@ -55,6 +61,8 @@ export interface EditProps {
   page: PageData;
   // 当前 work 的 channels
   channels: ChannelProps[];
+  // 当前操作的历史记录
+  histories: HistoryProps[];
 }
 const pageDefaultProps = { backgroundColor: '#ffffff', backgroundImage: '', backgroundRepeat: 'no-repeat', backgroundSize: 'contain', height: '500px' }
 const editorModule: Module<EditProps, GlobalDataProps> = {
@@ -65,13 +73,15 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
     isDirty: false,
     isChangedNotPublished: false,
     page: { props: pageDefaultProps, setting: {} },
-    channels: []
+    channels: [],
+    histories: []
   },
   mutations: {
     // reset editor to clear
     resetEditor (state) {
       state.page = { props: pageDefaultProps, setting: {} }
       state.components = []
+      state.histories = []
       state.isDirty = false
       state.isChangedNotPublished = false
     },
@@ -88,35 +98,24 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
     setEditing (state, id) {
       state.currentEditing = id
     },
-    updateProp (state, { key, value, id }) {
-      const currentComponent = state.components.find((component) => component.id === (id || state.currentElement))
-      if (currentComponent) {
-        currentComponent.props[key] = value
-        state.isDirty = true
-        state.isChangedNotPublished = true
+    updatePage (state, { key, value, level }) {
+      const pageData = state.page as { [key: string]: any }
+      if (level) {
+        pageData[level][key] = value
+      } else {
+        pageData[key] = value
       }
-    },
-    updatePage (state, { key, value }) {
-      (state.page as { [key: string]: any })[key] = value
       state.isDirty = true
       state.isChangedNotPublished = true
     },
-    updatePageProps (state, { key, value }) {
-      if (state.page.props) {
-        state.page.props[key] = value
-        state.isDirty = true
-        state.isChangedNotPublished = true
-      }
-    },
-    updatePageSetting (state, { key, value }) {
-      if (state.page.setting) {
-        state.page.setting[key] = value
-      }
-    },
-    updateComponent (state, { id, key, value }) {
-      const updatedComponent = state.components.find((component) => component.id === id) as any
+    updateComponent (state, { id, key, value, isProps }) {
+      const updatedComponent = state.components.find((component) => component.id === (id || state.currentElement)) as any
       if (updatedComponent) {
-        updatedComponent[key] = value
+        if (isProps) {
+          updatedComponent.props[key] = value
+        } else {
+          updatedComponent[key] = value
+        }
         state.isDirty = true
         state.isChangedNotPublished = true
       }

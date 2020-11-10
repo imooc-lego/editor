@@ -53,7 +53,10 @@ export default defineComponent({
     },
     mutationName: {
       type: String,
-      default: 'updateProp'
+      default: 'updateComponent'
+    },
+    mutationExtraData: {
+      type: Object
     }
   },
   components: {
@@ -67,7 +70,8 @@ export default defineComponent({
   setup (props) {
     const { commit } = useStore()
     const handleCommit = (data: any) => {
-      commit(props.mutationName, data)
+      const finalData = props.mutationExtraData ? { ...data, ...props.mutationExtraData } : data
+      commit(props.mutationName, finalData)
     }
     const finalProps = computed(() => {
       return map(props.props, (value, key) => {

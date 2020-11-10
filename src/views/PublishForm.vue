@@ -76,11 +76,7 @@ export default defineComponent({
       ]
     }
     const updatePage = (key: string, value: string, settings = false) => {
-      if (settings) {
-        store.commit('updatePageSetting', { key, value })
-      } else {
-        store.commit('updatePage', { key, value })
-      }
+      store.commit('updatePage', { key, value, level: settings ? 'setting' : false })
     }
     const updateAvatar = (rawData: UploadImgProps) => {
       const url = rawData.data.urls[0]

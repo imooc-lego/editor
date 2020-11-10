@@ -1,7 +1,7 @@
 <template>
   <a-collapse v-model:activeKey="currentKey">
     <a-collapse-panel v-for="item in editGroups" :key="item.text" :header="item.text">
-      <prop-table :props="item.props"></prop-table>
+      <prop-table :props="item.props" :mutationExtraData="{ isProps: true }"></prop-table>
     </a-collapse-panel>
   </a-collapse>
 </template>
