@@ -70,8 +70,8 @@ export default defineComponent({
     }
     const caculateMovePosition = (e: MouseEvent) => {
       const container = document.getElementById('canvas-area') as HTMLElement
-      const left = e.clientX - container.offsetLeft - gap.x + 'px'
-      const top = e.clientY - container.offsetTop - gap.y + 'px'
+      const left = e.clientX - container.offsetLeft - gap.x
+      const top = e.clientY - container.offsetTop - gap.y
       return {
         left,
         top
@@ -84,8 +84,8 @@ export default defineComponent({
       const handleMove = (e: MouseEvent) => {
         isMoving = true
         const { left, top } = caculateMovePosition(e)
-        currentElement.style.top = top
-        currentElement.style.left = left
+        currentElement.style.top = top + 'px'
+        currentElement.style.left = left + 'px'
       }
       const handleMouseUp = (e: MouseEvent) => {
         const { left, top } = caculateMovePosition(e)

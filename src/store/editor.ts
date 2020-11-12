@@ -1,6 +1,6 @@
 import { Module } from 'vuex'
 import { v4 as uuidv4 } from 'uuid'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isUndefined } from 'lodash'
 import { GlobalDataProps, asyncAndCommit } from './index'
 import { insertAt } from '../helper'
 export interface ComponentData {
@@ -70,6 +70,31 @@ export interface EditProps {
   historyIndex: number;
 }
 const pageDefaultProps = { backgroundColor: '#ffffff', backgroundImage: '', backgroundRepeat: 'no-repeat', backgroundSize: 'contain', height: '500px' }
+const pushHistory = (state: EditProps, historyRecord: HistoryProps) => {
+  // check if historyIndex is already moved
+  if (state.historyIndex !== -1) {
+    // if already moved, we need delete all the records greater than the index
+    state.histories = state.histories.slice(0, state.historyIndex)
+    // move the historyIndex to the last  -1
+    state.historyIndex = -1
+  }
+  state.histories.push(historyRecord)
+}
+
+const modifyHistory = (state: EditProps, history: HistoryProps, type: 'undo' | 'redo') => {
+  const { componentId, data } = history
+  const { key, oldValue, newValue } = data
+  const updatedComponent = state.components.find((component) => component.id === componentId) as any
+  if (Array.isArray(key)) {
+    key.forEach((keyName: string, index) => {
+      updatedComponent.props[keyName] = type === 'undo' ? oldValue[index] : newValue[index]
+    })
+  } else {
+    updatedComponent.props[key] = type === 'undo' ? oldValue : newValue
+  }
+}
+let globalTimeout = 0
+let cachedOldValue: any
 const editorModule: Module<EditProps, GlobalDataProps> = {
   state: {
     components: [],
@@ -95,14 +120,7 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
       component.id = uuidv4()
       component.layerName = '图层' + (state.components.length + 1)
       state.components.push(component)
-      // check if historyIndex is already moved
-      if (state.historyIndex !== -1) {
-        // if already moved, we need delete all the records greater than the index
-        state.histories = state.histories.slice(0, state.historyIndex)
-        // move the historyIndex to the last  -1
-        state.historyIndex = -1
-      }
-      state.histories.push({
+      pushHistory(state, {
         id: uuidv4(),
         componentId: component.id,
         type: 'add',
@@ -133,6 +151,10 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
           // if we delete a component, we should restore it at the right position
           state.components = insertAt(state.components, history.index as number, history.data)
           break
+        case 'modify': {
+          modifyHistory(state, history, 'undo')
+          break
+        }
         default:
           break
       }
@@ -143,16 +165,20 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
         return
       }
       // get the record
-      console.log(state.historyIndex)
       const history = state.histories[state.historyIndex]
       // process the history data
       switch (history.type) {
         case 'add':
-          state.components = insertAt(state.components, history.index as number, history.data)
+          state.components.push(history.data)
+          // state.components = insertAt(state.components, history.index as number, history.data)
           break
         case 'delete':
           state.components = state.components.filter(component => component.id !== history.componentId)
           break
+        case 'modify': {
+          modifyHistory(state, history, 'redo')
+          break
+        }
         default:
           break
       }
@@ -178,7 +204,34 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
       const updatedComponent = state.components.find((component) => component.id === (id || state.currentElement)) as any
       if (updatedComponent) {
         if (isProps) {
-          updatedComponent.props[key] = value
+          if (globalTimeout) {
+            clearTimeout(globalTimeout)
+          }
+          if (isUndefined(cachedOldValue)) {
+            if (Array.isArray(key)) {
+              cachedOldValue = key.map((key: string) => updatedComponent.props[key])
+            } else {
+              cachedOldValue = updatedComponent.props[key]
+            }
+          }
+          globalTimeout = setTimeout(() => {
+            console.log('triggered timeout')
+            pushHistory(state, {
+              id: uuidv4(),
+              componentId: (id || state.currentElement),
+              type: 'modify',
+              data: { oldValue: cachedOldValue, newValue: value, key }
+            })
+            globalTimeout = 0
+            cachedOldValue = undefined
+          }, 500)
+          if (Array.isArray(key)) {
+            key.forEach((keyName: string, index) => {
+              updatedComponent.props[keyName] = value[index]
+            })
+          } else {
+            updatedComponent.props[key] = value
+          }
         } else {
           updatedComponent[key] = value
         }
@@ -200,7 +253,7 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
         state.components.push(clone)
         state.isDirty = true
         state.isChangedNotPublished = true
-        state.histories.push({
+        pushHistory(state, {
           id: uuidv4(),
           componentId: clone.id,
           type: 'add',
@@ -213,7 +266,7 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
       const componentData = state.components.find(component => component.id === id) as ComponentData
       const componentIndex = state.components.findIndex(component => component.id === id)
       state.components = state.components.filter(component => component.id !== id)
-      state.histories.push({
+      pushHistory(state, {
         id: uuidv4(),
         componentId: componentData.id,
         type: 'delete',

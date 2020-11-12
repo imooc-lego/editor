@@ -138,7 +138,7 @@ import { defineComponent, ref, computed, watch, onMounted, onUnmounted, nextTick
 import { useStore } from 'vuex'
 import { useRoute, onBeforeRouteLeave } from 'vue-router'
 import { message, Modal } from 'ant-design-vue'
-import { forEach, pickBy } from 'lodash'
+import { forEach, pickBy, mapValues } from 'lodash'
 import PublishForm from './PublishForm.vue'
 import ChannelForm from './ChannelForm.vue'
 import HistoryArea from './HistoryArea.vue'
@@ -296,10 +296,12 @@ export default defineComponent({
     }
     const updatePosition = (data: { left: number; top: number; id: string; width: number; height: number}) => {
       const { id } = data
-      forEach(pickBy(data, (v, k) => k !== 'id'), (value, key) => {
-        const newValue = (key === 'width' || key === 'height') ? value + 'px' : value.toString()
-        store.commit('updateComponent', { key, value: newValue, id, isProps: true })
+      const newPair = mapValues(pickBy(data, (v, k) => k !== 'id'), (value) => {
+        return value + 'px'
       })
+      const keysArr = Object.keys(newPair)
+      const valuesArr = Object.values(newPair)
+      store.commit('updateComponent', { key: keysArr, value: valuesArr, id, isProps: true })
     }
     const titleChange = (newTitle: string) => {
       store.commit('updatePage', { key: 'title', value: newTitle })
