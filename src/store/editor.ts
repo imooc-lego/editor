@@ -42,7 +42,7 @@ export interface ChannelProps {
 
 export interface HistoryProps {
   id: string;
-  componentId: string;
+  componentId?: string;
   type: 'add' | 'delete' | 'modify';
   data: any;
   index?: number;
@@ -84,17 +84,36 @@ const pushHistory = (state: EditProps, historyRecord: HistoryProps) => {
 const modifyHistory = (state: EditProps, history: HistoryProps, type: 'undo' | 'redo') => {
   const { componentId, data } = history
   const { key, oldValue, newValue } = data
-  const updatedComponent = state.components.find((component) => component.id === componentId) as any
-  if (Array.isArray(key)) {
-    key.forEach((keyName: string, index) => {
-      updatedComponent.props[keyName] = type === 'undo' ? oldValue[index] : newValue[index]
-    })
+  // modify the page setting
+  if (!componentId) {
+    state.page.props[key] = type === 'undo' ? oldValue : newValue
   } else {
-    updatedComponent.props[key] = type === 'undo' ? oldValue : newValue
+    const updatedComponent = state.components.find((component) => component.id === componentId) as any
+    if (Array.isArray(key)) {
+      key.forEach((keyName: string, index) => {
+        updatedComponent.props[keyName] = type === 'undo' ? oldValue[index] : newValue[index]
+      })
+    } else {
+      updatedComponent.props[key] = type === 'undo' ? oldValue : newValue
+    }
   }
 }
 let globalTimeout = 0
 let cachedOldValue: any
+
+const debounceChange = (cachedValue: any, callback: () => void, timeout = 1000) => {
+  if (globalTimeout) {
+    clearTimeout(globalTimeout)
+  }
+  if (isUndefined(cachedOldValue)) {
+    cachedOldValue = cachedValue
+  }
+  globalTimeout = setTimeout(() => {
+    callback()
+    globalTimeout = 0
+    cachedOldValue = undefined
+  }, timeout)
+}
 const editorModule: Module<EditProps, GlobalDataProps> = {
   state: {
     components: [],
@@ -193,6 +212,16 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
     updatePage (state, { key, value, level }) {
       const pageData = state.page as { [key: string]: any }
       if (level) {
+        if (level === 'props') {
+          const oldValue = pageData[level][key]
+          debounceChange(oldValue, () => {
+            pushHistory(state, {
+              id: uuidv4(),
+              type: 'modify',
+              data: { oldValue: cachedOldValue, newValue: value, key }
+            })
+          })
+        }
         pageData[level][key] = value
       } else {
         pageData[key] = value
@@ -204,27 +233,16 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
       const updatedComponent = state.components.find((component) => component.id === (id || state.currentElement)) as any
       if (updatedComponent) {
         if (isProps) {
-          if (globalTimeout) {
-            clearTimeout(globalTimeout)
-          }
-          if (isUndefined(cachedOldValue)) {
-            if (Array.isArray(key)) {
-              cachedOldValue = key.map((key: string) => updatedComponent.props[key])
-            } else {
-              cachedOldValue = updatedComponent.props[key]
-            }
-          }
-          globalTimeout = setTimeout(() => {
-            console.log('triggered timeout')
+          const oldValue = Array.isArray(key) ? key.map((key: string) => updatedComponent.props[key]) : updatedComponent.props[key]
+
+          debounceChange(oldValue, () => {
             pushHistory(state, {
               id: uuidv4(),
               componentId: (id || state.currentElement),
               type: 'modify',
               data: { oldValue: cachedOldValue, newValue: value, key }
             })
-            globalTimeout = 0
-            cachedOldValue = undefined
-          }, 500)
+          })
           if (Array.isArray(key)) {
             key.forEach((keyName: string, index) => {
               updatedComponent.props[keyName] = value[index]
