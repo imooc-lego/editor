@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref, onUnmounted } from 'vue'
-import { map } from 'lodash'
+import { map, pick } from 'lodash'
 import { clickInsideElement } from '../helper'
 import dataOperation, { operationText } from '../plugins/dataOperations'
 export default defineComponent({
@@ -19,7 +19,8 @@ export default defineComponent({
   setup (props, context) {
     const menuRef = ref<null | HTMLElement>(null)
     const componentId = ref('')
-    const operations = dataOperation(componentId)
+    // pick the opreration for the context menu
+    const operations = pick(dataOperation(componentId), ['copy', 'paste', 'delete', 'cancel'])
     const actions = map(operations, (val, key) => {
       return {
         key,

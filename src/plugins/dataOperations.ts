@@ -1,4 +1,4 @@
-import { ComputedRef, Ref } from 'vue'
+import { ComputedRef, Ref, computed } from 'vue'
 import { message } from 'ant-design-vue'
 import { GlobalDataProps } from '../store/index'
 import { useStore } from 'vuex'
@@ -28,11 +28,23 @@ export default function dataOperations (componentId: ComputedRef<string> | Ref<s
       if (componentId.value) {
         store.commit('setActive', '')
       }
+    },
+    undo: () => {
+      const undoIsDisabled = computed<boolean>(() => store.getters.checkUndoDisable)
+      if (!undoIsDisabled.value) {
+        store.commit('undo')
+      }
+    },
+    redo: () => {
+      const redoIsDisabled = computed<boolean>(() => store.getters.checkRedoDisable)
+      if (!redoIsDisabled.value) {
+        store.commit('redo')
+      }
     }
   }
 }
 
-export const operationText: { [key: string]: any} = {
+export const operationText: { [key: string]: {text: string; shortcut: string} } = {
   copy: {
     text: '拷贝图层',
     shortcut: '⌘C / Ctrl+C'
@@ -48,5 +60,13 @@ export const operationText: { [key: string]: any} = {
   cancel: {
     text: '取消选中',
     shortcut: 'ESC'
+  },
+  undo: {
+    text: '撤销',
+    shortcut: '⌘Z / Ctrl+Z'
+  },
+  redo: {
+    text: '重做',
+    shortcut: '⌘⇧Z / Ctrl+Shift+Z'
   }
 }

@@ -24,4 +24,10 @@ export function initHotKeys () {
   useHotKey('esc', () => {
     operations.cancel()
   })
+  useHotKey('ctrl+z, command+z', () => {
+    operations.undo()
+  })
+  useHotKey('ctrl+shift+z, command+shift+z', () => {
+    operations.redo()
+  })
 }
