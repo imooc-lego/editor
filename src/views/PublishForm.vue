@@ -1,8 +1,18 @@
 <template>
   <div class="publish-form-container">
     <a-row type="flex" align="middle" :style="{ marginBottom: '20px' }">
-      <a-col :span="4">
-        封面图
+      <a-col :span="6">
+        扫码预览：
+      </a-col>
+      <a-col :span="10">
+        <div id="preview-barcode-container">
+
+        </div>
+      </a-col>
+    </a-row>
+    <a-row type="flex" align="middle" :style="{ marginBottom: '20px' }">
+      <a-col :span="6">
+        上传封面：
       </a-col>
       <a-col :span="10">
         <styled-uploader
@@ -14,7 +24,7 @@
       </a-col>
     </a-row>
     <a-form
-      :label-col="{ span: 4 }" :wrapper-col="{ span: 18 }"
+      :label-col="{ span: 6 }" :wrapper-col="{ span: 16 }"
       :model="form" :rules="rules"
       ref="publishForm"
     >
@@ -40,12 +50,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, Ref, nextTick, computed, watch } from 'vue'
+import { defineComponent, reactive, ref, Ref, nextTick, computed, watch, onMounted } from 'vue'
 import StyledUploader from '../components/StyledUploader.vue'
 import { commonUploadCheck, UploadImgProps, takeScreenshotAndUpload } from '../helper'
+import QRCode from 'qrcodejs2'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import { GlobalDataProps } from '../store'
+import { baseH5URL } from '../main'
 interface RuleFormInstance {
   validate: () => Promise<any>;
 }
@@ -61,7 +73,7 @@ export default defineComponent({
     const pageData = computed(() => store.state.editor.page)
     const loading = computed(() => store.state.status.loading)
     const { title, desc, setting } = pageData.value
-
+    const previewURL = `${baseH5URL}/p/preview/${pageData.value.id}-${pageData.value.uuid}`
     const form = reactive({
       title: title || '',
       subTitle: desc || '',
@@ -71,6 +83,17 @@ export default defineComponent({
     watch(() => pageData.value.title, (newTitle) => {
       if (newTitle) {
         form.title = newTitle
+      }
+    })
+    onMounted(() => {
+      const ele = document.getElementById('preview-barcode-container')
+      if (ele) {
+        // eslint-disable-next-line no-new
+        new QRCode(ele, {
+          text: previewURL,
+          width: 120,
+          height: 120
+        })
       }
     })
     const publishForm = ref() as Ref<RuleFormInstance>
@@ -142,5 +165,12 @@ export default defineComponent({
 <style>
 .publish-form-container .file-upload-container {
   height: 130px;
+}
+.publish-form-container .ant-form-item-label {
+  text-align: left;
+}
+#preview-barcode-container {
+  border: 2px dotted #efefef;
+  padding: 10px;
 }
 </style>

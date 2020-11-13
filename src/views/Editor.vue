@@ -422,5 +422,6 @@ export default defineComponent({
   background: #fff;
   box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
   position: relative;
+  overflow: scroll;
 }
 </style>
