@@ -138,7 +138,7 @@ import { defineComponent, ref, computed, watch, onMounted, onUnmounted, nextTick
 import { useStore } from 'vuex'
 import { useRoute, onBeforeRouteLeave } from 'vue-router'
 import { message, Modal } from 'ant-design-vue'
-import { forEach, pickBy, mapValues } from 'lodash'
+import { pickBy, mapValues } from 'lodash'
 import PublishForm from './PublishForm.vue'
 import ChannelForm from './ChannelForm.vue'
 import HistoryArea from './HistoryArea.vue'
@@ -226,6 +226,16 @@ export default defineComponent({
           saveWork()
         }
       }, 1000 * 30)
+      // caculate the maxHeight for canvas-area
+      const canvasEle = document.getElementById('canvas-area')
+      if (canvasEle) {
+        // need to add a little timeout, ant-design-vue is adjusting position for columns
+        setTimeout(() => {
+          const maxHeight = window.innerHeight - canvasEle.getBoundingClientRect().top - 50
+          canvasEle.style.maxHeight = maxHeight + 'px'
+          console.log(maxHeight)
+        }, 100)
+      }
     })
     onUnmounted(() => {
       clearInterval(timer)
@@ -287,11 +297,10 @@ export default defineComponent({
     }
     // clear component or page selection when clicking the gray area
     const clearSelection = (e: Event) => {
-      console.log('triggered')
       const currentTarget = e.target as HTMLElement
       if (currentTarget.classList.contains('preview-container')) {
         store.commit('setActive', '')
-        activePanel.value = 'component'
+        activePanel.value = 'page'
       }
     }
     const updatePosition = (data: { left: number; top: number; id: string; width: number; height: number}) => {
@@ -371,7 +380,8 @@ export default defineComponent({
   min-width: 322px;
   border: 1px solid #efefef;
   background: #fff;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: scroll;
   position: fixed;
   margin-top: 50px;
 }

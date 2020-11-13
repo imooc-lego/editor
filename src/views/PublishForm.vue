@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, Ref, nextTick, computed } from 'vue'
+import { defineComponent, reactive, ref, Ref, nextTick, computed, watch } from 'vue'
 import StyledUploader from '../components/StyledUploader.vue'
 import { commonUploadCheck, UploadImgProps, takeScreenshotAndUpload } from '../helper'
 import { useStore } from 'vuex'
@@ -58,13 +58,20 @@ export default defineComponent({
     const store = useStore<GlobalDataProps>()
     const route = useRoute()
     const currentWorkId = route.params.id
-    const { title, desc, setting } = store.state.editor.page
+    const pageData = computed(() => store.state.editor.page)
     const loading = computed(() => store.state.status.loading)
-    // const { shareImg } = setting
+    const { title, desc, setting } = pageData.value
+
     const form = reactive({
       title: title || '',
       subTitle: desc || '',
       uploaded: { data: { url: (setting && setting.shareImg) || 'http://vue-maker.oss-cn-hangzhou.aliyuncs.com/vue-marker/5f79389d4737571e2e1dc7cb.png' } }
+    })
+    // in case title changed from outside
+    watch(() => pageData.value.title, (newTitle) => {
+      if (newTitle) {
+        form.title = newTitle
+      }
     })
     const publishForm = ref() as Ref<RuleFormInstance>
     const rules = {

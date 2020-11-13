@@ -71,7 +71,7 @@ export default defineComponent({
     const caculateMovePosition = (e: MouseEvent) => {
       const container = document.getElementById('canvas-area') as HTMLElement
       const left = e.clientX - container.offsetLeft - gap.x
-      const top = e.clientY - container.offsetTop - gap.y
+      const top = e.clientY - container.offsetTop - gap.y + container.scrollTop
       return {
         left,
         top
@@ -110,7 +110,7 @@ export default defineComponent({
       const leftWidth = right - pageX
       const topHeight = bottom - pageY
       const leftOffset = pageX - container.offsetLeft
-      const topOffset = pageY - container.offsetTop
+      const topOffset = pageY - container.offsetTop + container.scrollTop
       switch (direction) {
         case 'top-left':
           return {

@@ -37,13 +37,12 @@
               </div>
             </a-row>
             <a-form layout="inline" :model="form" :rules="rules" ref="publishForm" :style="{ marginTop: '20px' }">
-              <a-form-item required name="channelName">
+              <a-form-item name="channelName">
                 <a-input v-model:value="form.channelName" placeholder="渠道名称"></a-input>
               </a-form-item>
               <a-form-item>
                 <a-button
                   type="primary"
-                  :disabled="form.channelName === ''"
                   @click="createChannel"
                 >
                   创建新渠道
@@ -159,21 +158,24 @@ export default defineComponent({
     const publishForm = ref() as Ref<RuleFormInstance>
     const rules = {
       channelName: [
-        { required: true, message: '标题不能为空', trigger: 'change' }
+        { required: true, message: '标题不能为空', trigger: 'blur' }
       ]
     }
     const updatePage = (key: string, value: string) => {
       store.commit('updatePage', { key, value })
     }
     const deleteDisabled = computed(() => channels.value.length === 1)
-    const createChannel = () => {
+    const createChannel = async () => {
       const payload = {
         name: form.channelName,
         workId: parseInt(currentWorkId)
       }
-      store.dispatch('createChannel', payload).then(() => {
+      try {
+        await publishForm.value.validate()
+        await store.dispatch('createChannel', payload)
         form.channelName = ''
-      })
+      } catch (e) {
+      }
     }
     const deleteChannel = (id: number) => {
       store.dispatch('deleteChannel', id)
