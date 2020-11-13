@@ -2,7 +2,7 @@
   <div class="props-table">
     <li v-for="(value, key) in finalProps"
       :key="key" class="prop-item"
-      :class="{'no-text': !value.text}"
+      :class="{'no-text': !value.text, 'hide-item': value.isHidden}"
       :id="`item-${value.key}`"
     >
       <span class="label" v-if="value.text">{{value.text}}:</span>
@@ -77,13 +77,18 @@ export default defineComponent({
       return map(props.props, (value, key) => {
         const {
           component, intialTransform, afterTransform,
-          eventName, text, valueProp, options, subComponent, extraProps = {}
+          eventName, text, valueProp, options, subComponent, extraProps = {}, parent
         } = maps[key]
+        let isHidden = false
+        if (parent) {
+          isHidden = !props.props[parent]
+        }
         return {
           key,
           component,
           text,
           valueProp,
+          isHidden,
           value: intialTransform(value),
           extraProps,
           events: {
@@ -107,6 +112,9 @@ export default defineComponent({
   display: flex;
   margin-bottom: 10px;
   align-items: center;
+}
+.hide-item {
+  display: none;
 }
 .label {
   width: 28%;

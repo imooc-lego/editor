@@ -91,7 +91,7 @@
           </div>
         </a-layout-content>
       </a-layout>
-      <a-layout-sider width="300" style="background: #fff">
+      <a-layout-sider width="300" style="background: #fff" class="settings-panel">
         <a-tabs type="card" v-model:activeKey="activePanel">
           <a-tab-pane key="component" tab="属性设置">
             <div v-if="currentElement">
@@ -345,7 +345,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style>
 .header {
   display: flex;
   justify-content: space-between;
@@ -378,6 +378,7 @@ export default defineComponent({
   padding: 0;
   margin: 0;
   min-width: 322px;
+  min-height: 200px;
   border: 1px solid #efefef;
   background: #fff;
   overflow-x: hidden;
@@ -398,6 +399,10 @@ export default defineComponent({
 }
 .page-settings {
   padding: 16px;
+}
+.settings-panel .ant-tabs-top-content {
+  max-height: calc(100vh - 68px - 56px);
+  overflow: scroll;
 }
 .final-preview {
   position: absolute;

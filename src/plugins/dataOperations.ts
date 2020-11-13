@@ -2,7 +2,7 @@ import { ComputedRef, Ref, computed } from 'vue'
 import { message } from 'ant-design-vue'
 import { GlobalDataProps } from '../store/index'
 import { useStore } from 'vuex'
-
+export type MoveDirection = 'Up' | 'Down' | 'Left' | 'Right'
 export default function dataOperations (componentId: ComputedRef<string> | Ref<string>) {
   const store = useStore<GlobalDataProps>()
   return {
@@ -40,6 +40,11 @@ export default function dataOperations (componentId: ComputedRef<string> | Ref<s
       if (!redoIsDisabled.value) {
         store.commit('redo')
       }
+    },
+    move: (direction: MoveDirection, amount: number) => {
+      if (componentId.value) {
+        store.commit('moveComponent', { direction, amount })
+      }
     }
   }
 }
@@ -68,5 +73,13 @@ export const operationText: { [key: string]: {text: string; shortcut: string} } 
   redo: {
     text: '重做',
     shortcut: '⌘⇧Z / Ctrl+Shift+Z'
+  },
+  move: {
+    text: '上下左右移动一像素',
+    shortcut: '↑ ↓ → ←'
+  },
+  moveTen: {
+    text: '上下左右移动十像素',
+    shortcut: 'Shift + ↑ ↓ → ←'
   }
 }

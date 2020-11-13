@@ -30,4 +30,32 @@ export function initHotKeys () {
   useHotKey('ctrl+shift+z, command+shift+z', () => {
     operations.redo()
   })
+  useHotKey('up', (e) => {
+    e.preventDefault()
+    operations.move('Up', 1)
+  })
+  useHotKey('down', (e) => {
+    e.preventDefault()
+    operations.move('Down', 1)
+  })
+  useHotKey('left', () => {
+    operations.move('Left', 1)
+  })
+  useHotKey('right', () => {
+    operations.move('Right', 1)
+  })
+  useHotKey('shift+up', (e) => {
+    e.preventDefault()
+    operations.move('Up', 10)
+  })
+  useHotKey('shift+down', (e) => {
+    e.preventDefault()
+    operations.move('Down', 10)
+  })
+  useHotKey('shift+left', () => {
+    operations.move('Left', 10)
+  })
+  useHotKey('shift+right', () => {
+    operations.move('Right', 10)
+  })
 }

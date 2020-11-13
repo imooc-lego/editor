@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { cloneDeep, isUndefined } from 'lodash'
 import { GlobalDataProps, asyncAndCommit } from './index'
 import { insertAt } from '../helper'
+import { MoveDirection } from '../plugins/dataOperations'
 export interface ComponentData {
   props: { [key: string]: any };
   id: string;
@@ -228,6 +229,39 @@ const editorModule: Module<EditProps, GlobalDataProps> = {
       }
       state.isDirty = true
       state.isChangedNotPublished = true
+    },
+    moveComponent (state, data: { direction: MoveDirection; amount: number }) {
+      const updatedComponent = state.components.find((component) => component.id === state.currentElement)
+      if (updatedComponent) {
+        const store = this as any
+        const oldTop = parseInt(updatedComponent.props.top)
+        const oldLeft = parseInt(updatedComponent.props.left)
+        const { direction, amount } = data
+        switch (direction) {
+          case 'Up': {
+            const newValue = oldTop - amount + 'px'
+            store.commit('updateComponent', { key: 'top', value: newValue, isProps: true })
+            break
+          }
+          case 'Down': {
+            const newValue = oldTop + amount + 'px'
+            store.commit('updateComponent', { key: 'top', value: newValue, isProps: true })
+            break
+          }
+          case 'Left': {
+            const newValue = oldLeft - amount + 'px'
+            store.commit('updateComponent', { key: 'left', value: newValue, isProps: true })
+            break
+          }
+          case 'Right': {
+            const newValue = oldLeft + amount + 'px'
+            store.commit('updateComponent', { key: 'left', value: newValue, isProps: true })
+            break
+          }
+          default:
+            break
+        }
+      }
     },
     updateComponent (state, { id, key, value, isProps }) {
       const updatedComponent = state.components.find((component) => component.id === (id || state.currentElement)) as any

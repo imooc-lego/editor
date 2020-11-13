@@ -14,7 +14,7 @@
             <a-card-meta :title="item.title">
               <template v-slot:description>
                 <div class="description-detail">
-                  <span>作者：{{item.user.nickName}}</span>
+                  <span v-if="item.user">作者：{{item.user.nickName}}</span>
                   <span class="user-number"><UserOutlined /> {{item.copiedCount}}</span>
                 </div>
               </template>

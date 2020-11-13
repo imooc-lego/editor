@@ -17,6 +17,8 @@ interface PropDetailType {
   subComponent?: string;
   options?: { text: string | VNode; value: any }[];
   extraProps?: { [key: string]: any };
+  // 该属性有可能和其他联动，由改父属性控制它的行为
+  parent?: string;
 }
 interface MapTypes {
   [key: string]: PropDetailType;
@@ -149,7 +151,8 @@ const mapPropsToComponents: MapTypes = {
   url: {
     ...defaultMap,
     afterTransform: (e: any) => e.target.value,
-    text: '链接'
+    text: '链接',
+    parent: 'actionType'
   },
   // sizes
   height: {
