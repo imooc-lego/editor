@@ -8,6 +8,20 @@ const isProduction = process.env.NODE_ENV === 'production'
 
 module.exports = {
   publicPath: (isProduction && !isStaging) ? '/editor' : '/',
+  css: {
+    loaderOptions: {
+      less: {
+        lessOptions: {
+          modifyVars: {
+            'primary-color': '#3E7FFF',
+            'border-radius-base': '20px',
+            'border-radius-sm': '10px'
+          },
+          javascriptEnabled: true
+        }
+      }
+    }
+  },
   configureWebpack: config => {
     // 开启gzip压缩
     if (isProduction) {

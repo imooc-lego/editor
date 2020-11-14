@@ -1,11 +1,11 @@
 <template>
-  <a-button type="primary" v-if="!user.isLogin">
+  <a-button type="primary" v-if="!user.isLogin" class="user-profile-component">
     <router-link to="/login">登录</router-link>
   </a-button>
-  <a-dropdown-button v-else>
+  <a-dropdown-button v-else class="user-profile-component">
     {{user.data.nickName}}
     <template v-slot:overlay>
-      <a-menu>
+      <a-menu class="user-profile-dropdown">
         <a-menu-item key="1"><router-link to="/mywork">我的作品</router-link></a-menu-item>
         <a-menu-item key="2"><router-link to="/setting">个人中心</router-link></a-menu-item>
         <a-menu-item key="3" @click="logout">登出</a-menu-item>
@@ -45,3 +45,8 @@ export default defineComponent({
   }
 })
 </script>
+<style>
+.user-profile-dropdown {
+  border-radius: 2px !important;
+}
+</style>

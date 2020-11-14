@@ -70,12 +70,29 @@ export default defineComponent({
   height: 500px;
   object-fit: cover;
 }
+.poster-item .ant-card-hoverable {
+  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
+}
+.poster-item .ant-card-body {
+  padding: 0
+}
+.poster-item .ant-card-meta {
+  margin: 0;
+}
+.poster-item .ant-card-meta-title {
+  font-size: 19px;
+  color: #333;
+  padding: 15px 12px;
+  border-bottom: 1px solid #f2f2f2;
+  margin-bottom: 0 !important;
+}
 .description-detail {
   display: flex;
   justify-content: space-between;
+  padding: 13px 12px;
+  color: #999;
 }
 .user-number {
-  color: #1890ff;
   font-weight: bold;
 }
 .poster-title {
@@ -87,6 +104,8 @@ export default defineComponent({
 .poster-item .ant-card-cover {
   position: relative;
   overflow: hidden;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
 }
 .ant-card-cover > img {
   transition: all ease-in .2s;
@@ -98,9 +117,11 @@ export default defineComponent({
   width: 100%;
   height: 100%;
   display: none;
-  background: rgba(0, 0, 0, .7);
+  background: rgba(0, 0, 0, .8);
   align-items: center;
   justify-content: center;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
 }
 .poster-item:hover .hover-item {
   display: flex;

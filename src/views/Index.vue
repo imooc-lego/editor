@@ -2,11 +2,11 @@
   <div class="homepage-container">
     <a-spin tip="读取中" class="editor-spinner" v-if="loading">
     </a-spin>
-    <a-layout>
+    <a-layout :style="{background: '#fff'}">
       <a-layout-header class="header" :class="{'transparent-header': isHomePage}">
         <div class="page-title">
           <router-link to="/">
-            <img alt="Vue logo" src="../assets/logo.png" class="logo-img" v-if="isHomePage">
+            <img alt="Vue logo" src="../assets/logo2.png" class="logo-img" v-if="isHomePage">
             <img alt="Vue logo" src="../assets/new-logo.png" class="logo-img" v-else>
           </router-link>
         </div>
@@ -27,7 +27,44 @@
           </a-layout-content>
         </a-layout>
       </a-layout-content>
-      <a-layout-footer :style="{ paddingTop: '0' }">
+      <a-layout-footer>
+        <div class="footer-info">
+          <a-row>
+            <a-col :span="6" class="feature-item">
+              <h3>慕课乐高</h3>
+              <ul>
+                <li><a href="#" target="_blank">关于我们</a></li>
+                <li><a href="#" target="_blank">商务合作</a></li>
+                <li><a href="#" target="_blank">设计师</a></li>
+                <li><a href="#" target="_blank">帮助</a></li>
+              </ul>
+            </a-col>
+            <a-col :span="6" class="feature-item">
+              <h3>设计制作帮助</h3>
+              <ul>
+                <li><a href="#" target="_blank">关于我们</a></li>
+                <li><a href="#" target="_blank">商务合作</a></li>
+                <li><a href="#" target="_blank">设计师</a></li>
+                <li><a href="#" target="_blank">帮助</a></li>
+              </ul>
+            </a-col>
+            <a-col :span="6" class="feature-item">
+              <h3>审核问题</h3>
+              <ul>
+                <li><a href="#" target="_blank">关于我们</a></li>
+                <li><a href="#" target="_blank">商务合作</a></li>
+                <li><a href="#" target="_blank">设计师</a></li>
+              </ul>
+            </a-col>
+            <a-col :span="6" class="feature-item">
+              <h3>联系我们</h3>
+              <ul>
+                <li><a href="#" target="_blank">关于我们</a></li>
+                <li><a href="#" target="_blank">商务合作</a></li>
+              </ul>
+            </a-col>
+          </a-row>
+        </div>
         <ul class="list-inline mb-0" :class="{'extra-margin': !isHomePage}">
           <li class="list-inline-item">© 慕课网（imooc.com）版权所有 | 津ICP备20000929号-2</li>
           <li class="list-inline-item"><a href="#" target="_blank">购买课程</a></li>
@@ -76,11 +113,10 @@ export default defineComponent({
 }
 .ant-layout-header {
   z-index: 50;
-  background: #fff;
   box-shadow: 0 10px 15px rgba(0, 0, 0, .1);
 }
 .transparent-header {
-  background: transparent;
+  background-color: rgba(0, 0, 0, .5)
 }
 .home-layout {
   position: relative;
@@ -143,11 +179,43 @@ export default defineComponent({
   list-style: none;
   display: flex;
   justify-content: center;
+  padding: 0;
+  margin: 0;
+  padding-top: 24px;
+  border-top: 1px solid #4d4d4d;
 }
 .list-inline li {
   margin-right: 20px;
 }
 .extra-margin {
   margin-top: 70px;
+}
+.ant-layout-footer {
+  background: #333;
+  color: #999;
+}
+.footer-info {
+  max-width: 1480px;
+  margin: 0 auto;
+}
+.footer-info .feature-item {
+   text-align: left;
+}
+.footer-info .feature-item h3 {
+  color: #fff;
+  font-size: 25px;
+}
+.footer-info .feature-item ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+.footer-info  .feature-item li {
+  height: 48px;
+  line-height: 48px;
+  font-size: 19px;
+}
+.footer-info  .feature-item a {
+  color: #999;
 }
 </style>

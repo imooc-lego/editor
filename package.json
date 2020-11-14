@@ -56,6 +56,8 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^7.0.0-0",
+    "less": "^3.12.2",
+    "less-loader": "^7.1.0",
     "typescript": "~3.9.3",
     "vue-jest": "^5.0.0-alpha.5"
   }

@@ -1,7 +1,7 @@
 <template>
   <div class="homepage-container">
     <div class="banner">
-      <img class="banner-img" src="https://marketplace.canva.cn/MADLFFTeBmM/1/thumbnail_large/canva-%E6%A1%8C%E9%9D%A2%E5%B7%A5%E5%85%B7-desk-tools-MADLFFTeBmM.jpg" style="background-color: rgb(0, 0, 0);">
+      <img class="banner-img" src="../assets/background.png" style="background-color: rgb(0, 0, 0);">
       <div class="banner-text">
         <h2 class="text-headline" style="color: rgb(255, 255, 255);">海量精彩设计 一键生成</h2>
         <a-input-search
@@ -13,31 +13,25 @@
       </div>
     </div>
     <div class="welcome-container">
-      <a-row>
-        <a-col :span="8" class="feature-item">
-          <Html5TwoTone />
-          <h3>专注H5 始终如一</h3>
-          <p>三年保持行业领先</p>
-        </a-col>
-        <a-col :span="8" class="feature-item">
-          <BuildTwoTone />
-          <h3>海量 H5 模版</h3>
-          <p>一键生成，一分钟轻松制作</p>
-        </a-col>
-        <a-col :span="8" class="feature-item">
-          <BulbTwoTone />
-          <h3>极致体验</h3>
-          <p>用户的一致选择</p>
-        </a-col>
-      </a-row>
-      <!-- <a-row type="flex" align="middle" justify="center">
-        <a-input-search
-          v-model:value="searchText"
-          placeholder="搜索一下，快速找模版"
-          enter-button
-          @search="onSearch"
-        />
-      </a-row> -->
+      <div class="welcome-container-inner">
+        <a-row>
+          <a-col :span="8" class="feature-item">
+            <Html5TwoTone />
+            <h3>专注H5 始终如一</h3>
+            <p>三年保持行业领先</p>
+          </a-col>
+          <a-col :span="8" class="feature-item">
+            <BuildTwoTone />
+            <h3>海量 H5 模版</h3>
+            <p>一键生成，一分钟轻松制作</p>
+          </a-col>
+          <a-col :span="8" class="feature-item">
+            <BulbTwoTone />
+            <h3>极致体验</h3>
+            <p>用户的一致选择</p>
+          </a-col>
+        </a-row>
+      </div>
     </div>
     <div class="content-container">
       <a-row class="content-title" type="flex" align="middle">
@@ -140,7 +134,7 @@ export default defineComponent({
 .banner {
   display: flex;
   position: relative;
-  height: 300px;
+  height: 450px;
   width: 100%;
   overflow: hidden;
 }
@@ -161,15 +155,25 @@ export default defineComponent({
 }
 .banner-text .ant-input-search {
   width: 40%;
+  box-shadow: 0px 12px 24px 0px rgba(30, 29, 32, 0.8);
 }
 .banner-text .ant-input {
   height: 40px;
   font-size: 17px;
   padding: 7px 15px;
   padding-right: 30px;
+  border: 2px solid #3E7FFF;
+  border-right-width: 0px;
 }
 .banner-text .ant-input-search-button {
   height: 40px;
+  border: 2px solid #3E7FFF;
+  border-left-width: 0px;
+  display: flex;
+  align-items: center;
+}
+.banner-text .ant-input-search-button svg {
+  font-size: 25px;
 }
 .text-headline {
   text-shadow: 0 0 1px rgba(68,92,116,.02), 0 2px 8px rgba(57,76,96,.15);
@@ -187,15 +191,21 @@ export default defineComponent({
   padding: 20px 0;
 }
 .feature-item .anticon {
-  font-size: 45px;
+  font-size: 70px;
 }
 .feature-item p {
-  font-size: .5rem;
+  font-size: 16px;
+  color: #666;
 }
 .feature-item h3 {
-  margin: .5em 0;
+  margin: 5px 0;
+  font-size: 22px;
+  color: #333;
 }
 .welcome-container {
+  background: #f2f2f2;
+}
+.welcome-container-inner {
   max-width: 1480px;
   margin: 0 auto;
 }
@@ -206,9 +216,12 @@ export default defineComponent({
 }
 .hot-title p {
   text-align: center;
+  font-size: 16px;
+  color: #666;
 }
 .hot-template {
-  font-size: 1.5rem;
+  font-size: 22px;
+  color: #333;
 }
 .hot-template::before, .hot-template::after {
   content: "";
