@@ -71,6 +71,8 @@ export interface EditProps {
   historyIndex: number;
 }
 const pageDefaultProps = { backgroundColor: '#ffffff', backgroundImage: '', backgroundRepeat: 'no-repeat', backgroundSize: 'contain', height: '500px' }
+// the max numbers for history items
+const maxHistoryNumber = 20
 const pushHistory = (state: EditProps, historyRecord: HistoryProps) => {
   // check if historyIndex is already moved
   if (state.historyIndex !== -1) {
@@ -79,7 +81,16 @@ const pushHistory = (state: EditProps, historyRecord: HistoryProps) => {
     // move the historyIndex to the last  -1
     state.historyIndex = -1
   }
-  state.histories.push(historyRecord)
+  // if histories length is less than max number, just push it to the end
+  if (state.histories.length < maxHistoryNumber) {
+    state.histories.push(historyRecord)
+  } else {
+    // if histories length is larger then max number,
+    // 1 shift the first,
+    // 2 push to last
+    state.histories.shift()
+    state.histories.push(historyRecord)
+  }
 }
 
 const modifyHistory = (state: EditProps, history: HistoryProps, type: 'undo' | 'redo') => {
