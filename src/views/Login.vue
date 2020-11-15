@@ -1,33 +1,22 @@
 <template>
 <div class="login-page">
   <a-row>
-    <a-col :span="8" class="aside">
-      <div class="logo-area">
-        <router-link to="/">
-          <img alt="Vue logo" src="../assets/logo.png" class="logo-img">
-        </router-link>
-      </div>
+    <a-col :span="12" class="aside">
       <div class="aside-inner">
-        <img src="~@/assets/user-interface.svg" />
-        <figure class="text-center mb-5 mx-auto">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40px" height="40px" viewBox="0 0 8 8" style="enable-background:new 0 0 8 8;" xml:space="preserve">
-              <path fill="#fff" d="M3,1.3C2,1.7,1.2,2.7,1.2,3.6c0,0.2,0,0.4,0.1,0.5c0.2-0.2,0.5-0.3,0.9-0.3c0.8,0,1.5,0.6,1.5,1.5c0,0.9-0.7,1.5-1.5,1.5
-                C1.4,6.9,1,6.6,0.7,6.1C0.4,5.6,0.3,4.9,0.3,4.5c0-1.6,0.8-2.9,2.5-3.7L3,1.3z M7.1,1.3c-1,0.4-1.8,1.4-1.8,2.3
-                c0,0.2,0,0.4,0.1,0.5c0.2-0.2,0.5-0.3,0.9-0.3c0.8,0,1.5,0.6,1.5,1.5c0,0.9-0.7,1.5-1.5,1.5c-0.7,0-1.1-0.3-1.4-0.8
-                C4.4,5.6,4.4,4.9,4.4,4.5c0-1.6,0.8-2.9,2.5-3.7L7.1,1.3z"></path>
-            </svg>
-        </figure>
+        <router-link to="/">
+          <img alt="Vue logo" src="../assets/logo2.png" class="logo-img">
+        </router-link>
         <h2>这是我用过的最好的建站工具</h2>
         <span class="text-white-70">王铁锤, Google</span>
       </div>
     </a-col>
-    <a-col :span="16" class="login-area">
+    <a-col :span="12" class="login-area">
       <a-form
         :model="form" :rules="rules"
         ref="publishForm" layout="vertical"
       >
-        <h2>欢迎回来👋</h2>
-        <p>使用手机号码和验证码登录到慕课乐高</p>
+        <h2>欢迎回来</h2>
+        <p class="subTitle">使用手机号码和验证码登录到慕课乐高</p>
         <a-form-item label="手机号码" required name="username">
           <a-input v-model:value="form.username" placeholder="手机号码">
             <template v-slot:prefix><UserOutlined style="color:rgba(0,0,0,.25)"/></template>
@@ -150,7 +139,7 @@ export default defineComponent({
   }
 })
 </script>
-<style scoped>
+<style>
 .logo-area {
   position: absolute;
   top: 30px;
@@ -158,14 +147,18 @@ export default defineComponent({
 }
 .aside {
   height: 100vh;
-  background-color: #21325b;
-  background-image: url('~@/assets/background.svg');
+  background-color: #1a1919;
+  background-image: url('~@/assets/login.png');
+  background-size: cover;
+  background-repeat: no-repeat;
 }
-.aside img {
-  width: 100%;
+.aside .logo-img {
+  width: 200px;
+  margin-bottom: 20px;
 }
 .aside h2 {
-  color: #fff;
+  color: #CCCCCC;
+  font-size: 29px;
 }
 .aside-inner {
   width: 60%;
@@ -178,16 +171,35 @@ export default defineComponent({
   width: 350px;
 }
 .text-white-70 {
-  color: rgba(255, 255, 255, 0.7);
+  color: #999;
   display: block;
+  font-size: 19px;
 }
 .aside, .login-area {
   display: flex;
   align-items: center;
   justify-content: center;
 }
+.login-area h2 {
+  color: #333333;
+  font-size: 29px;
+}
+.login-area .subTitle {
+  color: #666666;
+  font-size: 19px;
+}
+.login-area .ant-form-item-label {
+  display: none;
+}
+.login-area .ant-input-prefix {
+  left: auto;
+  right: 30px;
+  font-size: 19px;
+}
 .login-area .ant-input {
-  font-size: 16px ;
-  padding: 20px 30px ;
+  font-size: 17px;
+  padding: 20px 45px 20px 30px;
+  background-color: #ebf2ff;
+  border-color: #ebf2ff;
 }
 </style>

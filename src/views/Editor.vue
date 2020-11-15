@@ -93,7 +93,7 @@
       </a-layout>
       <a-layout-sider width="300" style="background: #fff" class="settings-panel">
         <a-tabs type="card" v-model:activeKey="activePanel">
-          <a-tab-pane key="component" tab="属性设置">
+          <a-tab-pane key="component" tab="属性设置" class="no-top-radius">
             <div v-if="currentElement">
               <div v-if="!currentElement.isLocked">
                 <edit-group :props="currentElement.props"></edit-group>
@@ -423,5 +423,17 @@ export default defineComponent({
   box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
   position: relative;
   overflow: scroll;
+}
+.settings-panel .ant-list-bordered {
+  border-radius: 0;
+}
+.settings-panel .ant-collapse {
+  border-radius: 0;
+}
+.ant-collapse-header, .ant-collapse-item {
+  border-radius: 0 !important;
+}
+.settings-panel .ant-tabs-tab {
+  border-radius: 0 !important;
 }
 </style>

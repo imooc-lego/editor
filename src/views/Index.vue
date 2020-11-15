@@ -6,8 +6,7 @@
       <a-layout-header class="header" :class="{'transparent-header': isHomePage}">
         <div class="page-title">
           <router-link to="/">
-            <img alt="Vue logo" src="../assets/logo2.png" class="logo-img" v-if="isHomePage">
-            <img alt="Vue logo" src="../assets/new-logo.png" class="logo-img" v-else>
+            <img alt="Vue logo" src="../assets/logo2.png" class="logo-img">
           </router-link>
         </div>
         <div class="right-col">
@@ -129,7 +128,7 @@ export default defineComponent({
   z-index: 100;
 }
 .header .logo-img {
-  height: 45px;
+  height: 35px;
 }
 .header .ant-input-search {
   width: 250px;

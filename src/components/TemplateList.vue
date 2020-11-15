@@ -61,6 +61,9 @@ export default defineComponent({
   position: relative;
   margin-bottom: 20px;
 }
+.poster-item .ant-card {
+  border-radius: 12px;
+}
 .tag-list {
   position: absolute;
   top: -4px;
@@ -104,8 +107,8 @@ export default defineComponent({
 .poster-item .ant-card-cover {
   position: relative;
   overflow: hidden;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
 .ant-card-cover > img {
   transition: all ease-in .2s;
@@ -120,13 +123,16 @@ export default defineComponent({
   background: rgba(0, 0, 0, .8);
   align-items: center;
   justify-content: center;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
 .poster-item:hover .hover-item {
   display: flex;
 }
 .poster-item:hover img {
   transform: scale(1.25);
+}
+.barcode-container img {
+  border-radius: 0;
 }
 </style>
