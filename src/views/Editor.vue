@@ -20,7 +20,10 @@
     </a-drawer>
     <div class="final-preview" v-if="visible">
       <div class="final-preview-inner">
-        <final-page :page="pageState" :components="components"></final-page>
+        <iframe :src="previewURL" width="322" class="iframe-placeholder"
+          :height="pageState.props.height ? parseInt(pageState.props.height) + 40 : '600'"
+          frameBorder="0">
+        </iframe>
       </div>
     </div>
     <a-modal
@@ -70,7 +73,7 @@
         </div>
       </a-layout-sider>
       <a-layout style="padding: 0 24px 24px">
-        <a-layout-content class="preview-container" @mousedown.prevent="clearSelection">
+        <a-layout-content class="preview-container" @mousedown="clearSelection">
           <p>画布区域</p>
           <history-area></history-area>
           <div class="preview-list" id="canvas-area" @click="setPageSetting" :class="{active: activePanel === 'page'}">
@@ -156,6 +159,7 @@ import { ComponentData } from '../store/editor'
 import { initHotKeys } from '../plugins/hotKeys'
 import showError from '../hooks/useShowError'
 import { takeScreenshotAndUpload } from '../helper'
+import { baseH5URL } from '../main'
 
 export type TabType = 'component' | 'layer' | 'page'
 export default defineComponent({
@@ -192,6 +196,7 @@ export default defineComponent({
     showError()
     const currentWorkId = route.params.id
     let timer: any
+    const previewURL = computed(() => `${baseH5URL}/p/preview/${pageState.value.id}-${pageState.value.uuid}`)
     const saveWork = () => {
       store.dispatch('saveWork', { id: currentWorkId }).then(() => {
         message.success('保存成功', 2)
@@ -233,7 +238,6 @@ export default defineComponent({
         setTimeout(() => {
           const maxHeight = window.innerHeight - canvasEle.getBoundingClientRect().top - 50
           canvasEle.style.maxHeight = maxHeight + 'px'
-          console.log(maxHeight)
         }, 100)
       }
     })
@@ -339,7 +343,8 @@ export default defineComponent({
       saveWork,
       publishWork,
       titleChange,
-      clearSelection
+      clearSelection,
+      previewURL
     }
   }
 })
@@ -418,11 +423,14 @@ export default defineComponent({
 }
 .final-preview-inner {
   width: 322px;
-  height: 600px;
-  background: #fff;
-  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+  max-height: 85vh;
   position: relative;
   overflow: scroll;
+}
+.iframe-placeholder
+{
+   background: url('~@/assets/loading.svg') 50% 50% no-repeat;
+   background-size: 50px;
 }
 .settings-panel .ant-list-bordered {
   border-radius: 0;

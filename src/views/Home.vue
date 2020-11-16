@@ -191,22 +191,21 @@ export default defineComponent({
   padding: 20px 0;
 }
 .feature-item .anticon {
-  font-size: 70px;
+  font-size: 60px;
 }
 .feature-item p {
-  font-size: 16px;
   color: #666;
 }
 .feature-item h3 {
   margin: 5px 0;
-  font-size: 22px;
+  font-size: 19px;
   color: #333;
 }
 .welcome-container {
   background: #f2f2f2;
 }
 .welcome-container-inner {
-  max-width: 1480px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -236,7 +235,7 @@ export default defineComponent({
   background: #fff;
   padding: 0 24px 24px 30px;
   min-height: 85vh;
-  max-width: 1480px;
+  max-width: 1200px;
   margin: 0 auto;
   width: 100%;
 }

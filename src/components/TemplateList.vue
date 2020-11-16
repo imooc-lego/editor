@@ -7,6 +7,10 @@
             <template v-slot:cover>
               <img :src="item.coverImg"  v-if="item.coverImg" />
               <img src="http://typescript-vue.oss-cn-beijing.aliyuncs.com/vue-marker/5f81cca3f3bf7a0e1ebaf885.png"  v-else />
+              <!-- <div class="blur-image">
+                <img :src="item.coverImg"  v-if="item.coverImg" />
+                <img src="http://typescript-vue.oss-cn-beijing.aliyuncs.com/vue-marker/5f81cca3f3bf7a0e1ebaf885.png"  v-else />
+              </div> -->
               <div class="hover-item">
                 <a-button size="large" type="primary">{{(type === 'work') ? '编辑该作品': '使用该模版创建'}}</a-button>
               </div>
@@ -69,9 +73,25 @@ export default defineComponent({
   top: -4px;
   left: 6px;
 }
-.ant-card-cover > img {
-  height: 500px;
-  object-fit: cover;
+.poster-item .ant-card-cover {
+  height: 390px;
+}
+.poster-item .ant-card-cover > img {
+  width: 100%;
+}
+.poster-item .blur-image {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  padding-top: 15px;
+}
+.blur-image > img {
+  width: 70%;
+  text-align: center;
+  margin: 0 auto;
 }
 .poster-item .ant-card-hoverable {
   box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
@@ -83,9 +103,8 @@ export default defineComponent({
   margin: 0;
 }
 .poster-item .ant-card-meta-title {
-  font-size: 19px;
   color: #333;
-  padding: 15px 12px;
+  padding: 10px 12px;
   border-bottom: 1px solid #f2f2f2;
   margin-bottom: 0 !important;
 }
@@ -110,7 +129,7 @@ export default defineComponent({
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
 }
-.ant-card-cover > img {
+.poster-item .ant-card-cover  img {
   transition: all ease-in .2s;
 }
 .hover-item {

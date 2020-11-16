@@ -21,14 +21,14 @@
       </a-layout-content>
       <a-layout-content style="padding: 0 50px" v-else>
         <a-layout style="padding: 24px 0; background: #fff">
-          <a-layout-content :style="{ padding: '0 24px', minHeight: '85vh', maxWidth: '1480px', margin: '0 auto', width: '100%' }">
+          <a-layout-content :style="{ padding: '0 24px', minHeight: '85vh', maxWidth: '1200px', margin: '0 auto', width: '100%' }">
             <router-view></router-view>
           </a-layout-content>
         </a-layout>
       </a-layout-content>
       <a-layout-footer>
         <div class="footer-info">
-          <a-row>
+          <a-row  :gutter="16">
             <a-col :span="6" class="feature-item">
               <h3>慕课乐高</h3>
               <ul>
@@ -194,7 +194,7 @@ export default defineComponent({
   color: #999;
 }
 .footer-info {
-  max-width: 1480px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 .footer-info .feature-item {
@@ -202,7 +202,7 @@ export default defineComponent({
 }
 .footer-info .feature-item h3 {
   color: #fff;
-  font-size: 25px;
+  font-size: 19px;
 }
 .footer-info .feature-item ul {
   list-style-type: none;
@@ -210,9 +210,8 @@ export default defineComponent({
   margin: 0;
 }
 .footer-info  .feature-item li {
-  height: 48px;
-  line-height: 48px;
-  font-size: 19px;
+  height: 35px;
+  line-height: 35px;
 }
 .footer-info  .feature-item a {
   color: #999;
