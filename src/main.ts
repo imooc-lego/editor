@@ -21,7 +21,7 @@ if (process.env.NODE_ENV === 'development' || process.env.VUE_APP_IS_STAGING) {
   baseStaticURL = 'http://182.92.168.192:8080'
 } else {
   // 生产环境 URL
-  baseBackendURL = 'https://www.imooc-lego.com'
+  baseBackendURL = 'https://api.imooc-lego.com'
   baseH5URL = 'https://h5.imooc-lego.com'
   baseStaticURL = 'https://statistic-res.imooc-lego.com'
 }
