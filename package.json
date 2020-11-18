@@ -1,10 +1,10 @@
 {
   "name": "editor",
-  "version": "0.1.2",
+  "version": "0.1.9",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "cross-env NODE_ENV=production vue-cli-service build",
     "build:staging": "vue-cli-service build --mode staging",
     "lint": "vue-cli-service lint",
     "test": "vue-cli-service test:unit",
@@ -50,6 +50,7 @@
     "@vue/eslint-config-typescript": "^5.0.2",
     "@vue/test-utils": "^2.0.0-beta.8",
     "compression-webpack-plugin": "^6.0.3",
+    "cross-env": "^7.0.2",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",
