@@ -49,7 +49,7 @@
                   <a-menu-item>
                     <a href="javascript:;"  @click.prevent="deleteClicked(item.id)"><DeleteOutlined /> 删除</a>
                   </a-menu-item>
-                  <a-menu-item v-if="item.isTemplate">
+                  <a-menu-item>
                     <a href="javascript:;"  @click.prevent="sendClicked(item.id)"><GiftOutlined /> 转赠</a>
                   </a-menu-item>
                 </a-menu>

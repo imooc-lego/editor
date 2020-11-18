@@ -198,7 +198,7 @@ export default defineComponent({
     let timer: any
     const previewURL = computed(() => `${baseH5URL}/p/preview/${pageState.value.id}-${pageState.value.uuid}`)
     const saveWork = () => {
-      store.dispatch('saveWork', { id: currentWorkId }).then(() => {
+      return store.dispatch('saveWork', { id: currentWorkId }).then(() => {
         message.success('保存成功', 2)
       })
     }
@@ -218,6 +218,7 @@ export default defineComponent({
         showModal.value = true
       }
     }
+
     onMounted(() => {
       // clear the editor store data
       store.commit('resetEditor')
@@ -253,7 +254,7 @@ export default defineComponent({
           okType: 'primary',
           cancelText: '不保存',
           onOk: () => {
-            publishWork().then(() => {
+            saveWork().then(() => {
               next()
             })
           },
@@ -263,7 +264,7 @@ export default defineComponent({
         })
       // 有修改但是未发布 直接发布
       } else if (isChangedNotPublished.value) {
-        publishWork().then(() => {
+        saveWork().then(() => {
           next()
         })
       } else {

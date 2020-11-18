@@ -88,6 +88,8 @@ export default defineComponent({
     onMounted(() => {
       const ele = document.getElementById('preview-barcode-container')
       if (ele) {
+        // clear the barcode
+        ele.innerHTML = ''
         // eslint-disable-next-line no-new
         new QRCode(ele, {
           text: previewURL,

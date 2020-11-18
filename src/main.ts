@@ -41,6 +41,7 @@ axios.interceptors.response.use(resp => {
   store.commit('setLoading', { status: false })
   if (resp.data.errno !== 0) {
     store.commit('setError', { status: true, message: resp.data.message })
+    return Promise.reject(resp.data)
   }
   return resp
 }, e => {
