@@ -1,7 +1,7 @@
 <template>
   <div class="lego-color-picker">
     <div class="native-color-container">
-      <input type="color" :value="value" @change="onChange($event.target.value)">
+      <input type="color" :value="value" @input="onChange($event.target.value)">
     </div>
     <ul class="picked-color-list">
       <li v-for="(item, key) in colors"

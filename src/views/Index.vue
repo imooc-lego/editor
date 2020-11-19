@@ -10,9 +10,6 @@
           </router-link>
         </div>
         <div class="right-col">
-          <a-button type="primary" @click="createDesign">
-            创建设计
-          </a-button>
           <user-profile :user="userInfo"></user-profile>
         </div>
       </a-layout-header>

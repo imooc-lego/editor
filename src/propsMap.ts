@@ -59,7 +59,7 @@ const fontFamilyOptions = fontFamilyArr.map(font => {
 const mapPropsToComponents: MapTypes = {
   text: {
     ...defaultMap,
-    component: 'a-textarea',
+    component: 'textarea-fix',
     afterTransform: (e: any) => e.target.value,
     text: '文本',
     extraProps: { rows: 3 }

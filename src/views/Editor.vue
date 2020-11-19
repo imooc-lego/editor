@@ -20,7 +20,7 @@
     </a-drawer>
     <div class="final-preview" v-if="visible">
       <div class="final-preview-inner">
-        <iframe :src="previewURL" width="322" class="iframe-placeholder"
+        <iframe :src="previewURL" width="450" class="iframe-placeholder"
           :height="pageState.props.height ? parseInt(pageState.props.height) + 40 : '600'"
           frameBorder="0">
         </iframe>
@@ -54,13 +54,13 @@
             <a-button type="primary" @click="visible = true">预览和设置</a-button>
           </a-menu-item>
           <a-menu-item key="2">
-            <a-button type="primary" @click="saveWork" :loading="globalStatus.loading">保存</a-button>
+            <a-button type="primary" @click="saveWork(true)" :loading="globalStatus.loading">保存</a-button>
           </a-menu-item>
           <a-menu-item key="3">
             <a-button type="primary" @click="publishWork" :loading="globalStatus.loading">发布</a-button>
           </a-menu-item>
           <a-menu-item key="4">
-            <user-profile :user="userInfo"></user-profile>
+            <user-profile :user="userInfo" :smMode="true"></user-profile>
           </a-menu-item>
         </a-menu>
       </a-layout-header>
@@ -197,9 +197,11 @@ export default defineComponent({
     const currentWorkId = route.params.id
     let timer: any
     const previewURL = computed(() => `${baseH5URL}/p/preview/${pageState.value.id}-${pageState.value.uuid}`)
-    const saveWork = () => {
+    const saveWork = (showMessage = false) => {
       return store.dispatch('saveWork', { id: currentWorkId }).then(() => {
-        message.success('保存成功', 2)
+        if (showMessage) {
+          message.success('保存成功', 2)
+        }
       })
     }
     const publishWork = async () => {
@@ -254,7 +256,7 @@ export default defineComponent({
           okType: 'primary',
           cancelText: '不保存',
           onOk: () => {
-            saveWork().then(() => {
+            saveWork(true).then(() => {
               next()
             })
           },
@@ -383,7 +385,7 @@ export default defineComponent({
 .preview-list {
   padding: 0;
   margin: 0;
-  min-width: 322px;
+  min-width: 450px;
   min-height: 200px;
   border: 1px solid #efefef;
   background: #fff;
@@ -423,7 +425,7 @@ export default defineComponent({
   justify-content: center;
 }
 .final-preview-inner {
-  width: 322px;
+  width: 450px;
   max-height: 85vh;
   position: relative;
   overflow: scroll;
