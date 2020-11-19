@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, nextTick } from 'vue'
+import { defineComponent, ref } from 'vue'
 export default defineComponent({
   props: {
     value: {
@@ -25,7 +25,6 @@ export default defineComponent({
     const areaRef = ref<HTMLTextAreaElement | null>(null)
     let triggerFlag = false
     const onInput = (e: KeyboardEvent) => {
-      console.log('triggered')
       if (triggerFlag) return
       context.emit('change', e)
     }

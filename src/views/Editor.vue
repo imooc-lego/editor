@@ -20,8 +20,8 @@
     </a-drawer>
     <div class="final-preview" v-if="visible">
       <div class="final-preview-inner">
-        <iframe :src="previewURL" width="450" class="iframe-placeholder"
-          :height="pageState.props.height ? parseInt(pageState.props.height) + 40 : '600'"
+        <iframe :src="previewURL" width="375" class="iframe-placeholder"
+          :height="pageState.props.height ? parseInt(pageState.props.height) : '560'"
           frameBorder="0">
         </iframe>
       </div>
@@ -51,7 +51,7 @@
           :style="{ lineHeight: '64px' }"
         >
           <a-menu-item key="1">
-            <a-button type="primary" @click="visible = true">预览和设置</a-button>
+            <a-button type="primary" @click="previewWork">预览和设置</a-button>
           </a-menu-item>
           <a-menu-item key="2">
             <a-button type="primary" @click="saveWork(true)" :loading="globalStatus.loading">保存</a-button>
@@ -204,6 +204,9 @@ export default defineComponent({
         }
       })
     }
+    const previewWork = () => {
+      saveWork(true).then(() => { visible.value = true })
+    }
     const publishWork = async () => {
       store.commit('setActive', '')
       activePanel.value = 'component'
@@ -344,6 +347,7 @@ export default defineComponent({
       userInfo,
       globalStatus,
       saveWork,
+      previewWork,
       publishWork,
       titleChange,
       clearSelection,
@@ -385,7 +389,7 @@ export default defineComponent({
 .preview-list {
   padding: 0;
   margin: 0;
-  min-width: 450px;
+  min-width: 375px;
   min-height: 200px;
   border: 1px solid #efefef;
   background: #fff;
@@ -425,7 +429,7 @@ export default defineComponent({
   justify-content: center;
 }
 .final-preview-inner {
-  width: 450px;
+  width: 375px;
   max-height: 85vh;
   position: relative;
   overflow: scroll;

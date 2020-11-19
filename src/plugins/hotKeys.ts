@@ -4,14 +4,12 @@ import { GlobalDataProps } from '../store/index'
 import { useStore } from 'vuex'
 import { KeyHandler } from 'hotkeys-js'
 import DataOperation from './dataOperations'
-function useHotKeyExtra (command: string, callback: KeyHandler, preventDefault = false) {
+function useHotKeyExtra (command: string, callback: KeyHandler) {
   useHotKey(command, (event, keyEvent) => {
-    if (preventDefault) {
-      event.preventDefault()
-    }
     const tagName = (event.target as HTMLElement).tagName
     const isInput = tagName === 'TEXTAREA' || tagName === 'INPUT'
     if (!isInput) {
+      event.preventDefault()
       callback(event, keyEvent)
     }
   })
@@ -46,7 +44,7 @@ export function initHotKeys () {
   })
   useHotKeyExtra('left', () => {
     operations.move('Left', 1)
-  }, true)
+  })
   useHotKeyExtra('right', () => {
     operations.move('Right', 1)
   })

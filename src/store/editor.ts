@@ -70,7 +70,7 @@ export interface EditProps {
   // 当前历史记录的操作位置
   historyIndex: number;
 }
-const pageDefaultProps = { backgroundColor: '#ffffff', backgroundImage: '', backgroundRepeat: 'no-repeat', backgroundSize: 'cover', height: '750px' }
+const pageDefaultProps = { backgroundColor: '#ffffff', backgroundImage: '', backgroundRepeat: 'no-repeat', backgroundSize: 'cover', height: '560px' }
 // the max numbers for history items
 const maxHistoryNumber = 20
 const pushHistory = (state: EditProps, historyRecord: HistoryProps) => {

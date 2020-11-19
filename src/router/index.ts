@@ -34,7 +34,14 @@ const routes: Array<RouteRecordRaw> = [
 ]
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
+  scrollBehavior: (to, from, savedPosition) => {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return Promise.resolve({ left: 0, top: 0 })
+    }
+  }
 })
 
 router.beforeEach((to, from, next) => {
