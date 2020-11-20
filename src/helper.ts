@@ -101,7 +101,7 @@ export const takeScreenshotAndUpload = (id: string) => {
         } else {
           reject(new Error('blob data error'))
         }
-      })
+      }, 'image/png')
     })
   })
 }

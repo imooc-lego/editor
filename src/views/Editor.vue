@@ -207,7 +207,8 @@ export default defineComponent({
     const previewWork = () => {
       saveWork(true).then(() => { visible.value = true })
     }
-    const publishWork = async () => {
+    const takeScreenUpdate = async (checkSave = false) => {
+      // remove select condition
       store.commit('setActive', '')
       activePanel.value = 'component'
       await nextTick()
@@ -216,6 +217,17 @@ export default defineComponent({
         if (rawData) {
           store.commit('updatePage', { key: 'coverImg', value: rawData.data.urls[0] })
         }
+      } catch (e) {
+        console.error(e)
+      } finally {
+        if (checkSave) {
+          saveWork()
+        }
+      }
+    }
+    const publishWork = async () => {
+      try {
+        await takeScreenUpdate()
       } catch (e) {
         console.error(e)
       } finally {
@@ -238,20 +250,21 @@ export default defineComponent({
         }
       }, 1000 * 30)
       // caculate the maxHeight for canvas-area
-      const canvasEle = document.getElementById('canvas-area')
-      if (canvasEle) {
-        // need to add a little timeout, ant-design-vue is adjusting position for columns
-        setTimeout(() => {
-          const maxHeight = window.innerHeight - canvasEle.getBoundingClientRect().top - 50
-          canvasEle.style.maxHeight = maxHeight + 'px'
-        }, 100)
-      }
+      // const canvasEle = document.getElementById('canvas-area')
+      // if (canvasEle) {
+      //   // need to add a little timeout, ant-design-vue is adjusting position for columns
+      //   setTimeout(() => {
+      //     const maxHeight = window.innerHeight - canvasEle.getBoundingClientRect().top - 50
+      //     canvasEle.style.maxHeight = maxHeight + 'px'
+      //   }, 100)
+      // }
     })
     onUnmounted(() => {
       clearInterval(timer)
     })
     onBeforeRouteLeave((to, from, next) => {
-      // 未保存，给出提示并且保存发布
+      // 离开之前截图并保存
+      // 未保存，截图保存
       if (isDirty.value) {
         Modal.confirm({
           title: '作品还未保存，是否保存？',
@@ -259,19 +272,15 @@ export default defineComponent({
           okType: 'primary',
           cancelText: '不保存',
           onOk: () => {
-            saveWork(true).then(() => {
-              next()
-            })
+            takeScreenUpdate(true).then(() => { next() })
           },
           onCancel () {
             next()
           }
         })
-      // 有修改但是未发布 直接发布
+      // 有修改但是未发布 截图保存
       } else if (isChangedNotPublished.value) {
-        saveWork().then(() => {
-          next()
-        })
+        takeScreenUpdate(true).then(() => { next() })
       } else {
         next()
       }
@@ -294,6 +303,12 @@ export default defineComponent({
     const setEditing = (id: string) => {
       store.commit('setEditing', id)
       activePanel.value = 'component'
+      nextTick(() => {
+        const ele = document.querySelector('#item-text textarea') as HTMLTextAreaElement
+        if (ele) {
+          ele.focus()
+        }
+      })
     }
     const handleChange = (data: any) => {
       store.commit('updateComponent', data)
@@ -394,9 +409,10 @@ export default defineComponent({
   border: 1px solid #efefef;
   background: #fff;
   overflow-x: hidden;
-  overflow-y: scroll;
+  overflow-y: auto;
   position: fixed;
   margin-top: 50px;
+  max-height: 80vh;
 }
 .preview-list.active {
   border: 1px solid #1890ff;
@@ -414,7 +430,7 @@ export default defineComponent({
 }
 .settings-panel .ant-tabs-top-content {
   max-height: calc(100vh - 68px - 56px);
-  overflow: scroll;
+  overflow: auto;
 }
 .final-preview {
   position: absolute;
@@ -430,9 +446,9 @@ export default defineComponent({
 }
 .final-preview-inner {
   width: 375px;
-  max-height: 85vh;
+  max-height: 80vh;
   position: relative;
-  overflow: scroll;
+  overflow: overlay;
 }
 .iframe-placeholder
 {

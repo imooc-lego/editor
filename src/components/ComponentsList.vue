@@ -177,12 +177,16 @@ const textList: CreateComponentType[] = textPropsList.map((prop) => {
   }
 })
 const imgSourceList = [
-  'https://media-public.canva.cn/AC77I/MAEDa7AC77I/1/tl.png',
-  'https://media-public.canva.cn/MADD37VpF_I/1/thumbnail_large.png',
-  'https://media-public.canva.cn/MADGOJw3iH8/1/thumbnail_large.png',
-  'https://media-public.canva.cn/I6X6Y/MAEIxbI6X6Y/1/tl.png',
-  'https://media-public.canva.cn/wSRJY/MAEIxXwSRJY/1/tl.png',
-  'https://media-public.canva.cn/QCsQY/MADpkRQCsQY/2/tl.png'
+  'http://static.imooc-lego.com/upload-files/logo-white-735536.png',
+  'http://static.imooc-lego.com/upload-files/logo-black-049885.png',
+  'http://static.imooc-lego.com/upload-files/528w-0ilmEQMomZ8-108048.png',
+  'http://static.imooc-lego.com/upload-files/frame-096161.png',
+  'http://static.imooc-lego.com/upload-files/text-449964.png',
+  'http://static.imooc-lego.com/upload-files/text2-288504.png',
+  'http://static.imooc-lego.com/upload-files/money-664239.png',
+  'http://static.imooc-lego.com/upload-files/bag-904186.png',
+  'http://static.imooc-lego.com/upload-files/text3-086652.png',
+  'http://static.imooc-lego.com/upload-files/text4-145592.png'
 ]
 const imageList: CreateComponentType[] = imgSourceList.map((url) => {
   return {

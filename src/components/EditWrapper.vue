@@ -1,5 +1,6 @@
 <template>
 <div class="edit-wrapper" @click="itemClick"
+    @dblclick="itemEdit"
     ref="editWrapper"
     :class="{active: active}" :style="styleProps"
     :data-component-id="id"
@@ -168,7 +169,6 @@ export default defineComponent({
       }
       const handleMouseUp = () => {
         document.removeEventListener('mousemove', handleMove)
-        currentElement.draggable = true
         context.emit('update-position', { ...size, id: props.id })
         nextTick(() => {
           document.removeEventListener('mouseup', handleMouseUp)
@@ -196,6 +196,7 @@ export default defineComponent({
   padding: 0px;
   cursor: pointer;
   border: 1px solid transparent;
+  user-select: none;
 }
 .edit-wrapper:hover {
   border: 1px dashed #ccc;
