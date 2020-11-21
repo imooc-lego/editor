@@ -113,6 +113,8 @@ export default defineComponent({
     const generateQRCode = (id?: number) => {
       const ele = document.getElementById(id ? `channel-barcode-${id}` : 'channel-barcode-template')
       if (ele) {
+        // clear the element
+        ele.innerHTML = ''
         // eslint-disable-next-line no-new
         new QRCode(ele, {
           text: generateChannelURL(id),

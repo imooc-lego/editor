@@ -19,6 +19,8 @@ interface PropDetailType {
   extraProps?: { [key: string]: any };
   // 该属性有可能和其他联动，由改父属性控制它的行为
   parent?: string;
+  // 可能还要向外传递更多事件
+  extraEvent?: string;
 }
 interface MapTypes {
   [key: string]: PropDetailType;
@@ -270,7 +272,8 @@ const mapPropsToComponents: MapTypes = {
       }
     },
     afterTransform: (e: string) => e ? `url('${e}')` : '',
-    extraProps: { ratio: 8 / 15, showDelete: true }
+    extraProps: { ratio: 8 / 15, showDelete: true },
+    extraEvent: 'uploaded'
   },
   backgroundSize: {
     ...defaultMap,

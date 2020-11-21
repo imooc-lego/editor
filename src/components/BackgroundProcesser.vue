@@ -1,7 +1,12 @@
 <template>
   <div class="background-processer">
     <styled-uploader v-if="!value" @file-uploaded="handleFileUploaded"></styled-uploader>
-    <image-processer :value="value" @change="updateUrl" v-else :ratio="ratio" :showDelete="true"></image-processer>
+    <image-processer
+      :value="value" @change="updateUrl"
+      v-else :ratio="ratio" :showDelete="true"
+      @uploaded="triggerUploaded"
+    >
+    </image-processer>
   </div>
 </template>
 
@@ -26,19 +31,24 @@ export default defineComponent({
     ImageProcesser,
     StyledUploader
   },
-  emits: ['change'],
+  emits: ['change', 'uploaded'],
   setup (props, context) {
     const handleFileUploaded = (uploadedData: UploadImgProps) => {
       message.success('上传成功')
       context.emit('change', uploadedData.data.urls[0])
+      context.emit('uploaded', uploadedData)
     }
     const updateUrl = (value: string) => {
       context.emit('change', value)
     }
+    const triggerUploaded = (uploadedData: UploadImgProps) => {
+      context.emit('uploaded', uploadedData)
+    }
     return {
       handleFileUploaded,
       commonUploadCheck,
-      updateUrl
+      updateUrl,
+      triggerUploaded
     }
   }
 })
