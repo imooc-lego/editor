@@ -69,7 +69,8 @@ export default defineComponent({
     BackgroundProcesser,
     RenderVnode
   },
-  setup (props) {
+  emits: ['updated'],
+  setup (props, context) {
     const { commit } = useStore()
     const handleCommit = (data: any) => {
       const finalData = props.mutationExtraData ? { ...data, ...props.mutationExtraData } : data
@@ -79,7 +80,7 @@ export default defineComponent({
       return map(props.props, (value, key) => {
         const {
           component, intialTransform, afterTransform,
-          eventName, text, valueProp, options, subComponent, extraProps = {}, parent
+          eventName, text, valueProp, options, subComponent, extraProps = {}, parent, extraEvent
         } = maps[key]
         let isHidden = false
         if (parent) {
@@ -94,7 +95,8 @@ export default defineComponent({
           value: intialTransform(value),
           extraProps,
           events: {
-            [eventName]: (e: any) => { handleCommit({ value: afterTransform(e), key }) }
+            [eventName]: (e: any) => { handleCommit({ value: afterTransform(e), key }) },
+            ...(extraEvent && { [extraEvent]: (data: any) => { context.emit('updated', { data, key }) } })
           },
           options,
           subComponent

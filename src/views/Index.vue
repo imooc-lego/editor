@@ -80,6 +80,7 @@ import { useRoute } from 'vue-router'
 import UserProfile from '../components/UserProfile.vue'
 import { GlobalDataProps } from '../store/index'
 import useCreateDesign from '../hooks/useCreateDesign'
+import showError from '../hooks/useShowError'
 export default defineComponent({
   components: {
     UserProfile
@@ -91,6 +92,7 @@ export default defineComponent({
     const userInfo = computed(() => store.state.user)
     const loading = computed(() => store.state.status.loading)
     const createDesign = useCreateDesign()
+    showError()
     return {
       userInfo,
       createDesign,

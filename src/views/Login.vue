@@ -54,6 +54,7 @@ import axios, { AxiosRequestConfig } from 'axios'
 import { message } from 'ant-design-vue'
 import { GlobalDataProps } from '../store/index'
 import { isMobile } from '../helper'
+import showError from '../hooks/useShowError'
 
 interface RuleFormInstance {
   validate: () => Promise<any>;
@@ -66,6 +67,7 @@ export default defineComponent({
   setup () {
     const store = useStore<GlobalDataProps>()
     const router = useRouter()
+    showError()
     const counter = ref(60)
     let timer: any
     const form = reactive({
@@ -114,8 +116,6 @@ export default defineComponent({
           setTimeout(() => {
             router.push('/')
           }, 2000)
-        }).catch(e => {
-          console.log(e)
         })
       })
     }

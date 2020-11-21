@@ -76,7 +76,7 @@ export default defineComponent({
     DeleteOutlined,
     Uploader
   },
-  emits: ['change'],
+  emits: ['change', 'uploaded'],
   setup (props, context) {
     const showModal = ref(false)
     let cropperData: any
@@ -116,6 +116,7 @@ export default defineComponent({
     const handleFileUploaded = (uploadedData: UploadImgProps) => {
       message.success('上传成功')
       context.emit('change', uploadedData.data.urls[0])
+      context.emit('uploaded', uploadedData)
     }
     const handleDelete = () => {
       context.emit('change', '')

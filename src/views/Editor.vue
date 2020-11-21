@@ -127,7 +127,12 @@
           </a-tab-pane>
           <a-tab-pane key="page" tab="页面设置">
             <div class="page-settings">
-              <props-table :props="pageState.props" mutationName="updatePage" :mutationExtraData="{ level: 'props' }"></props-table>
+              <props-table
+                :props="pageState.props" mutationName="updatePage"
+                :mutationExtraData="{ level: 'props' }"
+                @updated="adjustHeightOnUpload"
+              >
+              </props-table>
             </div>
           </a-tab-pane>
         </a-tabs>
@@ -158,7 +163,7 @@ import { GlobalDataProps } from '../store/index'
 import { ComponentData } from '../store/editor'
 import { initHotKeys } from '../plugins/hotKeys'
 import showError from '../hooks/useShowError'
-import { takeScreenshotAndUpload } from '../helper'
+import { takeScreenshotAndUpload, UploadImgProps, imageDimensions } from '../helper'
 import { baseH5URL } from '../main'
 
 export type TabType = 'component' | 'layer' | 'page'
@@ -249,15 +254,6 @@ export default defineComponent({
           saveWork()
         }
       }, 1000 * 30)
-      // caculate the maxHeight for canvas-area
-      // const canvasEle = document.getElementById('canvas-area')
-      // if (canvasEle) {
-      //   // need to add a little timeout, ant-design-vue is adjusting position for columns
-      //   setTimeout(() => {
-      //     const maxHeight = window.innerHeight - canvasEle.getBoundingClientRect().top - 50
-      //     canvasEle.style.maxHeight = maxHeight + 'px'
-      //   }, 100)
-      // }
     })
     onUnmounted(() => {
       clearInterval(timer)
@@ -343,6 +339,18 @@ export default defineComponent({
         saveWork()
       })
     }
+    const adjustHeightOnUpload = (event: { data: UploadImgProps; key: string }) => {
+      // check the key is background and data is correct
+      if (event.key === 'backgroundImage') {
+        imageDimensions(event.data.file).then(dimension => {
+          const maxWidth = 375
+          const rate = dimension.height / dimension.width
+          if (rate > 1) {
+            store.commit('updatePage', { key: 'height', value: rate * maxWidth + 'px', level: 'props' })
+          }
+        })
+      }
+    }
     return {
       visible,
       showModal,
@@ -366,7 +374,8 @@ export default defineComponent({
       publishWork,
       titleChange,
       clearSelection,
-      previewURL
+      previewURL,
+      adjustHeightOnUpload
     }
   }
 })
@@ -430,7 +439,7 @@ export default defineComponent({
 }
 .settings-panel .ant-tabs-top-content {
   max-height: calc(100vh - 68px - 56px);
-  overflow: auto;
+  overflow-y: auto;
 }
 .final-preview {
   position: absolute;
@@ -448,7 +457,7 @@ export default defineComponent({
   width: 375px;
   max-height: 80vh;
   position: relative;
-  overflow: overlay;
+  overflow-y: auto;
 }
 .iframe-placeholder
 {
