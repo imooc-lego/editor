@@ -20,10 +20,15 @@
     </a-drawer>
     <div class="final-preview" v-if="visible">
       <div class="final-preview-inner">
-        <iframe :src="previewURL" width="375" class="iframe-placeholder"
-          :height="pageState.props.height ? parseInt(pageState.props.height) : '560'"
-          frameBorder="0">
-        </iframe>
+        <div class="preview-title">
+          {{pageState.title}}
+        </div>
+        <div class="iframe-container">
+          <iframe :src="previewURL" width="375" class="iframe-placeholder"
+            :height="pageState.props.height ? parseInt(pageState.props.height) + 5 : '560'"
+            frameBorder="0">
+          </iframe>
+        </div>
       </div>
     </div>
     <a-modal
@@ -454,10 +459,24 @@ export default defineComponent({
   justify-content: center;
 }
 .final-preview-inner {
-  width: 375px;
-  max-height: 80vh;
+  width: 430px;
+  height: 870px;
+  padding: 60px 28px;
   position: relative;
+  background: url('~@/assets/phone-back.png') no-repeat;
+  background-size: cover;
+}
+.final-preview-inner .preview-title {
+  height: 44px;
+  line-height: 44px;
+  text-align: center;
+  font-weight: bold;
+}
+.iframe-container {
+  width: 100%;
+  height: 706px;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 .iframe-placeholder
 {
