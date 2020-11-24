@@ -18,6 +18,7 @@
     "core-js": "^3.6.5",
     "cropperjs": "^1.5.9",
     "echarts": "^4.9.0",
+    "file-saver": "^2.0.5",
     "hotkeys-js": "^3.8.1",
     "html2canvas": "^1.0.0-rc.7",
     "lego-components": "^0.1.6",
@@ -32,6 +33,7 @@
   "devDependencies": {
     "@types/clipboard": "^2.0.1",
     "@types/echarts": "^4.8.3",
+    "@types/file-saver": "^2.0.1",
     "@types/jest": "^26.0.15",
     "@types/lodash": "^4.14.161",
     "@types/uuid": "^8.3.0",

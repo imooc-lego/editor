@@ -22,11 +22,17 @@
       <div class="use-button">
         <a-button
           type="primary" size="large"
-          :style="{'padding': '0 20px', 'height': '50px'}"
           @click="onCopy(currentTemplate.id)"
           :loading="isCreating"
         >
           {{ isCreating ? '创建中...' : '使用模版' }}
+        </a-button>
+        <a-button
+          size="large"
+          :style="{ marginLeft: '20px' }"
+          @click="download"
+        >
+          下载图片海报
         </a-button>
       </div>
       </a-col>
@@ -43,6 +49,7 @@ import QRCode from 'qrcodejs2'
 import { GlobalDataProps } from '../store/index'
 import { WorkProp } from '../store/works'
 import { baseH5URL } from '../main'
+import { downloadImage } from '../helper'
 export default defineComponent({
   name: 'TemplateDetail',
   components: {
@@ -55,7 +62,7 @@ export default defineComponent({
     const isCreating = ref(false)
     const currentTemplateId = route.params.id
     const container = ref<null | HTMLElement>(null)
-    const currentTemplate = computed<WorkProp>(() => store.getters.getCurrentTemplate(currentTemplateId) || {})
+    const currentTemplate = computed<WorkProp>(() => store.getters.getCurrentTemplate(currentTemplateId) || { user: '' })
     const channelURL = computed(() => `${baseH5URL}/p/${currentTemplate.value.id}-${currentTemplate.value.uuid}`)
     const onCopy = (id: number) => {
       if (store.state.user.isLogin) {
@@ -66,6 +73,9 @@ export default defineComponent({
       } else {
         router.push('/login')
       }
+    }
+    const download = () => {
+      downloadImage(currentTemplate.value.coverImg)
     }
     onMounted(() => {
       store.dispatch('fetchTemplate', currentTemplateId).then(() => {
@@ -83,7 +93,8 @@ export default defineComponent({
       container,
       currentTemplate,
       isCreating,
-      onCopy
+      onCopy,
+      download
     }
   }
 })

@@ -39,19 +39,23 @@
           <template class="ant-card-actions" v-slot:actions>
             <router-link :to="`/editor/${item.id}`"><EditOutlined key="edit" /></router-link>
             <a href="javascript:;"  @click.prevent="staticClicked(item.id)" v-if="item.status === '2'"><BarChartOutlined key="chart" /></a>
-            <a-dropdown>
+            <a-dropdown >
               <EllipsisOutlined key="ellipsis" />
               <template v-slot:overlay>
-                <a-menu>
+                <a-menu class="overlay-dropdown">
                   <a-menu-item>
                     <a href="javascript:;" @click.prevent="copyClicked(item.id)"><CopyOutlined/> 复制</a>
                   </a-menu-item>
                   <a-menu-item>
                     <a href="javascript:;"  @click.prevent="deleteClicked(item.id)"><DeleteOutlined /> 删除</a>
                   </a-menu-item>
+                  <a-menu-item v-if="item.coverImg">
+                    <a href="javascript:;"  @click.prevent="saveImage(item.coverImg)"><DownloadOutlined /> 下载图片</a>
+                  </a-menu-item>
                   <a-menu-item>
                     <a href="javascript:;"  @click.prevent="sendClicked(item.id)"><GiftOutlined /> 转赠</a>
                   </a-menu-item>
+
                 </a-menu>
               </template>
             </a-dropdown>
@@ -74,12 +78,13 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref, nextTick, reactive, Ref, watch } from 'vue'
-import { EditOutlined, BarChartOutlined, EllipsisOutlined, CopyOutlined, DeleteOutlined, GiftOutlined, UserOutlined } from '@ant-design/icons-vue'
+import { EditOutlined, BarChartOutlined, EllipsisOutlined, CopyOutlined, DeleteOutlined, GiftOutlined, UserOutlined, DownloadOutlined } from '@ant-design/icons-vue'
 import QRCode from 'qrcodejs2'
 import { WorkProp } from '../store/works'
 import { Modal } from 'ant-design-vue'
 import { baseH5URL } from '../main'
 import { RuleFormInstance } from '../views/Setting.vue'
+import { downloadImage } from '../helper'
 export default defineComponent({
   name: 'works-list',
   emits: ['on-copy', 'on-delete', 'on-static', 'on-send'],
@@ -90,7 +95,8 @@ export default defineComponent({
     CopyOutlined,
     DeleteOutlined,
     GiftOutlined,
-    UserOutlined
+    UserOutlined,
+    DownloadOutlined
   },
   props: {
     list: {
@@ -160,6 +166,9 @@ export default defineComponent({
     const staticClicked = (id: number) => {
       context.emit('on-static', id)
     }
+    const saveImage = (url: string) => {
+      downloadImage(url)
+    }
     const sendClicked = (id: number) => {
       sendModal.value = true
       currentItem.value = id
@@ -181,28 +190,19 @@ export default defineComponent({
       publishForm,
       rules,
       form,
-      sendGift
+      sendGift,
+      saveImage
     }
   }
 })
 </script>
 
-<style scoped>
-.poster-item {
-  position: relative;
-  margin-bottom: 20px;
-}
-.tag-list {
-  position: absolute;
-  top: -4px;
-  left: 6px;
-}
-.description-detail {
-  display: flex;
-  justify-content: space-between;
-}
+<style>
 .barcode-container {
   width: 80px;
   height: 80px;
+}
+.overlay-dropdown {
+  border-radius: 2px !important;
 }
 </style>

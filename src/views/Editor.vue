@@ -454,7 +454,10 @@ export default defineComponent({
 .preview-list.canvas-fix .l-image-component,
 .preview-list.canvas-fix .l-shape-component {
   box-shadow: none !important;
-  overflow-y: hidden;
+}
+.preview-list.canvas-fix {
+  position: absolute;
+  max-height: none;
 }
 .sidebar-container {
   padding: 20px;

@@ -1,6 +1,7 @@
 import { message } from 'ant-design-vue'
 import axios from 'axios'
 import html2canvas from 'html2canvas'
+import { saveAs } from 'file-saver'
 import { map } from 'lodash'
 interface CheckCondition {
   format?: string[];
@@ -81,8 +82,9 @@ export function isMobile (mobile: string) {
 }
 
 export const takeScreenshotAndUpload = (id: string) => {
-  return html2canvas(document.getElementById(id) as HTMLElement,
-    { allowTaint: false, useCORS: true }).then(canvas => {
+  const el = document.getElementById(id) as HTMLElement
+  return html2canvas(el,
+    { allowTaint: false, useCORS: true, width: 375 }).then(canvas => {
     return new Promise<UploadImgProps>((resolve, reject) => {
       canvas.toBlob((data) => {
         if (data) {
@@ -139,3 +141,8 @@ export const insertAt = (arr: any[], index: number, newItem: any) => [
   newItem,
   ...arr.slice(index)
 ]
+
+export const downloadImage = (url: string) => {
+  const fileName = url.substring(url.lastIndexOf('/') + 1)
+  saveAs(url, fileName)
+}
