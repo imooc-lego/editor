@@ -81,7 +81,7 @@
         <a-layout-content class="preview-container" @mousedown="clearSelection">
           <p>画布区域</p>
           <history-area></history-area>
-          <div class="preview-list" id="canvas-area" @click="setPageSetting" :class="{active: activePanel === 'page'}">
+          <div class="preview-list" id="canvas-area" @click="setPageSetting" :class="{active: activePanel === 'page', 'canvas-fix': canvasFix}">
             <div class="body-container" :style="pageState.props">
               <div v-for="item in components" :key="item.id">
                 <EditWrapper v-if="!item.isHidden"
@@ -201,6 +201,7 @@ export default defineComponent({
     const globalStatus = computed(() => store.state.status)
     const visible = ref(false)
     const showModal = ref(false)
+    const canvasFix = ref(false)
     const activePanel = ref<TabType>('component')
     initHotKeys()
     showError()
@@ -221,6 +222,8 @@ export default defineComponent({
       // remove select condition
       store.commit('setActive', '')
       activePanel.value = 'component'
+      // remove box shadow to fix html2canvas issue
+      canvasFix.value = true
       await nextTick()
       try {
         const rawData = await takeScreenshotAndUpload('canvas-area')
@@ -230,6 +233,7 @@ export default defineComponent({
       } catch (e) {
         console.error(e)
       } finally {
+        canvasFix.value = false
         if (checkSave) {
           saveWork()
         }
@@ -380,7 +384,8 @@ export default defineComponent({
       titleChange,
       clearSelection,
       previewURL,
-      adjustHeightOnUpload
+      adjustHeightOnUpload,
+      canvasFix
     }
   }
 })
@@ -430,6 +435,12 @@ export default defineComponent({
 }
 .preview-list.active {
   border: 1px solid #1890ff;
+}
+.preview-list.canvas-fix .l-text-component,
+.preview-list.canvas-fix .l-image-component,
+.preview-list.canvas-fix .l-shape-component {
+  box-shadow: none !important;
+  overflow-y: hidden;
 }
 .sidebar-container {
   padding: 20px;

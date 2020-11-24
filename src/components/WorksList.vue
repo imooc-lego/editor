@@ -197,10 +197,6 @@ export default defineComponent({
   top: -4px;
   left: 6px;
 }
-.ant-card-cover > img {
-  height: 500px;
-  object-fit: cover;
-}
 .description-detail {
   display: flex;
   justify-content: space-between;
