@@ -35,10 +35,10 @@
         <a-input v-model:value="form.subTitle" @change="updatePage('desc', form.subTitle)"/>
       </a-form-item>
       <a-form-item :wrapper-col="{ span: 18, offset: 4 }">
-        <a-button type="primary" @click="checkAndpublish" :loading="loading">
+        <a-button type="primary" @click="checkAndpublish" :loading="isPublishing">
           发布
         </a-button>
-        <a-button style="margin-left: 10px;" @click="saveWork" :loading="loading">
+        <a-button style="margin-left: 10px;" @click="saveWork" :loading="isSaving">
           保存
         </a-button>
         <a-button style="margin-left: 10px;" @click="cancelEdit">
@@ -50,12 +50,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, Ref, nextTick, computed, watch, onMounted } from 'vue'
+import { defineComponent, reactive, ref, Ref, computed, watch, onMounted } from 'vue'
 import StyledUploader from '../components/StyledUploader.vue'
-import { commonUploadCheck, UploadImgProps, takeScreenshotAndUpload } from '../helper'
+import { commonUploadCheck, UploadImgProps } from '../helper'
 import QRCode from 'qrcodejs2'
 import { useStore } from 'vuex'
-import { useRoute } from 'vue-router'
 import { GlobalDataProps } from '../store'
 import { baseH5URL } from '../main'
 interface RuleFormInstance {
@@ -65,13 +64,14 @@ export default defineComponent({
   components: {
     StyledUploader
   },
-  emits: ['panel-close', 'publish-success'],
+  props: {
+    isSaving: Boolean,
+    isPublishing: Boolean
+  },
+  emits: ['panel-close', 'trigger-publish', 'trigger-save'],
   setup (props, context) {
     const store = useStore<GlobalDataProps>()
-    const route = useRoute()
-    const currentWorkId = route.params.id
     const pageData = computed(() => store.state.editor.page)
-    const loading = computed(() => store.state.status.loading)
     const { title, desc, setting } = pageData.value
     const previewURL = `${baseH5URL}/p/preview/${pageData.value.id}-${pageData.value.uuid}`
     const form = reactive({
@@ -120,30 +120,11 @@ export default defineComponent({
     const validate = () => {
       return publishForm.value.validate()
     }
-    const publishWork = async () => {
-      store.commit('setActive', '')
-      await nextTick()
-      try {
-        const rawData = await takeScreenshotAndUpload('canvas-area')
-        if (rawData) {
-          store.commit('updatePage', { key: 'coverImg', value: rawData.data.urls[0] })
-        }
-      } catch (e) {
-        console.error(e)
-      } finally {
-        await store.dispatch('saveAndPublishWork', { id: currentWorkId })
-        context.emit('publish-success', true)
-      }
-    }
     const checkAndpublish = () => {
-      validate()
-        .then(() => { return publishWork() })
-        .then(() => { context.emit('publish-success', true) })
+      validate().then(() => { context.emit('trigger-publish', true) })
     }
     const saveWork = () => {
-      validate()
-        .then(() => store.dispatch('saveWork', { id: currentWorkId }))
-        .then(() => { context.emit('panel-close', true) })
+      validate().then(() => { context.emit('trigger-save', true) })
     }
     const cancelEdit = () => {
       context.emit('panel-close', true)
@@ -157,8 +138,7 @@ export default defineComponent({
       cancelEdit,
       commonUploadCheck,
       updatePage,
-      updateAvatar,
-      loading
+      updateAvatar
     }
   }
 })

@@ -2,7 +2,7 @@
   <a-button type="primary" v-if="!user.isLogin" class="user-profile-component">
     <router-link to="/login">登录</router-link>
   </a-button>
-  <div class="user-operation" v-else>
+  <div :class="{ 'user-operation' : !smMode }" v-else>
     <a-button type="primary" @click="createDesign" v-if="!smMode">
       创建设计
     </a-button>
@@ -65,6 +65,6 @@ export default defineComponent({
   border-radius: 2px !important;
 }
 .user-operation > * {
-  margin-right: 30px;
+  margin-left: 30px !important;
 }
 </style>

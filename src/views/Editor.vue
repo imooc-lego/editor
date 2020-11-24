@@ -13,8 +13,11 @@
       v-model:visible="visible"
     >
       <publish-form
+        :isSaving="isSaving"
+        :isPublishing = "isPublishing"
         @panel-close="visible = false"
-        @publish-success="visible = false; showModal = true"
+        @trigger-publish="publishWork"
+        @trigger-save="saveWork(true)"
       >
       </publish-form>
     </a-drawer>
@@ -59,10 +62,10 @@
             <a-button type="primary" @click="previewWork">预览和设置</a-button>
           </a-menu-item>
           <a-menu-item key="2">
-            <a-button type="primary" @click="saveWork(true)" :loading="globalStatus.loading">保存</a-button>
+            <a-button type="primary" @click="saveWork(true)" :loading="isSaving">保存</a-button>
           </a-menu-item>
           <a-menu-item key="3">
-            <a-button type="primary" @click="publishWork" :loading="globalStatus.loading">发布</a-button>
+            <a-button type="primary" @click="publishWork" :loading="isPublishing">发布</a-button>
           </a-menu-item>
           <a-menu-item key="4">
             <user-profile :user="userInfo" :smMode="true"></user-profile>
@@ -203,16 +206,22 @@ export default defineComponent({
     const showModal = ref(false)
     const canvasFix = ref(false)
     const activePanel = ref<TabType>('component')
+    // add status for saving and publishing
+    const isSaving = ref(false)
+    const isPublishing = ref(false)
     initHotKeys()
     showError()
     const currentWorkId = route.params.id
     let timer: any
     const previewURL = computed(() => `${baseH5URL}/p/preview/${pageState.value.id}-${pageState.value.uuid}`)
     const saveWork = (showMessage = false) => {
+      isSaving.value = true
       return store.dispatch('saveWork', { id: currentWorkId }).then(() => {
         if (showMessage) {
           message.success('保存成功', 2)
         }
+      }).finally(() => {
+        isSaving.value = false
       })
     }
     const previewWork = () => {
@@ -240,13 +249,16 @@ export default defineComponent({
       }
     }
     const publishWork = async () => {
+      isPublishing.value = true
       try {
         await takeScreenUpdate()
       } catch (e) {
         console.error(e)
       } finally {
         await store.dispatch('saveAndPublishWork', { id: currentWorkId })
+        visible.value = false
         showModal.value = true
+        isPublishing.value = false
       }
     }
 
@@ -385,7 +397,9 @@ export default defineComponent({
       clearSelection,
       previewURL,
       adjustHeightOnUpload,
-      canvasFix
+      canvasFix,
+      isSaving,
+      isPublishing
     }
   }
 })
