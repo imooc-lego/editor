@@ -29,43 +29,46 @@
             <a-col :span="6" class="feature-item">
               <h3>慕课乐高</h3>
               <ul>
-                <li><a href="#" target="_blank">关于我们</a></li>
-                <li><a href="#" target="_blank">商务合作</a></li>
-                <li><a href="#" target="_blank">设计师</a></li>
-                <li><a href="#" target="_blank">帮助</a></li>
+                <li><a href="https://class.imooc.com/sale/fearchitect" target="_blank">购买课程</a></li>
+                <li><a href="https://imooc-lego.github.io/" target="_blank">作业和打卡</a></li>
+                <li><a href="https://github.com/imooc-lego" target="_blank">开源仓库</a></li>
+                <li><a href="https://class.imooc.com/sale/fearchitect" target="_blank">帮助</a></li>
               </ul>
             </a-col>
             <a-col :span="6" class="feature-item">
               <h3>设计制作帮助</h3>
               <ul>
-                <li><a href="#" target="_blank">关于我们</a></li>
-                <li><a href="#" target="_blank">商务合作</a></li>
-                <li><a href="#" target="_blank">设计师</a></li>
-                <li><a href="#" target="_blank">帮助</a></li>
+                <li><a href="https://class.imooc.com/sale/fearchitect" target="_blank">购买课程</a></li>
+                <li><a href="https://imooc-lego.github.io/" target="_blank">作业和打卡</a></li>
+                <li><a href="https://github.com/imooc-lego" target="_blank">开源仓库</a></li>
+                <li><a href="https://class.imooc.com/sale/fearchitect" target="_blank">帮助</a></li>
               </ul>
             </a-col>
             <a-col :span="6" class="feature-item">
               <h3>审核问题</h3>
               <ul>
-                <li><a href="#" target="_blank">关于我们</a></li>
-                <li><a href="#" target="_blank">商务合作</a></li>
-                <li><a href="#" target="_blank">设计师</a></li>
+                <li><a href="https://class.imooc.com/sale/fearchitect" target="_blank">购买课程</a></li>
+                <li><a href="https://imooc-lego.github.io/" target="_blank">作业和打卡</a></li>
+                <li><a href="https://github.com/imooc-lego" target="_blank">开源仓库</a></li>
+                <li><a href="https://class.imooc.com/sale/fearchitect" target="_blank">帮助</a></li>
               </ul>
             </a-col>
             <a-col :span="6" class="feature-item">
               <h3>联系我们</h3>
               <ul>
-                <li><a href="#" target="_blank">关于我们</a></li>
-                <li><a href="#" target="_blank">商务合作</a></li>
+                <li><a href="https://class.imooc.com/sale/fearchitect" target="_blank">购买课程</a></li>
+                <li><a href="https://imooc-lego.github.io/" target="_blank">作业和打卡</a></li>
+                <li><a href="https://github.com/imooc-lego" target="_blank">开源仓库</a></li>
+                <li><a href="https://class.imooc.com/sale/fearchitect" target="_blank">帮助</a></li>
               </ul>
             </a-col>
           </a-row>
         </div>
         <ul class="list-inline mb-0" :class="{'extra-margin': !isHomePage}">
           <li class="list-inline-item">© 慕课网（imooc.com）版权所有 | 津ICP备20000929号-2</li>
-          <li class="list-inline-item"><a href="#" target="_blank">购买课程</a></li>
-          <li class="list-inline-item"><a href="#" target="_blank">文档</a></li>
-          <li class="list-inline-item"><a href="#" target="_blank">开源仓库</a></li>
+          <li class="list-inline-item"><a href="https://class.imooc.com/sale/fearchitect" target="_blank">购买课程</a></li>
+          <li class="list-inline-item"><a href="https://imooc-lego.github.io/" target="_blank">作业和打卡</a></li>
+          <li class="list-inline-item"><a href="https://github.com/imooc-lego" target="_blank">开源仓库</a></li>
           <li class="list-inline-item"><a href="#" target="_blank">帮助</a></li>
         </ul>
       </a-layout-footer>

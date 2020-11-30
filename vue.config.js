@@ -57,6 +57,14 @@ module.exports = {
       }
     }
   },
+  chainWebpack: config => {
+    config
+      .plugin('html')
+      .tap(args => {
+        args[0].title = '慕课乐高'
+        return args
+      })
+  },
   // 打包时不生成.map文件
   productionSourceMap: false
 }
