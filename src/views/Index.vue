@@ -65,7 +65,7 @@
           </a-row>
         </div>
         <ul class="list-inline mb-0" :class="{'extra-margin': !isHomePage}">
-          <li class="list-inline-item">© 慕课网（imooc.com）版权所有 | 津ICP备20000929号-2</li>
+          <li class="list-inline-item">© 慕课网（imooc.com）版权所有 | <a href="https://beian.miit.gov.cn/#/Integrated/index" target="_blank">津ICP备20000929号-2</a></li>
           <li class="list-inline-item"><a href="https://class.imooc.com/sale/fearchitect" target="_blank">购买课程</a></li>
           <li class="list-inline-item"><a href="https://imooc-lego.github.io/" target="_blank">作业和打卡</a></li>
           <li class="list-inline-item"><a href="https://github.com/imooc-lego" target="_blank">开源仓库</a></li>
