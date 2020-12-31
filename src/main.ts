@@ -53,14 +53,14 @@ axios.interceptors.response.use(resp => {
     return Promise.reject(resp.data)
   }
   timeGap = Date.now() - timeGap
-  window.__bl && window.__bl.api(currentURL, true, timeGap, 0, resp.data.message)
+  window.__bl && window.__bl.api && window.__bl.api(currentURL, true, timeGap, 0, resp.data.message)
   return resp
 }, e => {
   const error = e.response ? e.response.data : e.message
   store.commit('setError', { status: true, message: error })
   store.commit('setLoading', { status: false })
   timeGap = Date.now() - timeGap
-  window.__bl && window.__bl.api(currentURL, false, timeGap, -1, error)
+  window.__bl && window.__bl.api && window.__bl.api(currentURL, false, timeGap, -1, error)
   return Promise.reject(error)
 })
 
